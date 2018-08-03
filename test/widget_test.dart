@@ -25,8 +25,5 @@ void main() {
     // Verify that our counter has incremented.
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
-
-    // intentional build break
-    expect(0, 1);
   });
 }
