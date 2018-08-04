@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'screens/homepage/homepage.dart';
 
-
 /// Main application widget for the MediRoo app.
 class MediRooApp extends StatelessWidget {
+
+  /// The structure of [MediRooApp] mapping a route to a window widget.
   final routes = <String, WidgetBuilder>{
     '/': (BuildContext context) => new HomePage(title: 'MediRoo')
   };
 
+  /// Construct a material application based on the [routes] of the application.
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

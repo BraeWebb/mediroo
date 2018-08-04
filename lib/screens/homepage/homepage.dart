@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// Homepage for the Mediroo Application.
+///
+/// Renders a click counter activated by a '+' FAB.
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
+  /// The title to be displayed in the menu bar.
   final String title;
 
   @override
