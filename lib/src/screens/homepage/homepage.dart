@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Homepage for the Mediroo Application.
 ///
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'You have pushed the button this many times:',
+              'You have taken this many pills:',
             ),
             new Text(
               '$_counter',
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: new FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: new Icon(Icons.add),
+        child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
       ),
     );
   }
