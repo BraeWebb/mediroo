@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:mediroo/main.dart';
 
@@ -13,7 +14,7 @@ void main() {
     expect(find.text('1'), findsNothing);
 
     // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.byIcon(FontAwesomeIcons.prescriptionBottleAlt));
     await tester.pump();
 
     // Verify that our counter has incremented.
@@ -33,7 +34,7 @@ void main() {
 
     // Tap the '+' icon 20 times and trigger a frame.
     for (int i = 0; i < 20; i++) {
-      await tester.tap(find.byIcon(Icons.add));
+      await tester.tap(find.byIcon(FontAwesomeIcons.prescriptionBottleAlt));
     }
     await tester.pump();
 
