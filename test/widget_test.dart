@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mediroo/routes.dart';
+import 'package:mediroo/main.dart';
 
 void main() {
   testWidgets('Counter increment by 1', (WidgetTester tester) async {
