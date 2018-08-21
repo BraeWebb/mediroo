@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/src/screens/homepage/homepage.dart';
-import 'package:mediroo/src/screens/databaseTest/databaseTest.dart';
+import 'package:mediroo/src/screens/database/database.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
