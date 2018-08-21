@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mediroo/src/screens/homepage/homepage.dart';
 import 'package:mediroo/src/screens/database/database.dart';
 
+/// Login page for the user.
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
   @override
   _LoginPageState createState() => _LoginPageState();
-
 }
 
 class _LoginPageState extends State<LoginPage> {

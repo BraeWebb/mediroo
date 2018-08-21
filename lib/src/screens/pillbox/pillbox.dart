@@ -5,11 +5,14 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 
+/// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
+  /// Create a with [title] that displays the [model].
   Pillbox({Key key, this.title, this.model}) : super(key: key);
 
   /// The [title] to be displayed in the menu bar.
   final String title;
+  /// A [model] representing a pillbox
   final PillboxModel model;
 
   @override

@@ -4,8 +4,6 @@ import 'package:mediroo/model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Homepage for the Mediroo Application.
-///
-/// Renders a click counter activated by a '+' FAB.
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
