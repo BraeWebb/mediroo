@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/src/screens/homepage/homepage.dart';
+import 'package:mediroo/src/screens/databaseTest/databaseTest.dart';
 
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
@@ -67,7 +68,9 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(DatabaseTestPage.tag);
+      },
     );
 
     return Scaffold(
