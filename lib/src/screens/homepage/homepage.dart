@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../screens.dart';
-import '../../../util.dart';
+import 'package:mediroo/screens.dart';
+import 'package:mediroo/model.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Homepage for the Mediroo Application.
