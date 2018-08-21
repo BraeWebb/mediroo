@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(widget.title),
+        automaticallyImplyLeading: false,
       ),
       body: new Center(
         child: new Column(
