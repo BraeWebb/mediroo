@@ -11,21 +11,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FocusNode focus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     final logo = Hero(
       tag: 'login',
-      child: CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: 40.0,
-        child: Image.asset('assets/full-logo.png'),
-      ),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(focus),
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 40.0,
+          child: Image.asset('assets/full-logo.png'),
+        ),
+      )
     );
 
     final email = TextFormField(
       keyboardType: TextInputType.emailAddress,
-      autofocus: false,
+      focusNode: focus,
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
