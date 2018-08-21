@@ -10,6 +10,7 @@ class HomePage extends StatefulWidget {
 
   /// The title to be displayed in the menu bar.
   final String title;
+  static String tag = "HomePage";
 
   @override
   _HomePageState createState() => new _HomePageState();
