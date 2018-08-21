@@ -52,7 +52,7 @@ void main() {
 
     // Tap the icon to trigger field selection
     await tester.tap(find.byKey(Key('login_button')));
-    await tester.pump(const Duration(milliseconds: 300));
+    await tester.pump(const Duration(milliseconds: 1000));
 
     expect(find.byKey(Key("login_logo")), findsNothing);
   });
