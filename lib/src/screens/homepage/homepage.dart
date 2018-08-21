@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../screens.dart';
+import '../../../util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Homepage for the Mediroo Application.
@@ -8,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
 
-  /// The title to be displayed in the menu bar.
+  /// The [title] to be displayed in the menu bar.
   final String title;
   static String tag = "HomePage";
 
@@ -18,6 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
+  PillboxModel model;
+
+  _HomePageState() {
+    model = new PillboxModel(4, 1);
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -25,7 +31,7 @@ class _HomePageState extends State<HomePage> {
     });
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Pillbox(title: "Pillbox")),
+      MaterialPageRoute(builder: (context) => Pillbox(title: "Pillbox", model: model)),
     );
   }
 

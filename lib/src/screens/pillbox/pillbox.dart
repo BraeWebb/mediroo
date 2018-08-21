@@ -3,13 +3,15 @@
 /// it's very nice <3
 
 import 'package:flutter/material.dart';
+import '../../../util.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Pillbox extends StatelessWidget {
-  Pillbox({Key key, this.title}) : super(key: key);
+  Pillbox({Key key, this.title, this.model}) : super(key: key);
 
-  /// The title to be displayed in the menu bar.
+  /// The [title] to be displayed in the menu bar.
   final String title;
+  final PillboxModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -19,73 +21,87 @@ class Pillbox extends StatelessWidget {
           title: new Text(title),
         ),
         body: new Center(
-          child: new PillboxGrid(),
+          child: new PillboxGrid(model: model),
         )
     );
   }
 }
 
 class PillboxGrid extends StatelessWidget {
+  PillboxGrid({Key key, this.model}) : super(key: key);
+
+  final PillboxModel model;
+
   @override
   Widget build(BuildContext context) {
     return new GridView.count(
-      crossAxisCount: 3,
-      children: new List<Widget>.generate(21, (index) {
+      crossAxisCount: model.getWidth(),
+      children: new List<Widget>.generate(model.getWidth() * model.getHeight(), (index) {
         return new GridTile(
-          child: new PillIcon(),
+          child: new PillIcon(cell: model.getByIndex(index)),
         );
       }),
     );
   }
 }
 
-class PillIcon extends StatefulWidget {
+class PillDesc extends StatelessWidget {
+  final PillboxModel model;
+
+  PillDesc({Key key, this.model}) : super(key: key);
+
   @override
-  _PillIconState createState() => new _PillIconState();
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
 }
 
-enum _PillIconType {
-  STD, // standard pill icon
-  NULL, // empty pill icon
-  TAKEN, // tick icon
-  MISSED // cross icon
+class PillIcon extends StatefulWidget {
+  final PillboxCell cell;
+
+  PillIcon({Key key, this.cell}) : super(key: key);
+
+  @override
+  _PillIconState createState() => new _PillIconState(cell);
 }
 
 class _PillIconState extends State<PillIcon> {
-  _PillIconType _type = _PillIconType.NULL;
+  PillboxCell cell;
   Color _typeColor;
 
-  _PillIconState() {
-    _type = _PillIconType.STD;
+  _PillIconState(PillboxCell cell) {
+    this.cell = cell;
     setIconColor();
   }
 
   void setIconColor() {
-    switch(_type) {
-      case _PillIconType.STD:
+    switch(cell.getType()) {
+      case PillType.STD:
         _typeColor = Colors.blue.shade200;
         return;
-      case _PillIconType.NULL:
+      case PillType.NULL:
         _typeColor = Colors.grey.shade200;
         return;
-      case _PillIconType.TAKEN:
+      case PillType.TAKEN:
         _typeColor = Colors.green.shade200;
         return;
-      case _PillIconType.MISSED:
+      case PillType.MISSED:
         _typeColor = Colors.red.shade200;
         return;
     }
   }
 
-  void setIconType(_PillIconType type) {
+  void setIconType() {
     setState(() {
-      this._type = type;
       setIconColor();
     });
   }
 
   void takePill() {
-    setIconType(_PillIconType.TAKEN);
+    print("take");
+    cell.setType(PillType.TAKEN);
+    setIconType();
   }
 
   @override
