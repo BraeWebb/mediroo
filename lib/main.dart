@@ -11,7 +11,8 @@ class MediRooApp extends StatelessWidget {
 
   /// The structure of [MediRooApp] mapping a route to a window widget.
   final routes = <String, WidgetBuilder>{
-    '/': (BuildContext context) => new HomePage(title: title)
+    LoginPage.tag: (context) => LoginPage(),
+    HomePage.tag: (context) => HomePage(title: title),
   };
 
   /// Construct a material application based on the [routes] of the application.
@@ -23,6 +24,7 @@ class MediRooApp extends StatelessWidget {
         // TODO: Mediroo colour scheme
         primarySwatch: Colors.blue,
       ),
+      home: LoginPage(),
       routes: routes,
     );
   }
