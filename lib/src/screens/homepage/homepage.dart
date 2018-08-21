@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../screens.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Homepage for the Mediroo Application.
@@ -21,6 +22,10 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _counter++;
     });
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Pillbox(title: "Pillbox")),
+    );
   }
 
   @override
