@@ -3,8 +3,7 @@
 /// it's very nice <3
 
 import 'package:flutter/material.dart';
-import '../../../util.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mediroo/model.dart';
 
 class Pillbox extends StatelessWidget {
   Pillbox({Key key, this.title, this.model}) : super(key: key);
@@ -21,22 +20,22 @@ class Pillbox extends StatelessWidget {
           title: new Text(title),
         ),
         body: new Center(
-          child: new PillboxGrid(model: model),
+          child: new _PillboxGrid(model: model),
         )
     );
   }
 }
 
-class PillboxGrid extends StatefulWidget {
+class _PillboxGrid extends StatefulWidget {
   final PillboxModel model;
 
-  PillboxGrid({Key key, this.model}) : super(key: key);
+  _PillboxGrid({Key key, this.model}) : super(key: key);
 
   @override
   _GridState createState() => new _GridState(model);
 }
 
-class _GridState extends State<PillboxGrid> {
+class _GridState extends State<_PillboxGrid> {
   PillboxModel model;
   List<Widget> grid;
 
@@ -78,7 +77,7 @@ class _GridState extends State<PillboxGrid> {
       } else if (i % (model.getWidth() + 1) == 0) { //descriptor
         int row = i ~/ (model.getWidth() + 1) - 1;
         grid[i] = new GridTile(
-          child: new PillDesc(row: model.getRow(row)),
+          child: new _PillDesc(row: model.getRow(row)),
         );
       } else { //cell
         int row = i ~/ (model.getWidth() + 1) - 1;
@@ -87,7 +86,7 @@ class _GridState extends State<PillboxGrid> {
         print(col);
         print(i);
         grid[i] = new GridTile(
-          child: new PillIcon(cell: model.get(row, col)),
+          child: new _PillIcon(cell: model.get(row, col)),
         );
       }
     }
@@ -102,10 +101,10 @@ class _GridState extends State<PillboxGrid> {
   }
 }
 
-class PillDesc extends StatelessWidget {
+class _PillDesc extends StatelessWidget {
   final PillboxRow row;
 
-  PillDesc({Key key, this.row}) : super(key: key);
+  _PillDesc({Key key, this.row}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,16 +119,16 @@ class PillDesc extends StatelessWidget {
   }
 }
 
-class PillIcon extends StatefulWidget {
+class _PillIcon extends StatefulWidget {
   final PillboxCell cell;
 
-  PillIcon({Key key, this.cell}) : super(key: key);
+  _PillIcon({Key key, this.cell}) : super(key: key);
 
   @override
   _PillIconState createState() => new _PillIconState(cell);
 }
 
-class _PillIconState extends State<PillIcon> {
+class _PillIconState extends State<_PillIcon> {
   PillboxCell cell;
   Color _typeColor;
 
