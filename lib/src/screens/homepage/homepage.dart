@@ -22,7 +22,9 @@ class _HomePageState extends State<HomePage> {
   PillboxModel model;
 
   _HomePageState() {
-    model = new PillboxModel(4, 1);
+    model = new PillboxModel(4);
+    model.addRow("Happy Pill");
+    model.addRow("Meme Pill");
   }
 
   void _incrementCounter() {
