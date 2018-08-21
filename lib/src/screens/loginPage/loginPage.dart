@@ -18,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement build
     final logo = Hero(
       tag: 'login',
+      key: Key('login_logo'),
       child: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(focus),
         child: CircleAvatar(
@@ -29,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final email = TextFormField(
+      key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
       decoration: InputDecoration(
@@ -39,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
+      key: Key('password_field'),
       autofocus: false,
       obscureText: true,
       decoration: InputDecoration(
@@ -49,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final loginButton = Padding(
+      key: Key('login_button'),
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
         borderRadius: BorderRadius.circular(30.0),
