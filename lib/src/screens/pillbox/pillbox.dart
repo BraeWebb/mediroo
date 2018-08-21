@@ -27,33 +27,96 @@ class Pillbox extends StatelessWidget {
   }
 }
 
-class PillboxGrid extends StatelessWidget {
+class PillboxGrid extends StatefulWidget {
+  final PillboxModel model;
+
   PillboxGrid({Key key, this.model}) : super(key: key);
 
-  final PillboxModel model;
+  @override
+  _GridState createState() => new _GridState(model);
+}
+
+class _GridState extends State<PillboxGrid> {
+  PillboxModel model;
+  List<Widget> grid;
+
+  _GridState(PillboxModel model) {
+    this.model = model;
+    buildGrid();
+  }
+
+  void addRow() {
+    String desc = "New pill";
+    model.addRow(desc);
+    setState(() {
+      buildGrid();
+    });
+  }
+
+  void buildGrid() {
+    int len = (model.getWidth() + 1) * (model.getHeight() + 1) + 1;
+    grid = new List(len);
+    for(int i = 0; i < len; i++) {
+      if(i ~/ (model.getWidth() + 1) == 0) {
+        grid[i] = new GridTile (
+          child: new Center(
+            child: new Image.asset("assets/wi-sunrise.png")
+          )
+        );
+      } else if(i == len - 1) { //add button
+        grid[i] = new GridTile (
+          child: new InkWell(
+            child: new Card(
+                color: Colors.teal.shade100,
+                child: new Center(
+                    child: new Text('+') //replace with image
+                )
+            ),
+           onTap: addRow,
+          ),
+        );
+      } else if (i % (model.getWidth() + 1) == 0) { //descriptor
+        int row = i ~/ (model.getWidth() + 1) - 1;
+        grid[i] = new GridTile(
+          child: new PillDesc(row: model.getRow(row)),
+        );
+      } else { //cell
+        int row = i ~/ (model.getWidth() + 1) - 1;
+        int col = i % (model.getWidth() + 1) - 1;
+        print(row);
+        print(col);
+        print(i);
+        grid[i] = new GridTile(
+          child: new PillIcon(cell: model.get(row, col)),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return new GridView.count(
-      crossAxisCount: model.getWidth(),
-      children: new List<Widget>.generate(model.getWidth() * model.getHeight(), (index) {
-        return new GridTile(
-          child: new PillIcon(cell: model.getByIndex(index)),
-        );
-      }),
+      crossAxisCount: model.getWidth() + 1,
+      children: grid
     );
   }
 }
 
 class PillDesc extends StatelessWidget {
-  final PillboxModel model;
+  final PillboxRow row;
 
-  PillDesc({Key key, this.model}) : super(key: key);
+  PillDesc({Key key, this.row}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return null;
+    return new InkWell(
+      child: new Card(
+          color: Colors.teal.shade300,
+          child: new Center(
+              child: new Text(row.getDesc()) //replace with image
+          )
+      ),
+    );
   }
 }
 

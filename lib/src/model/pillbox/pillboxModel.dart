@@ -21,18 +21,36 @@ class PillboxCell {
   }
 }
 
+class PillboxRow {
+  String _desc;
+  List<PillboxCell> _cells;
+
+  PillboxRow(int width, String desc) {
+    _desc = desc;
+    _cells = new List();
+    for(int i = 0; i < width; i++) {
+      _cells.add(new PillboxCell(PillType.NULL));
+    }
+  }
+
+  String getDesc() {
+    return _desc;
+  }
+
+  PillboxCell get(int index) {
+    return _cells[index];
+  }
+}
+
 class PillboxModel {
-  List<List<PillboxCell>> _array;
+  List<PillboxRow> _array;
   int _width;
   int _height;
 
-  PillboxModel(int width, int height) {
+  PillboxModel(int width) {
     _width = width;
     _height = 0;
     _array = new List();
-    for(int i = 0; i < height; i++) {
-      addRow();
-    }
   }
 
   int getWidth() {
@@ -43,17 +61,17 @@ class PillboxModel {
     return _height;
   }
 
-  void addRow() {
+  void addRow(String desc) {
     _height += 1;
-    List<PillboxCell> row = new List(_width);
-    for(int j = 0; j < _width; j++) {
-      row[j] = new PillboxCell(PillType.NULL);
-    }
-    _array.add(row);
+    _array.add(new PillboxRow(_width, desc));
   }
 
   PillboxCell get(int row, int col) {
-    return _array[row][col];
+    return _array[row].get(col);
+  }
+
+  PillboxRow getRow(int row) {
+    return _array[row];
   }
 
   PillboxCell getByIndex(int index) {
