@@ -60,9 +60,19 @@ class _GridState extends State<_PillboxGrid> {
     grid = new List(len);
     for(int i = 0; i < len; i++) {
       if(i ~/ (model.getWidth() + 1) == 0) {
+        Image timeOfDay;
+        if (i == 1) {
+          timeOfDay = new Image.asset("assets/wi-sunrise.png");
+        } else if (i == 2) {
+          timeOfDay = new Image.asset("assets/wi-day-sunny.png");
+        } else if (i == 3) {
+          timeOfDay = new Image.asset("assets/wi-sunset.png");
+        } else if (i == 4) {
+          timeOfDay = new Image.asset("assets/wi-night-clear.png");
+        }
         grid[i] = new GridTile (
           child: new Center(
-            child: new Image.asset("assets/wi-sunrise.png")
+            child: timeOfDay
           )
         );
       } else if(i == len - 1) { //add button
