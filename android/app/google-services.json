@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "100750060936",
+    "firebase_url": "https://mediroo-3801.firebaseio.com",
+    "project_id": "mediroo-3801",
+    "storage_bucket": "mediroo-3801.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100750060936:android:1e4277e11608f9c8",
+        "android_client_info": {
+          "package_name": "com.mediroo.mediroo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100750060936-odv6rf6v6n5g6mhd9bvm0t7odbrnsfd4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUTo2lVyZ1qkGg_BRQBNhnBdHR7vr_3HQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
