@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/src/screens/homepage/homepage.dart';
+import 'package:mediroo/src/screens/database/database.dart';
 
+/// Login page for the user.
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
   @override
   _LoginPageState createState() => _LoginPageState();
-
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FocusNode focus = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     final logo = Hero(
       tag: 'login',
-      child: CircleAvatar(
-        backgroundColor: Colors.white,
-        radius: 40.0,
-        child: Image.asset('assets/logo.png'),
-      ),
+      key: Key('login_logo'),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(focus),
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          radius: 40.0,
+          child: Image.asset('assets/full-logo.png'),
+        ),
+      )
     );
 
     final email = TextFormField(
+      key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      initialValue: 'example@email.com',
+      focusNode: focus,
       decoration: InputDecoration(
         hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -34,8 +41,8 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final password = TextFormField(
+      key: Key('password_field'),
       autofocus: false,
-      initialValue: 'some password',
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -45,6 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final loginButton = Padding(
+      key: Key('login_button'),
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
         borderRadius: BorderRadius.circular(30.0),
@@ -67,7 +75,9 @@ class _LoginPageState extends State<LoginPage> {
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushReplacementNamed(DatabaseTestPage.tag);
+      },
     );
 
     return Scaffold(
