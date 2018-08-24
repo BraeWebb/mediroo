@@ -35,6 +35,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _doStuff(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddPillsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -53,6 +60,7 @@ class _HomePageState extends State<HomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+            new FlatButton(onPressed: _doStuff, child: null, color: new Color(0xFFFFFFF))
           ],
         ),
       ),
