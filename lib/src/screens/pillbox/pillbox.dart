@@ -56,14 +56,28 @@ class _GridState extends State<PillboxGrid> {
   void buildGrid() {
     int len = (model.getWidth() + 1) * (model.getHeight() + 1) + 1;
     grid = new List(len);
-    for(int i = 0; i < len; i++) {
-      if(i ~/ (model.getWidth() + 1) == 0) {
-        grid[i] = new GridTile (
-          child: new Center(
-            child: new Image.asset("assets/wi-sunrise.png")
-          )
-        );
-      } else if(i == len - 1) { //add button
+    grid[1] = new GridTile (
+      child: new Center(
+        child: new Image.asset("assets/wi-sunrise.png"),
+      )
+    );
+    grid[2] = new GridTile (
+        child: new Center(
+            child: new Image.asset("assets/wi-sun.png"),
+        )
+    );
+    grid[3] = new GridTile (
+        child: new Center(
+          child: new Image.asset("assets/wi-sunset.png"),
+        )
+    );
+    grid[4] = new GridTile (
+        child: new Center(
+          child: new Image.asset("assets/wi-night.png"),
+        )
+    );
+    for(int i = 5; i < len; i++) {
+      if(i == len - 1) { //add button
         grid[i] = new GridTile (
           child: new InkWell(
             child: new Card(

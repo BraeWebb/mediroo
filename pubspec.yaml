@@ -29,6 +29,9 @@ flutter:
   assets:
     - logo.png
     - wi-sunrise.png
+    - wi-sun.png
+    - wi-sunset.png
+    - wi-night.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
