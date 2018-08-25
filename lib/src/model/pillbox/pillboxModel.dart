@@ -1,3 +1,5 @@
+import 'package:quiver/core.dart';
+
 enum PillType {
   STD, // standard pill icon
   NULL, // empty pill icon
@@ -5,79 +7,49 @@ enum PillType {
   MISSED // cross icon
 }
 
-class PillboxCell {
-  PillType _type;
-
-  PillboxCell(PillType type) {
-    this._type = type;
-  }
-
-  PillType getType() {
-    return _type;
-  }
-
-  void setType(PillType type) {
-    _type = type;
-  }
+enum ToD {
+  MORNING,
+  MIDDAY,
+  EVENING,
+  NIGHT
 }
 
-class PillboxRow {
-  String _desc;
-  List<PillboxCell> _cells;
+class Time {
+  ToD tod;
+  DateTime date; // NOTE: time is ignored
 
-  PillboxRow(int width, String desc) {
-    _desc = desc;
-    _cells = new List();
-    for(int i = 0; i < width; i++) {
-      _cells.add(new PillboxCell(PillType.NULL));
-    }
+  Time(this.date, this.tod);
+
+  bool operator ==(o) => o is Time && this.tod == o.tod && this.date.year == o.date.year
+      && this.date.month == o.date.month && this.date.day == o.date.day;
+
+  int get hashCode => hash4(tod, date.year, date.month, date.day);
+}
+
+class Pill {
+  String _desc;
+  int _pillCount;
+  Map<Time, PillType> _calendar;
+
+  Pill(this._desc, this._calendar);
+
+  void setType(Time time, PillType type) {
+    _calendar[time] = type;
+  }
+
+  PillType getType(Time time) {
+    return _calendar[time];
   }
 
   String getDesc() {
     return _desc;
   }
 
-  PillboxCell get(int index) {
-    return _cells[index];
-  }
-}
-
-class PillboxModel {
-  List<PillboxRow> _array;
-  int _width;
-  int _height;
-
-  PillboxModel(int width) {
-    _width = width;
-    _height = 0;
-    _array = new List();
+  void pushToDb() {
+    //to be implemented
   }
 
-  int getWidth() {
-    return _width;
+  void pullFromDb() {
+    //to be implemented
   }
-
-  int getHeight() {
-    return _height;
-  }
-
-  void addRow(String desc) {
-    _height += 1;
-    _array.add(new PillboxRow(_width, desc));
-  }
-
-  PillboxCell get(int row, int col) {
-    return _array[row].get(col);
-  }
-
-  PillboxRow getRow(int row) {
-    return _array[row];
-  }
-
-  PillboxCell getByIndex(int index) {
-    int row = index ~/ _width;
-    int col = index % _width;
-    return get(row, col);
-  }
-
 }

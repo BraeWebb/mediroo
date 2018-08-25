@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Screen for testing a connection to the firebase database.
+///
+/// This screen will be removed in future.
 class DatabaseTestPage extends StatelessWidget {
   const DatabaseTestPage({Key key}) : super(key: key);
 

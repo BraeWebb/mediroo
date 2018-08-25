@@ -5,7 +5,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  font_awesome_flutter: ^7.1.0
+  font_awesome_flutter: ^8.0.1
   cloud_firestore: ^0.7.3
   firebase_core: ^0.2.2
 
@@ -32,6 +32,10 @@ flutter:
     - wi-sun.png
     - wi-sunset.png
     - wi-night.png
+    - wi-day-sunny.png
+    - wi-sunset.png
+    - wi-night-clear.png
+    - full-logo.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
