@@ -1,7 +1,3 @@
-/// Just want to say
-/// I'm already enjoying dart
-/// it's very nice <3
-
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 
