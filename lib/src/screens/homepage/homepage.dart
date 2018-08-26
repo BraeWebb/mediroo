@@ -18,23 +18,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _counter = 0;
-  List<Pill> pills;
+  List<Prescription> pills;
 
   _HomePageState() {
     /* TESTING CODE - REMOVE WHEN FUNCTIONAL */
     DateTime now = DateTime.now();
-    Pill p1 = new Pill("Pill 1",
-        {
-          new Time(now, ToD.MIDDAY): PillType.STD,
-          new Time(now, ToD.NIGHT): PillType.STD
-        });
-    Pill p2 = new Pill("Pill 2",
-        {
-          new Time(now, ToD.MIDDAY): PillType.STD,
-          new Time(now, ToD.EVENING): PillType.STD
-        });
+    DateTime dt1 = new DateTime(now.year, now.month, now.day, 12);
+    DateTime dt2 = new DateTime(now.year, now.month, now.day, 22);
+    DateTime dt3 = new DateTime(now.year, now.month, now.day, 18);
 
-    pills = [p1, p2];
+    Pill p1 = new Pill(dt1);
+    Pill p2 = new Pill(dt2);
+    Pill p3 = new Pill(dt1);
+    Pill p4 = new Pill(dt3);
+
+    Prescription pre1 = new Prescription("Pill 1", pills: [p1, p2]);
+    Prescription pre2 = new Prescription("Pill 2", pills: [p3, p4]);
+
+    pills = [pre1, pre2];
 
     /* END TESTING CODE */
   }

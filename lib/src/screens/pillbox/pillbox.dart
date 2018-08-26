@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
+import '../../../screens.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Screen that displays data from the [PillboxModel] in a grid.
@@ -10,7 +11,7 @@ class Pillbox extends StatelessWidget {
   /// The [title] to be displayed in the menu bar.
   final String title;
   /// A [model] representing a pillbox
-  final List<Pill> pills;
+  final List<Prescription> pills;
   final DateTime date;
 
   @override
@@ -28,7 +29,7 @@ class Pillbox extends StatelessWidget {
 }
 
 class _PillboxGrid extends StatefulWidget {
-  final List<Pill> pills;
+  final List<Prescription> pills;
   final DateTime date;
 
   _PillboxGrid(this.pills, this.date, {Key key}) : super(key: key);
@@ -38,22 +39,25 @@ class _PillboxGrid extends StatefulWidget {
 }
 
 class _GridState extends State<_PillboxGrid> {
-  List<Pill> pills;
+  List<Prescription> pills;
   DateTime date;
   List<Widget> grid;
 
   _GridState(this.pills, this.date) {
-    print(pills);
     buildGrid();
   }
 
   void addRow() {
     String desc = "New pill";
     DateTime now = DateTime.now();
-    Time date = new Time(now, ToD.MORNING);
-    Time date2 = new Time(now, ToD.EVENING);
-    Pill pill = new Pill(desc, {date: PillType.STD, date2: PillType.STD});
-    pills.add(pill);
+    DateTime dt1 = new DateTime(now.year, now.month, now.day, 8, 0);
+    DateTime dt2 = new DateTime(now.year, now.month, now.day, 18, 0);
+
+    Pill pill1 = new Pill(dt1);
+    Pill pill2 = new Pill(dt2);
+
+    Prescription pre = new Prescription(desc, pills: [pill1, pill2]);
+    pills.add(pre);
 
     setState(() {
       buildGrid();
@@ -86,8 +90,9 @@ class _GridState extends State<_PillboxGrid> {
       );
 
       for (int j = 1; j < 5; j++) {
+        Pill pill = pills[i].getPill(date, ToD.values[j-1]);
         grid[i * 5 + 5 + j] = new GridTile( // taken/not taken
-            child: new _PillIcon(pills[i], new Time(date, ToD.values[j - 1]))
+            child: new _PillIcon(pill)
         );
       }
     }
@@ -116,9 +121,9 @@ class _GridState extends State<_PillboxGrid> {
 }
 
 class _PillDesc extends StatelessWidget {
-  final Pill pill;
+  final Prescription prescription;
 
-  _PillDesc(this.pill, {Key key}) : super(key: key);
+  _PillDesc(this.prescription, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +131,7 @@ class _PillDesc extends StatelessWidget {
       child: new Card(
           color: Colors.teal.shade300,
           child: new Center(
-              child: new Text(pill.getDesc()) //replace with image?
+              child: new Text(prescription.desc) //replace with image?
           )
       ),
     );
@@ -135,27 +140,29 @@ class _PillDesc extends StatelessWidget {
 
 class _PillIcon extends StatefulWidget {
   final Pill pill;
-  final Time time;
 
-  _PillIcon(this.pill, this.time, {Key key}) : super(key: key);
+  _PillIcon(this.pill, {Key key}) : super(key: key);
 
   @override
-  _PillIconState createState() => new _PillIconState(pill, time);
+  _PillIconState createState() => new _PillIconState(pill);
 }
 
 class _PillIconState extends State<_PillIcon> {
   Pill pill;
-  Time time;
   Color _typeColor;
   Icon _typeIcon;
 
-  _PillIconState(this.pill, this.time) {
+  _PillIconState(this.pill) {
     setIconColor();
   }
 
   void setIconColor() {
-    print(pill.getType(time));
-    switch(pill.getType(time)) {
+    if(pill == null) {
+      _typeColor = Colors.grey.shade300;
+      _typeIcon = null;
+      return;
+    }
+    switch(pill.status) {
       case PillType.STD:
         _typeColor = Colors.blue.shade100;
         _typeIcon = Icon(FontAwesomeIcons.capsules, color: Colors.blue.shade300);
@@ -182,16 +189,25 @@ class _PillIconState extends State<_PillIcon> {
   }
 
   void takePill() {
-    if(pill.getType(time) == PillType.STD) {
-      pill.setType(time, PillType.TAKEN);
+    if(pill.status == PillType.STD) {
+      pill.status = PillType.TAKEN;
       setIconType();
     }
   }
 
   void undoTaken() {
-    if(pill.getType(time) == PillType.TAKEN) {
-      pill.setType(time, PillType.STD);
+    if(pill.status == PillType.TAKEN) {
+      pill.status = PillType.STD;
       setIconType();
+    }
+  }
+
+  void openInfo() {
+    if(pill != null && pill.status == PillType.STD) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PillTakeInfo(pill, title: pill.master.desc)),
+      );
     }
   }
 
@@ -205,7 +221,7 @@ class _PillIconState extends State<_PillIcon> {
           child: _typeIcon
         )
       ),
-      onTap: takePill,
+      onTap: openInfo,
       onDoubleTap: undoTaken,
     );
   }
