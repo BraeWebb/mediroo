@@ -144,15 +144,15 @@ class _PillIcon extends StatefulWidget {
   _PillIcon(this.pill, {Key key}) : super(key: key);
 
   @override
-  _PillIconState createState() => new _PillIconState(pill);
+  PillIconState createState() => new PillIconState(pill);
 }
 
-class _PillIconState extends State<_PillIcon> {
+class PillIconState extends State<_PillIcon> {
   Pill pill;
   Color _typeColor;
   Icon _typeIcon;
 
-  _PillIconState(this.pill) {
+  PillIconState(this.pill) {
     setIconColor();
   }
 
@@ -202,12 +202,21 @@ class _PillIconState extends State<_PillIcon> {
     }
   }
 
+  void refresh() {
+    setState(() {
+      setIconType();
+    });
+  }
+
   void openInfo() {
-    if(pill != null && pill.status == PillType.STD) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PillTakeInfo(pill, title: pill.master.desc)),
-      );
+    if(pill != null) {
+      setState(() {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+              PillTakeInfo(pill, this, title: pill.master.desc)),
+        );
+      });
     }
   }
 
