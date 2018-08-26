@@ -54,9 +54,10 @@ class PillInfo extends StatelessWidget {
   }
 }
 
+/// The grid of buttons that make up the pillbox
 class _PillboxGrid extends StatefulWidget {
-  final List<Prescription> pills;
-  final DateTime date;
+  final List<Prescription> pills; //the model the grid is representing
+  final DateTime date; //the day the grid is representing
 
   _PillboxGrid(this.pills, this.date, {Key key}) : super(key: key);
 
@@ -73,6 +74,8 @@ class _GridState extends State<_PillboxGrid> {
     buildGrid();
   }
 
+  /// Adds a dummy row to the grid
+  /// TODO: replace this with a call to the addpills page
   void addRow() {
     String desc = "New pill";
     DateTime now = DateTime.now();
@@ -90,6 +93,7 @@ class _GridState extends State<_PillboxGrid> {
     });
   }
 
+  /// Builds the grid from the model
   void buildGrid() {
     grid = new List(pills.length * 5 + 6);
     List<Image> icons = [
@@ -146,6 +150,7 @@ class _GridState extends State<_PillboxGrid> {
   }
 }
 
+/// A single button representing a prescription
 class _PillDesc extends StatelessWidget {
   final Prescription prescription;
 
@@ -173,6 +178,7 @@ class _PillIcon extends StatefulWidget {
   PillIconState createState() => new PillIconState(pill);
 }
 
+/// A single button representing a pill in a prescription
 class PillIconState extends State<_PillIcon> {
   Pill pill;
   Color _typeColor;
@@ -228,12 +234,14 @@ class PillIconState extends State<_PillIcon> {
     }
   }
 
+  /// Refreshes the page
   void refresh() {
     setState(() {
       setIconType();
     });
   }
 
+  /// Shows info about the pill
   void openInfo() {
     if(pill != null) {
       setState(() {
@@ -256,8 +264,7 @@ class PillIconState extends State<_PillIcon> {
           child: _typeIcon
         )
       ),
-      onTap: openInfo,
-      onDoubleTap: undoTaken,
+      onTap: openInfo
     );
   }
 }
