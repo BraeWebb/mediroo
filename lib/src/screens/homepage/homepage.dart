@@ -75,7 +75,12 @@ class _HomePageState extends State<HomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
-            new FlatButton(onPressed: _doStuff, child: null, color: new Color(0xFFFFFFF))
+              new RaisedButton.icon(
+                onPressed: _doStuff,
+                label: const Text('Add Pill'),
+                color: Colors.blue,
+                icon: const Icon(FontAwesomeIcons.plusSquare)
+              )
           ],
         ),
       ),
