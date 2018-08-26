@@ -16,40 +16,65 @@ enum ToD {
 
 class Time {
   ToD tod;
-  DateTime date; // NOTE: time is ignored
+  DateTime dt;
 
-  Time(this.date, this.tod);
+  Time(this.dt, this.tod);
 
-  bool operator ==(o) => o is Time && this.tod == o.tod && this.date.year == o.date.year
-      && this.date.month == o.date.month && this.date.day == o.date.day;
+  static ToD getToD(int hour) {
+    if(0 <= hour && hour < 10) {
+      return ToD.MORNING;
+    } else if(10 <= hour && hour < 15) {
+      return ToD.MIDDAY;
+    } else if(15 <= hour && hour < 19) {
+      return ToD.EVENING;
+    } else {
+      return ToD.NIGHT;
+    }
+  }
 
-  int get hashCode => hash4(tod, date.year, date.month, date.day);
+  void setToD() {
+    tod = getToD(dt.hour);
+  }
+
+  bool operator ==(o) => o is Time && this.dt == o.dt;
+
+  int get hashCode => dt.hashCode;
 }
 
 class Pill {
-  String _desc;
-  int _pillCount;
-  Map<Time, PillType> _calendar;
+  Prescription master;
+  DateTime time;
+  ToD tod;
+  PillType status;
 
-  Pill(this._desc, this._calendar);
+  Pill(this.time) {
+    this.status = PillType.STD;
+    this.tod = Time.getToD(time.hour);
+  }
+}
 
-  void setType(Time time, PillType type) {
-    _calendar[time] = type;
+class Prescription {
+  Map<DateTime, Pill> pills;
+  String desc;
+  String notes;
+
+  Prescription(this.desc, {this.notes, List<Pill> pills}) {
+    this.pills = new Map();
+    for(Pill p in pills) {
+      this.pills.putIfAbsent(p.time, (() => p));
+      p.master = this;
+    }
   }
 
-  PillType getType(Time time) {
-    return _calendar[time];
-  }
-
-  String getDesc() {
-    return _desc;
-  }
-
-  void pushToDb() {
-    //to be implemented
-  }
-
-  void pullFromDb() {
-    //to be implemented
+  Pill getPill(DateTime date, ToD tod) {
+    print(tod);
+    print(pills);
+    for(DateTime t in pills.keys) {
+      if(Time.getToD(t.hour) == tod && date.year == t.year &&
+          date.month == t.month && date.day == t.day) {
+        return pills[t];
+      }
+    }
+    return null;
   }
 }

@@ -32,13 +32,13 @@ class _TempState extends State<AddPillsPage> {
     return false;
   }
 
-  Pill _getInfo(){
+  Prescription _getInfo(){
     //TODO - get this working for the new pill class
     String pillName = pillFieldController.text;
-    return new Pill(pillName, {});
+    return new Prescription(pillName);
   }
 
-  void _addToDataBase(Pill pill){
+  void _addToDataBase(Prescription pill){
     //TODO
     return;
   }
@@ -51,7 +51,7 @@ class _TempState extends State<AddPillsPage> {
       ));
       return;
     }
-    Pill pill = _getInfo();
+    Prescription pill = _getInfo();
     _addToDataBase(pill);
   }
 
