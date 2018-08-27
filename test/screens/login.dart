@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mediroo/screens.dart' show LoginPage;
+import 'package:mediroo/screens.dart' show LoginPage, HomePage;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -40,6 +40,22 @@ void main() {
     await tester.pump();
   });
 
+  testWidgets('Login button', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    LoginPage widget = new LoginPage();
+    await tester.pumpWidget(buildTestableWidget(widget));
+
+    expect(find.byKey(Key("login_button")), findsOneWidget);
+  });
+
+  testWidgets('Forgot password', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    LoginPage widget = new LoginPage();
+    await tester.pumpWidget(buildTestableWidget(widget));
+
+    expect(find.byKey(Key("forgot_password")), findsOneWidget);
+  });
+
   testWidgets('Change Page', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     LoginPage widget = new LoginPage();
@@ -48,8 +64,8 @@ void main() {
     expect(find.byKey(Key("login_logo")), findsOneWidget);
 
     await tester.tap(find.byKey(Key('login_button')));
-    await tester.pump(const Duration(milliseconds: 1000));
+    await tester.pump(const Duration(milliseconds: 3000));
 
-//    expect(find.byKey(Key("login_logo")), findsNothing);
+    expect(find.byType(HomePage), findsOneWidget);
   });
 }
