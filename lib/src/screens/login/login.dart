@@ -71,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     );
 
     final forgotLabel = FlatButton(
+      key: Key('forgot_password'),
       child: Text(
         'Forgot password?',
         style: TextStyle(color: Colors.black54),
