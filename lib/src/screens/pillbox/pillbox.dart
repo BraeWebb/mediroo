@@ -23,6 +23,32 @@ class Pillbox extends StatelessWidget {
         ),
         body: new Center(
           child: new _PillboxGrid(pills, date),
+        ),
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PillInfo())
+            );
+          },
+          tooltip: "",
+          child: new Icon(Icons.info_outline),
+        )
+    );
+  }
+}
+
+class PillInfo extends StatelessWidget {
+
+  PillInfo({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context){
+    return Scaffold(
+        appBar: AppBar(
+          title: new Text("Prescription Info"),
+        ),
+        body: Center(
         )
     );
   }
