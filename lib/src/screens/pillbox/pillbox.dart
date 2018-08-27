@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import '../../../screens.dart';
+import 'package:mediroo/screens.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Screen that displays data from the [PillboxModel] in a grid.
