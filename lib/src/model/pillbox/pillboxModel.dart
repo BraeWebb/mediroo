@@ -1,6 +1,5 @@
-/// Model class for basic pillbox functionality
+import 'package:quiver/core.dart';
 
-/// Represents the status of a Pill
 enum PillType {
   STD, // standard pill icon
   NULL, // empty pill icon
@@ -8,7 +7,6 @@ enum PillType {
   MISSED // cross icon
 }
 
-/// The time of day a pill is due at
 enum ToD {
   MORNING,
   MIDDAY,
@@ -16,16 +14,12 @@ enum ToD {
   NIGHT
 }
 
-/// A class containing useful time-based methods
-///
-/// This was aimed to be expanded however it might be best to merge this
-///   with another class
 class Time {
+  ToD tod;
+  DateTime dt;
 
-  /// Returns the time of day associated with a specific hour
-  ///
-  /// @param [hour] (int) : the hour to get the ToD from
-  /// @return (ToD) : the time of day associated with the given hour
+  Time(this.dt, this.tod);
+
   static ToD getToD(int hour) {
     if(0 <= hour && hour < 10) {
       return ToD.MORNING;
@@ -37,35 +31,33 @@ class Time {
       return ToD.NIGHT;
     }
   }
+
+  void setToD() {
+    tod = getToD(dt.hour);
+  }
+
+  bool operator ==(o) => o is Time && this.dt == o.dt;
+
+  int get hashCode => dt.hashCode;
 }
 
-/// Represents a pill in a pillbox at a certain time
 class Pill {
-  Prescription master; // the prescription this pill is a part of
-  DateTime time; // the time this pill needs to be taken
-  ToD tod; // the ToD this pill needs to be taken (generated when initialized)
-  PillType status; // the current taken status of the pill
+  Prescription master;
+  DateTime time;
+  ToD tod;
+  PillType status;
 
-  /// Constructor for a new Pill
-  ///
-  /// @param [time] (DateTime) : the date/time this pill needs to be taken at
   Pill(this.time) {
     this.status = PillType.STD;
     this.tod = Time.getToD(time.hour);
   }
 }
 
-/// Represents a prescription of multiple pills
 class Prescription {
-  Map<DateTime, Pill> pills; // a mapping of times to pill objects
-  String desc; // the name/description of the pill to be taken
-  String notes; // notes about the prescription left by the GP
+  Map<DateTime, Pill> pills;
+  String desc;
+  String notes;
 
-  /// Constructor for a new Prescription
-  ///
-  /// @param [desc] (String) : the name of the pill
-  /// @optional @param [notes] (String) : GP notes
-  /// @optional @param [pills] (List<Pill>) : the pills held by this prescription
   Prescription(this.desc, {this.notes, List<Pill> pills}) {
     this.pills = new Map();
     for(Pill p in pills) {
@@ -74,12 +66,6 @@ class Prescription {
     }
   }
 
-  /// Returns the pill stored at a specific date at the time of day
-  ///
-  /// @param [date] (DateTime) : the date the pill is taken at
-  ///                             (NOTE: the time-based fields of this object are ignored)
-  /// @param [tod] (ToD) : the time of day the pill is taken at
-  /// @return (Pill) : the pill at the given date/time, null if there is none
   Pill getPill(DateTime date, ToD tod) {
     print(tod);
     print(pills);
