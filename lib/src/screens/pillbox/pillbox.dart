@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import '../../../screens.dart';
+import 'package:mediroo/widgets.dart';
+import 'package:mediroo/util.dart' show getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Screen that displays data from the [PillboxModel] in a grid.
@@ -49,6 +51,7 @@ class PillInfo extends StatelessWidget {
           title: new Text("Prescription Info"),
         ),
         body: Center(
+          child: new UserID()
         )
     );
   }
@@ -71,6 +74,12 @@ class _GridState extends State<_PillboxGrid> {
   List<Widget> grid;
 
   _GridState(this.pills, this.date) {
+    getUserPills().forEach((Prescription prescription) {
+      pills.add(prescription);
+      setState(() {
+        buildGrid();
+      });
+    });
     buildGrid();
   }
 
