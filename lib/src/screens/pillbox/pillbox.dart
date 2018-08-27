@@ -28,7 +28,7 @@ class Pillbox extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PillInfo())
+              MaterialPageRoute(builder: (context) => PillInfo(this.pills))
             );
           },
           tooltip: "",
@@ -40,7 +40,25 @@ class Pillbox extends StatelessWidget {
 
 class PillInfo extends StatelessWidget {
 
-  PillInfo({Key key}) : super(key: key);
+
+  final List<Prescription> pills;
+//  PillInfo(this.pills, {Key key}) : super(key: key);
+  PillInfo(this.pills) {
+//      buildList();
+  }
+
+
+
+//  void buildList() {
+//    grid = new List();
+//    for (int i = 0; i < pills.length; i++) {
+//      ListTile row = new ListTile(
+//        leading: Icon(FontAwesomeIcons.capsules),
+//        title: Text(pills[i].),
+//      );
+//      grid.add(row);
+//    }
+//  }
 
   @override
   Widget build(BuildContext context){
@@ -48,8 +66,28 @@ class PillInfo extends StatelessWidget {
         appBar: AppBar(
           title: new Text("Prescription Info"),
         ),
-        body: Center(
-        )
+        body: ListView.builder(
+          itemCount: pills.length,
+          itemBuilder: (context, index) {
+            final pill = pills[index];
+
+            String timeToTake = "";
+            void addToString(key, value) {
+              DateTime time = key;
+              timeToTake += "Take this pill at " + time.hour.toString() +
+                  ":00 \n";
+            }
+            pills[index].pills.forEach(addToString);
+
+            return ListTile(
+              leading: Icon(FontAwesomeIcons.capsules),
+              title: Text(pill.desc),
+              subtitle: Text(timeToTake),
+              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
+
+            );
+          },
+        ),
     );
   }
 }
