@@ -202,6 +202,10 @@ class _PillDesc extends StatelessWidget {
 
   _PillDesc(this.prescription, {Key key}) : super(key: key);
 
+  void prescriptionInfo() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return new InkWell(
@@ -211,6 +215,14 @@ class _PillDesc extends StatelessWidget {
               child: new Text(prescription.desc) //replace with image?
           )
       ),
+      onTap: () {
+        List<Prescription> pills = new List();
+        pills.add(prescription);
+        Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PillInfo(pills))
+        );
+      },
     );
   }
 }
