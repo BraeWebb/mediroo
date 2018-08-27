@@ -36,3 +36,17 @@ Stream<Prescription> getUserPills() async* {
     }
   }
 }
+
+void addPrescription(Prescription prescription) async {
+  String uuid = await currentUUID();
+
+  CollectionReference collection = Firestore.instance.collection('pills/users/' + uuid);
+
+  DocumentReference prescriptionDocument = collection.document(prescription.desc);
+  prescriptionDocument.setData({
+    'name': prescription.desc,
+    'description': prescription.desc,
+    'notes': prescription.notes,
+    'pills': prescription.getPills()
+  });
+}
