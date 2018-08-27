@@ -91,4 +91,11 @@ class Prescription {
     }
     return null;
   }
+
+  List<DateTime> getPills() {
+    return new List.from(pills.keys);
+  }
+
+  bool operator ==(o) => o is Prescription && desc == o.desc;
+  int get hashCode => desc.hashCode;
 }
