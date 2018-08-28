@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mediroo/src/screens/homepage/homepage.dart';
-import 'package:mediroo/src/screens/database/database.dart';
+import 'package:mediroo/screens.dart' show HomePage, DebugPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
@@ -77,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        Navigator.of(context).pushReplacementNamed(DatabaseTestPage.tag);
+        Navigator.of(context).pushReplacementNamed(DebugPage.tag);
       },
     );
 
