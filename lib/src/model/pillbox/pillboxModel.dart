@@ -58,6 +58,7 @@ class Pill {
 /// Represents a prescription of multiple pills
 class Prescription {
   Map<DateTime, Pill> pills; // a mapping of times to pill objects
+  double frequency;  // how many days per pill
   String desc; // the name/description of the pill to be taken
   String notes; // notes about the prescription left by the GP
 
