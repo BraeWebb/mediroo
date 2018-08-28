@@ -25,6 +25,7 @@ class _TempState extends State<AddPillsPage> {
   ValueChanged<Text> val;
   double frequency = 0.0;
   final pillFieldController = TextEditingController();
+  var _globalKey = new GlobalKey<ScaffoldState>();
 
 
   bool _isFormComplete(){
@@ -49,7 +50,7 @@ class _TempState extends State<AddPillsPage> {
   void _addPill(){
     if (!_isFormComplete()){
       //TODO this doesn't work properly
-        Scaffold.of(this.context).showSnackBar(new SnackBar(
+        _globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("please complete the form properly"),
       ));
       return;
@@ -71,10 +72,13 @@ class _TempState extends State<AddPillsPage> {
     // TODO: implement build
     //this.context = context.currentContext();
     items = new List<DropdownMenuItem<double>>();
+
+    items.add(new  DropdownMenuItem(child: new Text('Please select a frequency'), value: 0.0));
     items.add(new  DropdownMenuItem(child: new Text('daily'), value: 1.0));
     items.add(new  DropdownMenuItem(child: new Text('weekly'), value: 7.0));
     items.add(new  DropdownMenuItem(child: new Text('fortnightly'), value: 14.0));
     return this.scaffold =  new Scaffold (
+      key: _globalKey,
         appBar: new AppBar(
           title: new Text(title),
         ),
