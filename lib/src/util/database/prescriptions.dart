@@ -1,32 +1,26 @@
-/// Utilities related to user accounts
+/// Interactions between local Prescription models and the database
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:mediroo/model.dart';
+import 'package:mediroo/model.dart' show Prescription, Pill;
+import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 
-/// Get the User UID for the user currently logged in
-Future<String> currentUUID() async {
-  Stream<QuerySnapshot> snapshots = Firestore.instance.collection('tests').snapshots();
 
-  await for (var snapshot in snapshots) {
-    DocumentSnapshot lastDocument = snapshot.documents.last;
-    return lastDocument.data['user'];
-  }
-
-  // default to test user account
-  return "jRTDHRTTOYf3GvN6xevmnu2Ok9o2";
-}
-
-/// Generate all the prescriptions for the current user
+/// Stream of the prescriptions associated with the current user.
+///
+/// Updated from the database automatically using a stream
 Stream<List<Prescription>> getUserPills() async* {
   String uuid = await currentUUID();
 
+  // get database snapshots
   Stream<QuerySnapshot> snapshots = Firestore.instance.collection('pills/users/' + uuid).snapshots();
 
+  // asynchronously update when database updates
   await for (QuerySnapshot snapshot in snapshots) {
     List<Prescription> prescriptions = new List();
 
+    // build a list of prescriptions from database data
     for (DocumentSnapshot document in snapshot.documents) {
       List<Pill> pills = new List();
 
@@ -41,6 +35,8 @@ Stream<List<Prescription>> getUserPills() async* {
   }
 }
 
+
+/// Add a new [Prescription] to the database
 void addPrescription(Prescription prescription) async {
   String uuid = await currentUUID();
 
