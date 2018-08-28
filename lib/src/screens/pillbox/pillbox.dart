@@ -123,26 +123,6 @@ class _GridState extends State<_PillboxGrid> {
     buildGrid();
   }
 
-  /// Adds a dummy row to the grid
-  /// TODO: replace this with a call to the addpills page
-  void addRow() {
-    String desc = "New pill";
-    DateTime now = DateTime.now();
-    DateTime dt1 = new DateTime(now.year, now.month, now.day, 8, 0);
-    DateTime dt2 = new DateTime(now.year, now.month, now.day, 18, 0);
-
-    Pill pill1 = new Pill(dt1);
-    Pill pill2 = new Pill(dt2);
-
-    Prescription pre = new Prescription(desc, pills: [pill1, pill2]);
-    pills.add(pre);
-    addPrescription(pre);
-
-    setState(() {
-      buildGrid();
-    });
-  }
-
   /// Builds the grid from the model
   void buildGrid() {
     grid = new List(pills.length * 5 + 6);
@@ -186,7 +166,12 @@ class _GridState extends State<_PillboxGrid> {
                     FontAwesomeIcons.plusCircle, color: Colors.teal.shade300)
             )
         ),
-        onTap: addRow,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddPillsPage())
+          );
+        },
       ),
     );
     }
