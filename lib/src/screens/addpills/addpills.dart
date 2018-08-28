@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../model.dart';
-import '../../../screens.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:mediroo/model.dart';
+import 'package:mediroo/util.dart' show addPrescription;
 
 /// Homepage for the Mediroo Application.
 ///
@@ -37,14 +37,9 @@ class _TempState extends State<AddPillsPage> {
 
   Prescription _getInfo(){
     String pillName = pillFieldController.text;
-    var temp = new Prescription(pillName);
+    var temp = new Prescription(pillName, pills:[]);
     temp.frequency = frequency;
     return temp;
-  }
-
-  void _addToDataBase(Prescription pill){
-    //TODO
-    return;
   }
 
   void _addPill(){
@@ -56,7 +51,8 @@ class _TempState extends State<AddPillsPage> {
       return;
     }
     Prescription pill = _getInfo();
-    _addToDataBase(pill);
+    addPrescription(pill);
+    Navigator.pop(context);
   }
 
 
