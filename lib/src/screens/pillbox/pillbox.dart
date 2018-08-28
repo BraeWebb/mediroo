@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import '../../../screens.dart';
@@ -112,7 +113,8 @@ class _GridState extends State<_PillboxGrid> {
   _GridState(this.pills, this.date) {
     // Sorry about this, not sure how Grid words
     pills = new List();
-    getUserPills().forEach((Prescription prescription) {
+    Stream<Prescription> pillStream = getUserPills();
+    pillStream.listen((Prescription prescription) {
       if (!pills.contains(prescription)) {
         pills.add(prescription);
         setState(() {

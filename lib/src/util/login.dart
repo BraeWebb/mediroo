@@ -24,7 +24,7 @@ Stream<Prescription> getUserPills() async* {
 
   Stream<QuerySnapshot> snapshots = Firestore.instance.collection('pills/users/' + uuid).snapshots();
 
-  await for (var snapshot in snapshots) {
+  await for (QuerySnapshot snapshot in snapshots) {
     for (DocumentSnapshot document in snapshot.documents) {
       List<Pill> pills = new List();
 
