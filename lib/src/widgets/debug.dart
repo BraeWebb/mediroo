@@ -11,8 +11,7 @@ class DebugInfo extends StatelessWidget {
       shrinkWrap: true,
       children: <Widget>[
         new _UserID(),
-        new _UserPills(),
-//        new _UserPillsNoStream()
+        new _UserPills()
       ],
     );
   }
@@ -20,8 +19,6 @@ class DebugInfo extends StatelessWidget {
 
 /// Renders the UUID for the current user
 class _UserID extends StatelessWidget {
-
-  _UserID({Key key}) : super(key: key);
 
   List<Prescription> prescriptions = new List();
 
@@ -48,32 +45,6 @@ class _UserID extends StatelessWidget {
 /// Displays the names of all the pills in the current users pillbox
 class _UserPills extends StatelessWidget {
 
-  _UserPills({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return new StreamBuilder<Prescription>(
-      stream: getUserPills(),
-      builder: (BuildContext context, AsyncSnapshot<Prescription> snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return new Text('Awaiting result...');
-          default:
-            if (snapshot.hasError)
-              return new Text('Error: ${snapshot.error}');
-            else
-              return new Text(snapshot.data.toString());
-        }
-      },
-    );
-  }
-}
-
-/// Displays the names of all the pills in the current users pillbox
-class _UserPillsNoStream extends StatelessWidget {
-
-  _UserPillsNoStream({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
@@ -83,12 +54,11 @@ class _UserPillsNoStream extends StatelessWidget {
         if (snapshot.hasError) return const Text('Error');
         return new ListView.builder(
             shrinkWrap: true,
-            itemCount: snapshot.data.documents.length,
+            itemCount: snapshot.data.length,
             padding: const EdgeInsets.only(top: 10.0),
             itemExtent: 25.0,
             itemBuilder: (context, index) {
-              Prescription ds = snapshot.data.documents[index];
-              print(ds);
+              Prescription ds = snapshot.data[index];
               return new Text("${ds.desc}");
             }
         );

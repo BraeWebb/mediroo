@@ -19,12 +19,14 @@ Future<String> currentUUID() async {
 }
 
 /// Generate all the prescriptions for the current user
-Stream<Prescription> getUserPills() async* {
+Stream<List<Prescription>> getUserPills() async* {
   String uuid = await currentUUID();
 
   Stream<QuerySnapshot> snapshots = Firestore.instance.collection('pills/users/' + uuid).snapshots();
 
   await for (QuerySnapshot snapshot in snapshots) {
+    List<Prescription> prescriptions = new List();
+
     for (DocumentSnapshot document in snapshot.documents) {
       List<Pill> pills = new List();
 
@@ -32,8 +34,10 @@ Stream<Prescription> getUserPills() async* {
         pills.add(new Pill(time));
       }
 
-      yield new Prescription(document.data['name'], pills: pills);
+      prescriptions.add(new Prescription(document.data['name'], pills: pills));
     }
+
+    yield prescriptions;
   }
 }
 
