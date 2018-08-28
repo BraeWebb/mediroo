@@ -112,3 +112,113 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 }
+
+
+class ToDGrid extends StatefulWidget {
+  @override
+  ToDGridState createState() => new ToDGridState();
+}
+
+class ToDGridState extends State<ToDGrid> {
+  List<bool> status;
+
+  Color grey = Colors.grey.shade300;
+  Color green = Colors.green.shade300;
+  Color greyAccent = Colors.grey.shade100;
+  Color greenAccent = Colors.green.shade100;
+
+  List<Color> colours;
+  List<Color> accents;
+  List<Image> icons;
+
+  ToDGridState() {
+    status = [false, false, false, false];
+    icons = [null, null, null, null];
+    colours = [grey, grey, grey, grey];
+    accents = [greyAccent, greyAccent, greyAccent, greyAccent];
+
+    icons = [
+      new Image.asset("assets/wi-sunrise.png", color: accents[0]),
+      new Image.asset("assets/wi-day-sunny.png", color: accents[1]),
+      new Image.asset("assets/wi-sunset.png", color: accents[2]),
+      new Image.asset("assets/wi-night-clear.png", color: accents[3])
+    ];
+  }
+
+  void tap0() {
+    tap(0);
+  }
+
+  void tap1() {
+    tap(1);
+  }
+
+  void tap2() {
+    tap(2);
+  }
+
+  void tap3() {
+    tap(3);
+  }
+
+  void tap(int index) {
+    setState(() {
+      if(status[index]) {
+        status[index] = false;
+        colours[index] = grey;
+        accents[index] = greyAccent;
+      } else {
+        status[index] = true;
+        colours[index] = green;
+        accents[index] = greenAccent;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> grid = new List(4);
+    grid[0] = new GridTile(
+      child: new InkWell(
+        child: new Card(
+          child: icons[0],
+          color: colours[0]
+        ),
+        onTap: tap0
+      ),
+    );
+    grid[1] = new GridTile(
+      child: new InkWell(
+          child: new Card(
+              child: icons[1],
+              color: colours[1]
+          ),
+          onTap: tap1
+      ),
+    );
+    grid[2] = new GridTile(
+      child: new InkWell(
+          child: new Card(
+              child: icons[2],
+              color: colours[2]
+          ),
+          onTap: tap2
+      ),
+    );
+    grid[3] = new GridTile(
+      child: new InkWell(
+          child: new Card(
+              child: icons[3],
+              color: colours[3]
+          ),
+          onTap: tap2
+      ),
+    );
+
+    return new GridView.count(
+        crossAxisCount: 4,
+        children: grid
+    );
+  }
+
+}
