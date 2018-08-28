@@ -23,7 +23,7 @@ class _TempState extends State<AddPillsPage> {
   List<DropdownMenuItem<double>> items = new List<DropdownMenuItem<double>>();
   Scaffold scaffold;
   ValueChanged<Text> val;
-  double frequency = 0.0;
+  double frequency = null;
   final pillFieldController = TextEditingController();
   var _globalKey = new GlobalKey<ScaffoldState>();
 
@@ -73,10 +73,9 @@ class _TempState extends State<AddPillsPage> {
     //this.context = context.currentContext();
     items = new List<DropdownMenuItem<double>>();
 
-    items.add(new  DropdownMenuItem(child: new Text('Please select a frequency'), value: 0.0));
-    items.add(new  DropdownMenuItem(child: new Text('daily'), value: 1.0));
-    items.add(new  DropdownMenuItem(child: new Text('weekly'), value: 7.0));
-    items.add(new  DropdownMenuItem(child: new Text('fortnightly'), value: 14.0));
+    items.add(new  DropdownMenuItem(child: new Text('Daily'), value: 1.0));
+    items.add(new  DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
+    items.add(new  DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
     return this.scaffold =  new Scaffold (
       key: _globalKey,
         appBar: new AppBar(
@@ -86,11 +85,14 @@ class _TempState extends State<AddPillsPage> {
           child: new Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new Text(
-                'What pill needs to be Added:',
-              ),
-              new TextField(
-                controller: pillFieldController
+              new Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child: new TextField(
+                  controller: pillFieldController,
+                  decoration: InputDecoration(
+                      hintText: 'Pill Name'
+                  ),
+                )
               ),
               new Text(
                   '\nHow often does this need to be taken?'
@@ -98,7 +100,7 @@ class _TempState extends State<AddPillsPage> {
               new DropdownButton(
                 value: frequency,
                 items: items,
-                hint: new Text("select a frequency"),
+                hint: new Text("Please select a frequency"),
                 onChanged: (val) {
                   frequency = val;
                   setState(() {
@@ -109,7 +111,7 @@ class _TempState extends State<AddPillsPage> {
               new Text(
                   '\n'
               ),
-              new RaisedButton(onPressed: _addPill, child: new Text('add pill'))
+              new RaisedButton(onPressed: _addPill, child: new Text('Add Pill'))
             ],
           ),
         )
