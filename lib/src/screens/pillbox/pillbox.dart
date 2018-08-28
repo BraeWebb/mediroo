@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import '../../../screens.dart';
-import 'package:mediroo/util.dart' show getUserPills, addPrescription;
+import 'package:mediroo/util.dart' show getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Screen that displays data from the [PillboxModel] in a grid.
