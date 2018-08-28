@@ -12,6 +12,7 @@ class Pillbox extends StatelessWidget {
 
   /// The [title] to be displayed in the menu bar.
   final String title;
+  static String tag = "Pillbox";
   /// A [model] representing a pillbox
   final List<Prescription> pills;
   final DateTime date;
