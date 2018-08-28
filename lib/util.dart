@@ -1,4 +1,5 @@
 /// Utility code used throughout the project
 
-export 'src/util/test_util.dart';
-export 'src/util/login.dart';
+export 'src/util/database/prescriptions.dart';
+export 'src/util/database/user.dart';
+export 'src/util/testing.dart';
