@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import '../../../screens.dart';
 import 'package:mediroo/util.dart' show getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'add_pills.dart' show AddPillsPage;
+import 'pill_info.dart' show PillTakeInfo;
+import 'prescription_info.dart' show PrescriptionInfo;
+import 'prescription_list.dart' show PrescriptionList;
 
 /// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
@@ -31,66 +35,12 @@ class Pillbox extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PillInfo(this.pills))
+              MaterialPageRoute(builder: (context) => PrescriptionList(this.pills))
             );
           },
           tooltip: "",
           child: new Icon(Icons.info_outline),
         )
-    );
-  }
-}
-
-class PillInfo extends StatelessWidget {
-
-
-  final List<Prescription> pills;
-//  PillInfo(this.pills, {Key key}) : super(key: key);
-  PillInfo(this.pills) {
-//      buildList();
-  }
-
-
-
-//  void buildList() {
-//    grid = new List();
-//    for (int i = 0; i < pills.length; i++) {
-//      ListTile row = new ListTile(
-//        leading: Icon(FontAwesomeIcons.capsules),
-//        title: Text(pills[i].),
-//      );
-//      grid.add(row);
-//    }
-//  }
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-        appBar: AppBar(
-          title: new Text("Prescription Info"),
-        ),
-        body: ListView.builder(
-          itemCount: pills.length,
-          itemBuilder: (context, index) {
-            final pill = pills[index];
-
-            String timeToTake = "";
-            void addToString(key, value) {
-              DateTime time = key;
-              timeToTake += "Take this pill at " + time.hour.toString() +
-                  ":00 \n";
-            }
-            pills[index].pills.forEach(addToString);
-
-            return ListTile(
-              leading: Icon(FontAwesomeIcons.capsules),
-              title: Text(pill.desc),
-              subtitle: Text(timeToTake),
-              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
-
-            );
-          },
-        ),
     );
   }
 }
@@ -118,14 +68,14 @@ class _GridState extends State<_PillboxGrid> {
     pillStream.listen((List<Prescription> prescription) {
       pills = prescription;
       setState(() {
-        buildGrid();
+
       });
     });
-    buildGrid();
   }
 
   /// Builds the grid from the model
-  void buildGrid() {
+  List<Widget> buildGrid() {
+    List<Widget> grid = new List();
     grid = new List(pills.length * 5 + 6);
     List<Image> icons = [
       new Image.asset("assets/wi-sunrise.png"),
@@ -175,13 +125,14 @@ class _GridState extends State<_PillboxGrid> {
         },
       ),
     );
+    return grid;
     }
 
   @override
   Widget build(BuildContext context) {
     return new GridView.count(
       crossAxisCount: 5,
-      children: grid
+      children: buildGrid()
     );
   }
 }
@@ -210,7 +161,7 @@ class _PillDesc extends StatelessWidget {
         pills.add(prescription);
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PillInfo(pills))
+            MaterialPageRoute(builder: (context) => PrescriptionInfo(pills))
         );
       },
     );
