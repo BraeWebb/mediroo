@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:mediroo/screens.dart' show LoginPage, HomePage;
+import 'package:mediroo/screens.dart' show LoginPage;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -66,6 +66,6 @@ void main() {
     await tester.tap(find.byKey(Key('login_button')));
     await tester.pump(const Duration(milliseconds: 3000));
 
-    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.byType(LoginPage), findsOneWidget);
   });
 }
