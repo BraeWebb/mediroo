@@ -20,22 +20,25 @@ class _TempState extends State<AddPillsPage> {
   final String title = "Add Pills";
   static String tag = "Addpill";
 
-  List<DropdownMenuItem<Text>> items = new List<DropdownMenuItem<Text>>();
-  //BuildContext context;
+  List<DropdownMenuItem<double>> items = new List<DropdownMenuItem<double>>();
   Scaffold scaffold;
   ValueChanged<Text> val;
+  double frequency = 0.0;
   final pillFieldController = TextEditingController();
 
 
   bool _isFormComplete(){
-    //TODO
-    return false;
+    if (pillFieldController.text == "" || frequency == 0.0){
+      return false;
+    }
+    return true;
   }
 
   Prescription _getInfo(){
-    //TODO - get this working for the new pill class
     String pillName = pillFieldController.text;
-    return new Prescription(pillName);
+    var temp = new Prescription(pillName);
+    temp.frequency = frequency;
+    return temp;
   }
 
   void _addToDataBase(Prescription pill){
@@ -67,10 +70,10 @@ class _TempState extends State<AddPillsPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     //this.context = context.currentContext();
-    items = new List<DropdownMenuItem<Text>>();
-    items.add(new  DropdownMenuItem(child: new Text('daily')));
-    items.add(new  DropdownMenuItem(child: new Text('weekly')));
-    items.add(new  DropdownMenuItem(child: new Text('fortnightly')));
+    items = new List<DropdownMenuItem<double>>();
+    items.add(new  DropdownMenuItem(child: new Text('daily'), value: 1.0));
+    items.add(new  DropdownMenuItem(child: new Text('weekly'), value: 7.0));
+    items.add(new  DropdownMenuItem(child: new Text('fortnightly'), value: 14.0));
     return this.scaffold =  new Scaffold (
         appBar: new AppBar(
           title: new Text(title),
@@ -89,7 +92,15 @@ class _TempState extends State<AddPillsPage> {
                   '\nHow often does this need to be taken?'
               ),
               new DropdownButton(
-                  items: items, onChanged: val
+                value: frequency,
+                items: items,
+                hint: new Text("select a frequency"),
+                onChanged: (val) {
+                  frequency = val;
+                  setState(() {
+
+                  });
+                }
               ),
               new Text(
                   '\n'
