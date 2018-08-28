@@ -113,14 +113,12 @@ class _GridState extends State<_PillboxGrid> {
   _GridState(this.pills, this.date) {
     // Sorry about this, not sure how Grid words
     pills = new List();
-    Stream<Prescription> pillStream = getUserPills();
-    pillStream.listen((Prescription prescription) {
-      if (!pills.contains(prescription)) {
-        pills.add(prescription);
-        setState(() {
-          buildGrid();
-        });
-      }
+    Stream<List<Prescription>> pillStream = getUserPills();
+    pillStream.listen((List<Prescription> prescription) {
+      pills = prescription;
+      setState(() {
+        buildGrid();
+      });
     });
     buildGrid();
   }
