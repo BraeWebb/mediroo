@@ -7,12 +7,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 Future<String> currentUUID() async {
   Stream<QuerySnapshot> snapshots = Firestore.instance.collection('tests').snapshots();
 
-  await for (var snapshot in snapshots) {
-    DocumentSnapshot lastDocument = snapshot.documents.last;
-    return lastDocument.data['user'];
-  }
+  QuerySnapshot snapshot = await snapshots.first;
+  DocumentSnapshot lastDocument = snapshot.documents.last;
 
-  // default to test user account
-  return "jRTDHRTTOYf3GvN6xevmnu2Ok9o2";
+  if (lastDocument.data.containsKey('user')) {
+    return lastDocument.data['user'];
+  } else {
+    // default to test user account
+    return "jRTDHRTTOYf3GvN6xevmnu2Ok9o2";
+  }
 }
 
