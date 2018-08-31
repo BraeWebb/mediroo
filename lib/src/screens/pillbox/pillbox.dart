@@ -59,7 +59,6 @@ class _PillboxGrid extends StatefulWidget {
 class _GridState extends State<_PillboxGrid> {
   List<Prescription> pills;
   DateTime date;
-  List<Widget> grid;
 
   _GridState(this.pills, this.date) {
     // Sorry about this, not sure how Grid words
@@ -75,8 +74,7 @@ class _GridState extends State<_PillboxGrid> {
 
   /// Builds the grid from the model
   List<Widget> buildGrid() {
-    List<Widget> grid = new List();
-    grid = new List(pills.length * 5 + 6);
+    List<Widget> grid = new List(pills.length * 5 + 6);
     List<Image> icons = [
       new Image.asset("assets/wi-sunrise.png"),
       new Image.asset("assets/wi-day-sunny.png"),
