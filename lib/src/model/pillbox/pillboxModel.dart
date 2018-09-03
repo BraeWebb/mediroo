@@ -82,8 +82,6 @@ class Prescription {
   /// @param [tod] (ToD) : the time of day the pill is taken at
   /// @return (Pill) : the pill at the given date/time, null if there is none
   Pill getPill(DateTime date, ToD tod) {
-    print(tod);
-    print(pills);
     for(DateTime t in pills.keys) {
       if(Time.getToD(t.hour) == tod && date.year == t.year &&
           date.month == t.month && date.day == t.day) {

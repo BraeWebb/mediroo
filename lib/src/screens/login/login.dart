@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mediroo/src/screens/homepage/homepage.dart';
-import 'package:mediroo/src/screens/database/database.dart';
+import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
@@ -62,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            Navigator.of(context).pushReplacementNamed(HomePage.tag);
+            Navigator.of(context).pushReplacementNamed(Pillbox.tag);
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
@@ -77,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        Navigator.of(context).pushReplacementNamed(DatabaseTestPage.tag);
+        Navigator.of(context).pushReplacementNamed(DebugPage.tag);
       },
     );
 

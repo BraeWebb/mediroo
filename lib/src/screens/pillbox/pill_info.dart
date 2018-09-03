@@ -31,8 +31,6 @@ class _PillTakeState extends State<PillTakeInfo> {
       new Image.asset("assets/wi-night-clear.png")
     ];
 
-    print(icons[ToD.values.indexOf(pill.tod)]);
-
     return icons[ToD.values.indexOf(pill.tod)];
   }
 
