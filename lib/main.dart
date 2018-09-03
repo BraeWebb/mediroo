@@ -10,10 +10,11 @@ class MediRooApp extends StatelessWidget {
   static final String title = 'MediRoo';
 
   /// The structure of [MediRooApp] mapping a route to a window widget.
+  /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(),
-    HomePage.tag: (context) => HomePage(title: title),
-    DatabaseTestPage.tag: (context) => DatabaseTestPage()
+    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox"),
+    DebugPage.tag: (context) => DebugPage()
   };
 
   /// Construct a material application based on the [routes] of the application.
