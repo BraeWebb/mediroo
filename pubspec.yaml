@@ -8,6 +8,7 @@ dependencies:
   font_awesome_flutter: ^8.0.1
   cloud_firestore: ^0.7.3
   firebase_core: ^0.2.2
+  firebase_analytics: ^1.0.3
 
 dev_dependencies:
   flutter_test:
