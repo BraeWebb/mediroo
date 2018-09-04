@@ -8,6 +8,7 @@ import 'add_pills.dart' show AddPillsPage;
 import 'pill_info.dart' show PillTakeInfo;
 import 'prescription_info.dart' show PrescriptionInfo;
 import 'prescription_list.dart' show PrescriptionList;
+import 'pill_list.dart' show PillList;
 
 /// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
@@ -33,9 +34,13 @@ class Pillbox extends StatelessWidget {
         ),
         floatingActionButton: new FloatingActionButton(
           onPressed: () {
-            Navigator.push(
+            /*Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => PrescriptionList(this.pills))
+            );*/
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => PillList(this.pills))
             );
           },
           tooltip: "",

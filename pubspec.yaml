@@ -36,6 +36,9 @@ flutter:
     - wi-sunset.png
     - wi-night-clear.png
     - full-logo.png
+    - sun.png
+    - sunrise.png
+    - sunset.png
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 
