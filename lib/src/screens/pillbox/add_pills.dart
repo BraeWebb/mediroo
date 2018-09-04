@@ -53,8 +53,7 @@ class _TempState extends State<AddPillsPage> {
     await analytics.logEvent(
       name: 'added_pill',
       parameters: <String, dynamic>{
-        'name': pill.desc,
-        'pills': pill.getPills()
+        'name': pill.desc
       }
     );
   }
