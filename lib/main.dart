@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'screens.dart';
 
@@ -15,6 +16,7 @@ class MediRooApp extends StatelessWidget {
 
   static FirebaseAnalytics analytics = new FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
+  final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
 
   /// The structure of [MediRooApp] mapping a route to a window widget.
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
@@ -28,6 +30,9 @@ class MediRooApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     analytics.logAppOpen();
+
+    _firebaseMessaging.requestNotificationPermissions(
+        const IosNotificationSettings(sound: true, badge: true, alert: true));
 
     return new MaterialApp(
       title: title,
