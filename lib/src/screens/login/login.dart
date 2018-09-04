@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
+
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
+  final FirebaseAnalytics analytics;
+
+  LoginPage({this.analytics}): super();
+
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState(analytics: this.analytics);
 }
 
 class _LoginPageState extends State<LoginPage> {
   final FocusNode focus = FocusNode();
+
+  final FirebaseAnalytics analytics;
+
+  _LoginPageState({this.analytics}): super();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
+            analytics.logLogin();
             Navigator.of(context).pushReplacementNamed(Pillbox.tag);
           },
           color: Colors.lightBlueAccent,

@@ -36,11 +36,11 @@ class Pillbox extends StatelessWidget {
           onPressed: () {
             /*Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => PrescriptionList(this.pills))
+              MaterialPageRoute(builder: (context) => PrescriptionList(this
+                      .pills))
             );*/
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PillList(this.pills))
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PillList(this.pills))
             );
           },
           tooltip: "",
@@ -67,10 +67,13 @@ class _GridState extends State<_PillboxGrid> {
 
   _GridState(this.pills, this.date) {
     // Sorry about this, not sure how Grid words
-    pills = new List();
+    //pills = new List();
     Stream<List<Prescription>> pillStream = getUserPills();
     pillStream.listen((List<Prescription> prescription) {
-      pills = prescription;
+      pills.clear();
+      pills.addAll(prescription);
+
+      //pills = prescription;
       setState(() {
 
       });

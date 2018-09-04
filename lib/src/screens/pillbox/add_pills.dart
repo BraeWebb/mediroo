@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show addPrescription;
@@ -19,6 +23,8 @@ class _TempState extends State<AddPillsPage> {
   /// The title to be displayed in the menu bar.
   final String title = "Add Pills";
   static String tag = "Addpill";
+
+  static FirebaseAnalytics analytics = new FirebaseAnalytics();
 
   List<DropdownMenuItem<double>> items = new List<DropdownMenuItem<double>>();
   Scaffold scaffold;
@@ -42,14 +48,26 @@ class _TempState extends State<AddPillsPage> {
     return temp;
   }
 
+  Future<Null> _sendAnalyticsEvent() async {
+    Prescription pill = _getInfo();
+    await analytics.logEvent(
+      name: 'added_pill',
+      parameters: <String, dynamic>{
+        'name': pill.desc
+      }
+    );
+  }
+
   void _addPill(){
     if (!_isFormComplete()){
       //TODO this doesn't work properly
         _globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("please complete the form properly"),
       ));
+      analytics.logEvent(name: "added_pill_error");
       return;
     }
+    _sendAnalyticsEvent();
     Prescription pill = _getInfo();
     addPrescription(pill);
     Navigator.pop(context);
