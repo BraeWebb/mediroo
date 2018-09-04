@@ -42,8 +42,7 @@ void addPrescription(Prescription prescription) async {
 
   CollectionReference collection = Firestore.instance.collection('pills/users/' + uuid);
 
-  DocumentReference prescriptionDocument = collection.document(prescription.desc);
-  prescriptionDocument.setData({
+  collection.add({
     'name': prescription.desc,
     'description': prescription.desc,
     'notes': prescription.notes,
