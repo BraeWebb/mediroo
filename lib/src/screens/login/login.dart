@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            analytics.logLogin();
+            analytics?.logLogin();
             Navigator.of(context).pushReplacementNamed(Pillbox.tag);
           },
           color: Colors.lightBlueAccent,
