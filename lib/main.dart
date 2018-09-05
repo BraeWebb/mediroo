@@ -21,7 +21,7 @@ class MediRooApp extends StatelessWidget {
   /// The structure of [MediRooApp] mapping a route to a window widget.
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
-    LoginPage.tag: (context) => LoginPage(),
+    LoginPage.tag: (context) => LoginPage(analytics: analytics),
     Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox"),
     DebugPage.tag: (context) => DebugPage()
   };
