@@ -30,7 +30,9 @@ class _TempState extends State<AddPillsPage> {
   Scaffold scaffold;
   ValueChanged<Text> val;
   double frequency = null;
+  TimeOfDay time;
   final pillFieldController = TextEditingController();
+  final ScriptCountController = TextEditingController();
   var _globalKey = new GlobalKey<ScaffoldState>();
 
 
@@ -81,6 +83,21 @@ class _TempState extends State<AddPillsPage> {
     super.dispose();
   }
 
+  Future<Null> _selectTime(BuildContext context) async {
+    TimeOfDay picked;
+      picked = await showTimePicker(
+          context: context,
+          initialTime:new TimeOfDay.now()
+      );
+
+    if (picked != null){
+      setState((){
+        this.time = picked;
+      });
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -108,13 +125,25 @@ class _TempState extends State<AddPillsPage> {
                   ),
                 )
               ),
+              new Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.0),
+                child:new TextField(
+                  decoration: new InputDecoration(
+                      labelText: "number of pills in perscription"
+                  ),
+                  keyboardType: TextInputType.number,
+                  controller: ScriptCountController,
+                )
+              ),
               new Text(
-                  '\nHow often does this need to be taken?'
+                  '\n'
               ),
               new DropdownButton(
                 value: frequency,
                 items: items,
-                hint: new Text("Please select a frequency"),
+                hint: new Text(
+                    "frequency of dose"
+                ),
                 onChanged: (val) {
                   frequency = val;
                   setState(() {
@@ -125,7 +154,22 @@ class _TempState extends State<AddPillsPage> {
               new Text(
                   '\n'
               ),
-              new RaisedButton(onPressed: _addPill, child: new Text('Add Pill'))
+              new RaisedButton(
+                child: new Text(
+                    this.time==null ? "When to take":"${this.time.hour}:${this.time.minute}"
+                ),
+                  onPressed: (){
+                    _selectTime(context);
+              }),
+              new Text(
+                  "\n"
+              ),
+              new RaisedButton(
+                  onPressed: _addPill,
+                  child: new Text(
+                      'Add Pill'
+                  )
+              ),
             ],
           ),
         )
