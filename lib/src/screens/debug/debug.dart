@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:mediroo/util.dart' show resetPassword;
+import 'package:mediroo/util.dart' show Auth;
 import 'package:mediroo/widgets.dart';
 
 /// Screen that should be used for general application testing.
@@ -15,6 +15,8 @@ class DebugPage extends StatelessWidget {
   static String tag = "Debug";
 
   TextEditingController reset = new TextEditingController();
+
+  Auth auth = new Auth();
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class DebugPage extends StatelessWidget {
               minWidth: 200.0,
               height: 42.0,
               onPressed: () {
-                resetPassword(reset.text);
+                auth.resetPassword(reset.text);
               },
               child: Text('Send Password Reset')
             )

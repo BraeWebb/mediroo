@@ -2,24 +2,29 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:mediroo/util.dart' show signIn;
+import 'package:mediroo/util.dart' show Auth;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
+  final Auth auth;
   final FirebaseAnalytics analytics;
 
-  LoginPage({this.analytics}): super();
+  LoginPage({this.analytics, this.auth}): super();
 
   @override
-  _LoginPageState createState() => _LoginPageState(analytics: this.analytics);
+  _LoginPageState createState() => _LoginPageState(
+      analytics: this.analytics,
+      auth: this.auth
+  );
 }
 
 class _LoginPageState extends State<LoginPage> {
   final FocusNode focus = FocusNode();
 
+  final Auth auth;
   final FirebaseAnalytics analytics;
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
@@ -27,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   String _emailError = null;
   String _passwordError = null;
 
-  _LoginPageState({this.analytics}): super();
+  _LoginPageState({this.analytics, this.auth}): super();
 
   String _validateEmail(String email) {
     if (email.isEmpty) {
@@ -115,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
               return;
             }
 
-            signIn(emailController.text, passwordController.text).then((String uid) {
+            auth.signIn(emailController.text, passwordController.text).then((String uid) {
               if (uid == null) {
                 passwordController.clear();
                 setState(() {
