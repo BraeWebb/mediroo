@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:mediroo/util.dart' show resetPassword;
 import 'package:mediroo/widgets.dart';
 
 /// Screen that should be used for general application testing.
 ///
 /// This screen will be removed in future.
 class DebugPage extends StatelessWidget {
-  const DebugPage({Key key}) : super(key: key);
+  DebugPage({Key key}) : super(key: key);
 
   final String title = "Debug";
   static String tag = "Debug";
+
+  TextEditingController reset = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +39,28 @@ class DebugPage extends StatelessWidget {
                   }
               );
             }),
-          new DebugInfo()
+          new DebugInfo(),
+          TextFormField(
+            key: Key('password_reset'),
+            keyboardType: TextInputType.emailAddress,
+            controller: reset,
+            decoration: InputDecoration(
+              hintText: 'Email',
+            )
+          ),
+          Material(
+            borderRadius: BorderRadius.circular(30.0),
+            shadowColor: Colors.lightBlueAccent.shade100,
+            elevation: 5.0,
+            child: MaterialButton(
+              minWidth: 200.0,
+              height: 42.0,
+              onPressed: () {
+                resetPassword(reset.text);
+              },
+              child: Text('Send Password Reset')
+            )
+          )
         ]
       )
     );
