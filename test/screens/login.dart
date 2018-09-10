@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:mediroo/util.dart' show MockAuth;
 import 'package:mediroo/screens.dart' show LoginPage, Pillbox;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
@@ -56,7 +57,7 @@ void main() {
     expect(find.byKey(Key("forgot_password")), findsOneWidget);
   });
 
-  testWidgets('Change Page', (WidgetTester tester) async {
+  testWidgets('Login Failure', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     LoginPage widget = new LoginPage();
     await tester.pumpWidget(buildTestableWidget(widget));
@@ -65,6 +66,21 @@ void main() {
 
     await tester.tap(find.byKey(Key('login_button')));
     await tester.pump(const Duration(milliseconds: 3000));
+
+    expect(find.byType(Pillbox), findsNothing);
+  });
+
+  testWidgets('Login Success', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    LoginPage widget = new LoginPage(auth: MockAuth(userId: 'test user'));
+    await tester.pumpWidget(buildTestableWidget(widget));
+    expect(find.byKey(Key("login_logo")), findsOneWidget);
+
+    await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
+    await tester.enterText(find.byKey(Key("password_field")), "mediroo");
+
+    await tester.tap(find.byKey(Key('login_button')));
+    await tester.pump(const Duration(milliseconds: 5000));
 
     expect(find.byType(Pillbox), findsOneWidget);
   });
