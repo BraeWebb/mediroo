@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
+import 'package:mediroo/util.dart' show signIn;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 
 /// Login page for the user.
@@ -20,8 +21,33 @@ class _LoginPageState extends State<LoginPage> {
   final FocusNode focus = FocusNode();
 
   final FirebaseAnalytics analytics;
+  final TextEditingController emailController = new TextEditingController();
+  final TextEditingController passwordController = new TextEditingController();
+
+  String _emailError = null;
+  String _passwordError = null;
 
   _LoginPageState({this.analytics}): super();
+
+  String _validateEmail(String email) {
+    if (email.isEmpty) {
+      return 'Please enter an email address';
+    }
+
+    if (!email.contains('@')) {
+      return 'Email address invalid';
+    }
+
+    return null;
+  }
+
+  String _validatePassword(String password) {
+    if (password.isEmpty) {
+      return 'Please enter a password';
+    }
+
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +69,11 @@ class _LoginPageState extends State<LoginPage> {
       key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
+      controller: emailController,
+      validator: _validateEmail,
       decoration: InputDecoration(
         hintText: 'Email',
+        errorText: _emailError,
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
       ),
@@ -54,8 +83,11 @@ class _LoginPageState extends State<LoginPage> {
       key: Key('password_field'),
       autofocus: false,
       obscureText: true,
+      controller: passwordController,
+      validator: _validatePassword,
       decoration: InputDecoration(
         hintText: 'Password',
+        errorText: _passwordError,
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
       ),
@@ -73,7 +105,26 @@ class _LoginPageState extends State<LoginPage> {
           height: 42.0,
           onPressed: () {
             analytics?.logLogin();
-            Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+
+            setState(() {
+              _emailError = _validateEmail(emailController.text);
+              _passwordError = _validatePassword(passwordController.text);
+            });
+
+            if (_emailError != null || _passwordError != null) {
+              return;
+            }
+
+            signIn(emailController.text, passwordController.text).then((String uid) {
+              if (uid == null) {
+                passwordController.clear();
+                setState(() {
+                  _passwordError = 'Incorrect email or password';
+                });
+                return;
+              }
+              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+            });
           },
           color: Colors.lightBlueAccent,
           child: Text('Log In', style: TextStyle(color: Colors.white)),
