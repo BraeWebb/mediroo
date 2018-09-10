@@ -21,3 +21,7 @@ Future<String> signIn(String email, String password) async {
 
   return user.uid;
 }
+
+void resetPassword(String email) {
+  _auth.sendPasswordResetEmail(email: email);
+}
