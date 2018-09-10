@@ -10,6 +10,7 @@ dependencies:
   firebase_core: ^0.2.2
   firebase_analytics: ^1.0.3
   firebase_messaging: ^1.0.5
+  firebase_auth: ^0.5.12
 
 dev_dependencies:
   flutter_test:
