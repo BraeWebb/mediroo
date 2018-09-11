@@ -66,14 +66,12 @@ class _GridState extends State<_PillboxGrid> {
   DateTime date;
 
   _GridState(this.pills, this.date) {
-    // Sorry about this, not sure how Grid words
-    //pills = new List();
+
+    // Listen for any updates to the database
     Stream<List<Prescription>> pillStream = getUserPills();
     pillStream.listen((List<Prescription> prescription) {
       pills.clear();
       pills.addAll(prescription);
-
-      //pills = prescription;
       setState(() {
 
       });
@@ -163,11 +161,10 @@ class _PillDesc extends StatelessWidget {
           )
       ),
       onTap: () {
-        List<Prescription> pills = new List();
-        pills.add(prescription);
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => PrescriptionInfo(pills))
+            MaterialPageRoute(builder: (context) => PrescriptionInfo
+              (prescription))
         );
       },
     );
