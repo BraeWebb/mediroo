@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show Auth;
+import 'package:mediroo/widgets.dart' show bubbleDecoration;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 
 /// Login page for the user.
@@ -75,13 +76,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
       controller: emailController,
-      validator: _validateEmail,
-      decoration: InputDecoration(
-        hintText: 'Email',
-        errorText: _emailError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-      ),
+      decoration: bubbleDecoration('Email', _emailError),
     );
 
     final password = TextFormField(
@@ -89,13 +84,7 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       obscureText: true,
       controller: passwordController,
-      validator: _validatePassword,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        errorText: _passwordError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
+      decoration: bubbleDecoration('Password', _passwordError),
     );
 
     final loginButton = Padding(
