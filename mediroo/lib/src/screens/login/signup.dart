@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
+import 'package:mediroo/main.dart' show MediRooApp;
 import 'package:mediroo/util.dart' show Auth;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
@@ -89,9 +90,12 @@ class _SignupPageState extends State<SignupPage> {
         });
         return;
       }
-      Navigator.of(context)
-        ..pop()
-        ..pushReplacementNamed(Pillbox.tag);
+
+      NavigatorState navState = Navigator.of(context);
+      if (navState.canPop()) {
+        navState.pop();
+      }
+      navState.pushReplacementNamed(Pillbox.tag);
     });
   }
 

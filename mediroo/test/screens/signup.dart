@@ -160,11 +160,10 @@ void main() {
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
     await tester.enterText(find.byKey(Key("password_field")), "mediroo");
 
-    //TODO: Fix horrific errors as a result of popping then pushing navigator
-//    await tester.tap(find.byKey(Key('signup_button')));
-//    await tester.pumpAndSettle();
-//
-//    expect(find.text("Email already in use or password is less than 6 characters"), findsNothing);
-//    expect(find.byType(Pillbox), findsOneWidget);
+    await tester.tap(find.byKey(Key('signup_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Email already in use or password is less than 6 characters"), findsNothing);
+    expect(find.byType(Pillbox), findsOneWidget);
   });
 }
