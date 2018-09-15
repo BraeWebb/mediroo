@@ -85,7 +85,7 @@ class _SignupPageState extends State<SignupPage> {
         emailController.clear();
         passwordController.clear();
         setState(() {
-          _passwordError = 'Email already in use';
+          _passwordError = 'Email already in use or password is less than 6 characters';
         });
         return;
       }
@@ -117,7 +117,6 @@ class _SignupPageState extends State<SignupPage> {
     final email = TextFormField(
       key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
-//      focusNode: focus,
       controller: emailController,
       validator: _validateEmail,
       decoration: bubbleDecoration("Email", _emailError),
