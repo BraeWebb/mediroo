@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
+import 'package:mediroo/main.dart' show MediRooApp;
 import 'package:mediroo/util.dart' show Auth;
 import 'package:mediroo/screens.dart' show Pillbox;
 import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
@@ -85,12 +86,16 @@ class _SignupPageState extends State<SignupPage> {
         emailController.clear();
         passwordController.clear();
         setState(() {
-          _passwordError = 'Email already in use';
+          _passwordError = 'Email already in use or password is less than 6 characters';
         });
         return;
       }
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+
+      NavigatorState navState = Navigator.of(context);
+      if (navState.canPop()) {
+        navState.pop();
+      }
+      navState.pushReplacementNamed(Pillbox.tag);
     });
   }
 
@@ -117,7 +122,6 @@ class _SignupPageState extends State<SignupPage> {
     final email = TextFormField(
       key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
-//      focusNode: focus,
       controller: emailController,
       validator: _validateEmail,
       decoration: bubbleDecoration("Email", _emailError),
