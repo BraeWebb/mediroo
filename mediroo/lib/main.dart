@@ -23,7 +23,7 @@ class MediRooApp extends StatelessWidget {
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new Auth()),
-    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox"),
+    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox", auth: new Auth()),
     DebugPage.tag: (context) => DebugPage(),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new Auth()),
   };

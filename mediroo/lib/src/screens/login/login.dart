@@ -157,25 +157,6 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    final signupButton = Padding(
-      key: Key('signup_button'),
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: () {
-//              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-          },
-          color: Colors.lightBlueAccent,
-          child: Text('Log In', style: TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
-
     final forgotLabel = FlatButton(
       key: Key('forgot_password'),
       child: Text(

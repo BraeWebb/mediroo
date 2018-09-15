@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:mediroo/widgets.dart' show getVerifySnack;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -55,6 +59,17 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
+  void sendVerifyEmail() {
+    _auth.currentUser().then((FirebaseUser user) {
+      user?.sendEmailVerification();
+    });
+  }
+
+  Future<bool> isVerified() async {
+    FirebaseUser user = await _auth.currentUser();
+    return user.isEmailVerified;
+  }
+
   void resetPassword(String email) {
     _auth.sendPasswordResetEmail(email: email);
   }
@@ -79,4 +94,13 @@ class MockAuth extends Auth {
   Future<String> signUp(String name, String email, String password) async {
     return signIn(email, password);
   }
+}
+
+/// Check if the logged in user is verified, if they aren't, display snackbar prompt
+void checkVerified(BuildContext context, Auth auth) {
+  auth.isVerified().then((bool verified) {
+    if (!verified) {
+      Scaffold.of(context).showSnackBar(getVerifySnack(auth));
+    }
+  });
 }
