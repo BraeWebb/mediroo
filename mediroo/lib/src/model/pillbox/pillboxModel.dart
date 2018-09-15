@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// Model class for basic pillbox functionality
 
 /// Represents the status of a Pill
@@ -61,6 +63,9 @@ class Prescription {
   double frequency;  // how many days per pill
   String desc; // the name/description of the pill to be taken
   String notes; // notes about the prescription left by the GP
+  TimeOfDay whenToTake;
+  int numberOfPills;
+
 
   /// Constructor for a new Prescription
   ///
@@ -73,6 +78,14 @@ class Prescription {
       this.pills.putIfAbsent(p.time, (() => p));
       p.master = this;
     }
+  }
+
+  setWhenToTake(TimeOfDay t){
+    this.whenToTake = t;
+  }
+
+  setNumberOfPills(int i){
+    this.numberOfPills = i;
   }
 
   /// Returns the pill stored at a specific date at the time of day
