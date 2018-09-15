@@ -89,8 +89,9 @@ class _SignupPageState extends State<SignupPage> {
         });
         return;
       }
-      Navigator.of(context).pop();
-      Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+      Navigator.of(context)
+        ..pop()
+        ..pushReplacementNamed(Pillbox.tag);
     });
   }
 
