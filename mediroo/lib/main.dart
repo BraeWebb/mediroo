@@ -24,7 +24,8 @@ class MediRooApp extends StatelessWidget {
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new Auth()),
     Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox"),
-    DebugPage.tag: (context) => DebugPage()
+    DebugPage.tag: (context) => DebugPage(),
+    SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new Auth()),
   };
 
   /// Construct a material application based on the [routes] of the application.

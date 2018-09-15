@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show Auth;
-import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
+import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
@@ -137,6 +137,46 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    final newUser = FlatButton(
+      key: Key("new_user"),
+      child: RichText(
+        text: new TextSpan(
+          style: TextStyle(color: Colors.black54),
+          children: <TextSpan>[
+            new TextSpan(
+                text: "New to MediRoo? "
+            ),
+            new TextSpan(
+                text: "Sign up here.",
+                style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)
+            ),
+          ],
+        ),
+      ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(SignupPage.tag);
+      },
+    );
+
+    final signupButton = Padding(
+      key: Key('signup_button'),
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(30.0),
+        shadowColor: Colors.lightBlueAccent.shade100,
+        elevation: 5.0,
+        child: MaterialButton(
+          minWidth: 200.0,
+          height: 42.0,
+          onPressed: () {
+//              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+          },
+          color: Colors.lightBlueAccent,
+          child: Text('Log In', style: TextStyle(color: Colors.white)),
+        ),
+      ),
+    );
+
     final forgotLabel = FlatButton(
       key: Key('forgot_password'),
       child: Text(
@@ -162,6 +202,9 @@ class _LoginPageState extends State<LoginPage> {
             password,
             SizedBox(height: 24.0),
             loginButton,
+            SizedBox(height: 8.0),
+            newUser,
+            SizedBox(height: 4.0),
             forgotLabel
           ],
         ),
