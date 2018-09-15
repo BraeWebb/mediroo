@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show Auth, checkVerified;
+import 'package:mediroo/util.dart' show FireAuth, checkVerified;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
@@ -10,7 +10,7 @@ import 'prescription_info.dart' show PrescriptionInfo;
 import 'prescription_list.dart' show PrescriptionList;
 
 class PillList extends StatefulWidget {
-  final Auth auth;
+  final FireAuth auth;
   final List<Prescription> prescriptions;
 
   PillList(this.prescriptions, {this.auth});
@@ -22,7 +22,7 @@ class PillList extends StatefulWidget {
 }
 
 class ListState extends State<PillList> {
-  final Auth auth;
+  final FireAuth auth;
   List<Prescription> prescriptions;
   List<Widget> cards;
 
@@ -88,7 +88,7 @@ class ListState extends State<PillList> {
 }
 
 class PillListBody extends StatelessWidget {
-  final Auth auth;
+  final FireAuth auth;
 
   PillListBody({this.auth}): super();
 

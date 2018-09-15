@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show Auth, getUserPills;
+import 'package:mediroo/util.dart' show FireAuth, getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
@@ -18,7 +18,7 @@ class Pillbox extends StatelessWidget {
   /// The [title] to be displayed in the menu bar.
   final String title;
   static String tag = "Pillbox";
-  final Auth auth;
+  final FireAuth auth;
   /// A [model] representing a pillbox
   final List<Prescription> pills;
   final DateTime date;

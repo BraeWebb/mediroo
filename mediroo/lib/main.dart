@@ -4,7 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:mediroo/util.dart' show Auth;
+import 'package:mediroo/util.dart' show FireAuth;
 import 'screens.dart';
 
 /// Runs the application widget [MediRooApp].
@@ -22,10 +22,10 @@ class MediRooApp extends StatelessWidget {
   /// The structure of [MediRooApp] mapping a route to a window widget.
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
-    LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new Auth()),
-    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox", auth: new Auth()),
+    LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
+    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox", auth: new FireAuth()),
     DebugPage.tag: (context) => DebugPage(),
-    SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new Auth()),
+    SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
   };
 
   /// Construct a material application based on the [routes] of the application.
@@ -45,7 +45,7 @@ class MediRooApp extends StatelessWidget {
       ),
       home: LoginPage(
         analytics: analytics,
-        auth: new Auth()
+        auth: new FireAuth()
       ),
       routes: routes,
     );

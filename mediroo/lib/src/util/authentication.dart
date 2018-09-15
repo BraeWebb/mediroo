@@ -9,16 +9,26 @@ import 'package:mediroo/widgets.dart' show getVerifySnack;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-/// Authentication class
+/// Abstract authentication class for authentication related methods
 abstract class BaseAuth {
+  /// Sign a user into the system with their [email] and [password]
   Future<String> signIn(String email, String password);
+
+  /// Register a new user to the system with their [name], [email] and [password]
   Future<String> signUp(String name, String email, String password);
+
+  /// Whether the user has verified their email address
   Future<bool> isVerified();
+
+  /// Send an email to the current user to verify their email
   void sendVerifyEmail();
+
+  /// Send an email to the given [email] address to reset their password
   void resetPassword(String email);
 }
 
-class Auth implements BaseAuth {
+/// Implementation of an authentication system for Google Firebase
+class FireAuth implements BaseAuth {
   Future<String> signIn(String email, String password) async {
     final FirebaseUser user = await _auth
         .signInWithEmailAndPassword(email: email, password: password)
@@ -37,23 +47,22 @@ class Auth implements BaseAuth {
   }
 
   Future<String> signUp(String name, String email, String password) async {
+    // signup using firebase
     final FirebaseUser user = await _auth
         .createUserWithEmailAndPassword(email: email, password: password)
         .catchError((Object object) {
       return null;
     });
 
+    // failed to signup
     if (user == null) {
       return null;
     }
 
-    user.sendEmailVerification();
+    sendVerifyEmail();
 
-    final FirebaseUser currentUser = await _auth.currentUser();
-    assert(user.uid == currentUser.uid);
-
+    // add user data into the database
     DocumentReference document = Firestore.instance.document('users/' + user.uid);
-
     document.setData({
       'name': name,
       'email': email,
@@ -79,6 +88,7 @@ class Auth implements BaseAuth {
   }
 }
 
+/// An implementation of the authentication class used for mocked testing
 class MockAuth extends BaseAuth {
   MockAuth({this.userId});
   String userId;
@@ -109,6 +119,7 @@ class MockAuth extends BaseAuth {
 }
 
 /// Check if the logged in user is verified, if they aren't, display snackbar prompt
+/// Uses a [BaseAuth] to make a resend verification email action
 void checkVerified(BuildContext context, BaseAuth auth) {
   auth.isVerified().then((bool verified) {
     if (!verified) {
