@@ -39,11 +39,12 @@ class Auth implements BaseAuth {
         .catchError((Object object) {
       return null;
     });
-    user.sendEmailVerification();
 
     if (user == null) {
       return null;
     }
+
+    user.sendEmailVerification();
 
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
