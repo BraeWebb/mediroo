@@ -113,48 +113,116 @@ class _SignupPageState extends State<SignupPage> {
       ),
     );
 
-    final signupButton = Padding(
-      key: Key('login_button'),
+//    final signupButton = Padding(
+//      key: Key('login_button'),
+//      padding: EdgeInsets.symmetric(vertical: 16.0),
+//      child: Material(
+//        borderRadius: BorderRadius.circular(30.0),
+//        shadowColor: Colors.lightBlueAccent.shade100,
+//        elevation: 5.0,
+//        child: MaterialButton(
+//          minWidth: 200.0,
+//          height: 42.0,
+//          onPressed: () {
+//            analytics?.logSignUp(signUpMethod: "default");
+//
+//            setState(() {
+//              _nameError = _validateName(nameController.text);
+//              _emailError = _validateEmail(emailController.text);
+//              _passwordError = _validatePassword(passwordController.text);
+//            });
+//
+//            if (_nameError != null || _emailError != null || _passwordError != null) {
+//              return;
+//            }
+//
+//            auth.signUp(nameController.text, emailController.text, passwordController.text)
+//                .then((String uid) {
+//              if (uid == null) {
+//                emailController.clear();
+//                passwordController.clear();
+//                setState(() {
+//                  _passwordError = 'Email already in use';
+//                });
+//                return;
+//              }
+//              Navigator.of(context).pop();
+//              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+//            });
+//          },
+//          color: Colors.lightBlueAccent,
+//          child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+//        ),
+//      ),
+//    );
+
+    final signupButton = RaisedButton(
+      key: Key('signup_button'),
+      child: Text("Sign Up", style: TextStyle(color: Colors.white)),
+      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+      color: Colors.lightBlueAccent,
+      elevation: 5.0,
       padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: () {
-            analytics?.logSignUp(signUpMethod: "default");
+      onPressed: () {
+        analytics?.logSignUp(signUpMethod: "default");
 
+        setState(() {
+          _nameError = _validateName(nameController.text);
+          _emailError = _validateEmail(emailController.text);
+          _passwordError = _validatePassword(passwordController.text);
+        });
+
+        if (_nameError != null || _emailError != null || _passwordError != null) {
+          return;
+        }
+
+        auth.signUp(nameController.text, emailController.text, passwordController.text)
+            .then((String uid) {
+          if (uid == null) {
+            emailController.clear();
+            passwordController.clear();
             setState(() {
-              _nameError = _validateName(nameController.text);
-              _emailError = _validateEmail(emailController.text);
-              _passwordError = _validatePassword(passwordController.text);
+              _passwordError = 'Email already in use';
             });
-
-            if (_nameError != null || _emailError != null || _passwordError != null) {
-              return;
-            }
-
-            auth.signUp(nameController.text, emailController.text, passwordController.text)
-                .then((String uid) {
-              if (uid == null) {
-                emailController.clear();
-                passwordController.clear();
-                setState(() {
-                  _passwordError = 'Email already in use';
-                });
-                return;
-              }
-              Navigator.of(context).pop();
-              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-            });
-          },
-          color: Colors.lightBlueAccent,
-          child: Text('Sign Up', style: TextStyle(color: Colors.white)),
-        ),
-      ),
+            return;
+          }
+          Navigator.of(context).pop();
+          Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+        });
+      },
     );
+
+
+//    Padding(
+//      key: Key('login_button'),
+//      padding: EdgeInsets.symmetric(vertical: 16.0),
+//      child: Material(
+//        borderRadius: BorderRadius.circular(30.0),
+//        shadowColor: Colors.lightBlueAccent.shade100,
+//        elevation: 5.0,
+//        child: MaterialButton(
+//          minWidth: 200.0,
+//          height: 42.0,
+//          onPressed: () {
+//
+//          },
+//          color: Colors.lightBlueAccent,
+//          child: Text('Sign Up', style: TextStyle(color: Colors.white)),
+//        ),
+//      ),
+//    );
+
+//    final testButton = new RaisedButton(
+//      key: Key('test_button'),
+//      child: Text("Sign Up", style: TextStyle(color: Colors.white)),
+//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+//      color: Colors.lightBlueAccent,
+//      elevation: 5.0,
+//      padding: EdgeInsets.symmetric(vertical: 16.0),
+//      onPressed: () {
+//      },
+//    );
+
 
     return Scaffold(
       backgroundColor: Colors.white,
