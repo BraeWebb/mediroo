@@ -54,11 +54,35 @@ class ListState extends State<PillList> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold (
-        appBar: new AppBar(
-          title: new Text("Upcoming pills"),
-        ),
-        body: new PillListBody(auth: auth)
+    return new DefaultTabController(
+        length: 7,
+        child: new Scaffold (
+            appBar: new AppBar(
+              title: new Text("Upcoming pills"),
+              bottom: TabBar(
+                  tabs: [
+                    Tab(text: "Mo"),
+                    Tab(text: "Tu"),
+                    Tab(text: "We"),
+                    Tab(text: "Th"),
+                    Tab(text: "Fr"),
+                    Tab(text: "Sa"),
+                    Tab(text: "Su"),
+                  ]
+              ),
+            ),
+            body: TabBarView(
+                children: [
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                  new PillListBody(auth: auth),
+                ]
+            ),
+        )
     );
   }
 }

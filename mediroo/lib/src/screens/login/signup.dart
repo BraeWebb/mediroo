@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:mediroo/main.dart' show MediRooApp;
 import 'package:mediroo/util.dart' show BaseAuth;
-import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
+import 'package:mediroo/screens.dart' show Pillbox;
 import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
 
 
