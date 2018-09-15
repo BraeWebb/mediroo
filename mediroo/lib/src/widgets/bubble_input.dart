@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Generates a text input decoration for a bubbled input
+///
 /// Placeholder text of [hint] and error text of [errorText]
 InputDecoration bubbleInputDecoration(String hint, String errorText) {
   return InputDecoration(

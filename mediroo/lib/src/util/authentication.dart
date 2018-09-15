@@ -123,6 +123,7 @@ class MockAuth extends BaseAuth {
 }
 
 /// Check if the logged in user is verified, if they aren't, display snackbar prompt
+///
 /// Uses a [BaseAuth] to make a resend verification email action
 void checkVerified(BuildContext context, BaseAuth auth) {
   auth.isVerified().then((bool verified) {
