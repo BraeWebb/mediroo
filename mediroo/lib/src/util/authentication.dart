@@ -59,6 +59,10 @@ class FireAuth implements BaseAuth {
       return null;
     }
 
+    UserUpdateInfo updateInfo = new UserUpdateInfo();
+    updateInfo.displayName = name;
+    await _auth.updateProfile(updateInfo);
+
     sendVerifyEmail();
 
     // add user data into the database
