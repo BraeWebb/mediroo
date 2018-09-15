@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show BaseAuth;
-import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
+import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 
 /// Login page for the user.
@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
       controller: emailController,
-      decoration: bubbleDecoration('Email', _emailError),
+      decoration: bubbleInputDecoration('Email', _emailError),
     );
 
     final password = TextFormField(
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       obscureText: true,
       controller: passwordController,
-      decoration: bubbleDecoration('Password', _passwordError),
+      decoration: bubbleInputDecoration('Password', _passwordError),
     );
 
     final loginButton = bubbleButton("login", "Log In", _pressLogin);

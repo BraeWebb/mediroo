@@ -4,7 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/screens.dart' show Pillbox;
-import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
+import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
 
 
 /// Signup page for the user.
@@ -115,7 +115,7 @@ class _SignupPageState extends State<SignupPage> {
       keyboardType: TextInputType.text,
       controller: nameController,
       validator: _validateName,
-      decoration: bubbleDecoration("Name", _nameError),
+      decoration: bubbleInputDecoration("Name", _nameError),
     );
 
     final email = TextFormField(
@@ -123,7 +123,7 @@ class _SignupPageState extends State<SignupPage> {
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
       validator: _validateEmail,
-      decoration: bubbleDecoration("Email", _emailError),
+      decoration: bubbleInputDecoration("Email", _emailError),
     );
 
     final password = TextFormField(
@@ -131,7 +131,7 @@ class _SignupPageState extends State<SignupPage> {
       obscureText: true,
       controller: passwordController,
       validator: _validatePassword,
-      decoration: bubbleDecoration("Password", _passwordError),
+      decoration: bubbleInputDecoration("Password", _passwordError),
     );
 
     final signupButton = bubbleButton("signup", "Sign Up", _pressSignup);
