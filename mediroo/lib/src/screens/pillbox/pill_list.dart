@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show getUserPills;
+import 'package:mediroo/util.dart' show Auth, checkVerified;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
@@ -10,21 +10,23 @@ import 'prescription_info.dart' show PrescriptionInfo;
 import 'prescription_list.dart' show PrescriptionList;
 
 class PillList extends StatefulWidget {
+  final Auth auth;
   final List<Prescription> prescriptions;
 
-  PillList(this.prescriptions);
+  PillList(this.prescriptions, {this.auth});
 
   @override
   State<StatefulWidget> createState() {
-    return new ListState(prescriptions);
+    return new ListState(prescriptions, auth: auth);
   }
 }
 
 class ListState extends State<PillList> {
+  final Auth auth;
   List<Prescription> prescriptions;
   List<Widget> cards;
 
-  ListState(this.prescriptions) {
+  ListState(this.prescriptions, {this.auth}) {
     //TESTING CODE
     DateTime now = DateTime.now();
     DateTime dt2 = new DateTime(now.year, now.month, now.day, 18);
@@ -52,19 +54,23 @@ class ListState extends State<PillList> {
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold (
         appBar: new AppBar(
           title: new Text("Upcoming pills"),
         ),
-        body: new PillListBody()
+        body: new PillListBody(auth: auth)
     );
   }
 }
 
 class PillListBody extends StatelessWidget {
+  final Auth auth;
+
+  PillListBody({this.auth}): super();
+
   @override
   Widget build(BuildContext context) {
+    checkVerified(context, auth);
     PillCard card0 = new PillCard("Pill 0", "assets/sunrise.png", notes:"", time: "8:00", count: "1 pill");
     PillCard card1 = new PillCard("Pill 1", "assets/sun.png", notes:"", time: "13:00", count: "5 pills");
     PillCard card2 = new PillCard("Pill 2", "assets/sunset.png", notes:"", time: "18:00", count: "3 pills");

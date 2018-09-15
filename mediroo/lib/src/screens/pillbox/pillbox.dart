@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show getUserPills;
+import 'package:mediroo/util.dart' show Auth, getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
@@ -13,11 +13,12 @@ import 'pill_list.dart' show PillList;
 /// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
   /// Create a with [title] that displays the [model].
-  Pillbox(this.pills, this.date, {Key key, this.title}) : super(key: key);
+  Pillbox(this.pills, this.date, {Key key, this.title, this.auth}) : super(key: key);
 
   /// The [title] to be displayed in the menu bar.
   final String title;
   static String tag = "Pillbox";
+  final Auth auth;
   /// A [model] representing a pillbox
   final List<Prescription> pills;
   final DateTime date;
@@ -40,7 +41,7 @@ class Pillbox extends StatelessWidget {
                       .pills))
             );*/
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PillList(this.pills))
+                MaterialPageRoute(builder: (context) => PillList(this.pills, auth: auth))
             );
           },
           tooltip: "",
