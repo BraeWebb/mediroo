@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:mediroo/util.dart' show Auth;
+import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 
@@ -10,7 +10,7 @@ import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
 
   LoginPage({this.analytics, this.auth}): super();
@@ -25,7 +25,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final FocusNode focus = FocusNode();
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();

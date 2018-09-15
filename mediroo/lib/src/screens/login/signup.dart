@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/main.dart' show MediRooApp;
-import 'package:mediroo/util.dart' show Auth;
+import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
 import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
 
@@ -12,7 +12,7 @@ import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
 class SignupPage extends StatefulWidget {
   static String tag = "signupPage";
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
 
   SignupPage({this.analytics, this.auth}): super();
@@ -27,7 +27,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final FocusNode focus = FocusNode();
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
   final TextEditingController nameController = new TextEditingController();
   final TextEditingController emailController = new TextEditingController();

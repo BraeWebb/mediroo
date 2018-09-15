@@ -9,10 +9,13 @@ import 'package:mediroo/widgets.dart' show getVerifySnack;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
+/// Authentication class
 abstract class BaseAuth {
   Future<String> signIn(String email, String password);
+  Future<String> signUp(String name, String email, String password);
+  Future<bool> isVerified();
+  void sendVerifyEmail();
   void resetPassword(String email);
-  void createUser(String email, String password);
 }
 
 class Auth implements BaseAuth {
@@ -74,13 +77,9 @@ class Auth implements BaseAuth {
   void resetPassword(String email) {
     _auth.sendPasswordResetEmail(email: email);
   }
-
-  void createUser(String email, String password) {
-
-  }
 }
 
-class MockAuth extends Auth {
+class MockAuth extends BaseAuth {
   MockAuth({this.userId});
   String userId;
 
@@ -95,10 +94,22 @@ class MockAuth extends Auth {
   Future<String> signUp(String name, String email, String password) async {
     return signIn(email, password);
   }
+
+  Future<bool> isVerified() {
+    return null;
+  }
+
+  void sendVerifyEmail() {
+    return null;
+  }
+
+  void resetPassword(String email) {
+
+  }
 }
 
 /// Check if the logged in user is verified, if they aren't, display snackbar prompt
-void checkVerified(BuildContext context, Auth auth) {
+void checkVerified(BuildContext context, BaseAuth auth) {
   auth.isVerified().then((bool verified) {
     if (!verified) {
       Scaffold.of(context).showSnackBar(getVerifySnack(auth));
