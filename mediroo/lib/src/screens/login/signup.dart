@@ -124,7 +124,7 @@ class _SignupPageState extends State<SignupPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-//            analytics?.logSignUp(signUpMethod: null);
+            analytics?.logSignUp(signUpMethod: "default");
 
             setState(() {
               _nameError = _validateName(nameController.text);
@@ -136,17 +136,19 @@ class _SignupPageState extends State<SignupPage> {
               return;
             }
 
-//            auth.signIn(emailController.text, passwordController.text).then((String uid) {
-//              if (uid == null) {
-//                passwordController.clear();
-//                setState(() {
-//                  _passwordError = 'Incorrect email or password';
-//                });
-//                return;
-//              }
-//            });
-            Navigator.of(context).pop();
-            Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+            auth.signUp(nameController.text, emailController.text, passwordController.text)
+                .then((String uid) {
+              if (uid == null) {
+                emailController.clear();
+                passwordController.clear();
+                setState(() {
+                  _passwordError = 'Email already in use';
+                });
+                return;
+              }
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+            });
           },
           color: Colors.lightBlueAccent,
           child: Text('Sign Up', style: TextStyle(color: Colors.white)),

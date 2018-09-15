@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,6 +29,32 @@ class Auth implements BaseAuth {
     return user.uid;
   }
 
+  Future<String> signUp(String name, String email, String password) async {
+    final FirebaseUser user = await _auth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .catchError((Object object) {
+      return null;
+    });
+    user.sendEmailVerification();
+
+    if (user == null) {
+      return null;
+    }
+
+    final FirebaseUser currentUser = await _auth.currentUser();
+    assert(user.uid == currentUser.uid);
+
+    DocumentReference document = Firestore.instance.document('users/' + user.uid);
+
+    document.setData({
+      'name': name,
+      'email': email,
+      'creation': DateTime.now(),
+    });
+
+    return user.uid;
+  }
+
   void resetPassword(String email) {
     _auth.sendPasswordResetEmail(email: email);
   }
@@ -47,5 +74,9 @@ class MockAuth extends Auth {
     } else {
       return null;
     }
+  }
+
+  Future<String> signUp(String name, String email, String password) async {
+    return signIn(email, password);
   }
 }

@@ -109,8 +109,6 @@ class _LoginPageState extends State<LoginPage> {
           minWidth: 200.0,
           height: 42.0,
           onPressed: () {
-            analytics?.logLogin();
-
             setState(() {
               _emailError = _validateEmail(emailController.text);
               _passwordError = _validatePassword(passwordController.text);
@@ -128,6 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
                 return;
               }
+              analytics?.logLogin();
               Navigator.of(context).pushReplacementNamed(Pillbox.tag);
             });
           },
