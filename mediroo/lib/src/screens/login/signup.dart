@@ -4,6 +4,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show Auth;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
+import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
+
 
 /// Signup page for the user.
 class SignupPage extends StatefulWidget {
@@ -64,6 +66,34 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  void _pressSignup() {
+    analytics?.logSignUp(signUpMethod: "default");
+
+    setState(() {
+      _nameError = _validateName(nameController.text);
+      _emailError = _validateEmail(emailController.text);
+      _passwordError = _validatePassword(passwordController.text);
+    });
+
+    if (_nameError != null || _emailError != null || _passwordError != null) {
+      return;
+    }
+
+    auth.signUp(nameController.text, emailController.text, passwordController.text)
+        .then((String uid) {
+      if (uid == null) {
+        emailController.clear();
+        passwordController.clear();
+        setState(() {
+          _passwordError = 'Email already in use';
+        });
+        return;
+      }
+      Navigator.of(context).pop();
+      Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final logo = Hero(
@@ -81,11 +111,7 @@ class _SignupPageState extends State<SignupPage> {
       keyboardType: TextInputType.text,
       controller: nameController,
       validator: _validateName,
-      decoration: InputDecoration(
-        hintText: "Name",
-        errorText: _nameError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
+      decoration: bubbleDecoration("Name", _nameError),
     );
 
     final email = TextFormField(
@@ -94,11 +120,7 @@ class _SignupPageState extends State<SignupPage> {
 //      focusNode: focus,
       controller: emailController,
       validator: _validateEmail,
-      decoration: InputDecoration(
-        hintText: 'Email',
-        errorText: _emailError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
+      decoration: bubbleDecoration("Email", _emailError),
     );
 
     final password = TextFormField(
@@ -106,123 +128,10 @@ class _SignupPageState extends State<SignupPage> {
       obscureText: true,
       controller: passwordController,
       validator: _validatePassword,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        errorText: _passwordError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
+      decoration: bubbleDecoration("Password", _passwordError),
     );
 
-//    final signupButton = Padding(
-//      key: Key('login_button'),
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      child: Material(
-//        borderRadius: BorderRadius.circular(30.0),
-//        shadowColor: Colors.lightBlueAccent.shade100,
-//        elevation: 5.0,
-//        child: MaterialButton(
-//          minWidth: 200.0,
-//          height: 42.0,
-//          onPressed: () {
-//            analytics?.logSignUp(signUpMethod: "default");
-//
-//            setState(() {
-//              _nameError = _validateName(nameController.text);
-//              _emailError = _validateEmail(emailController.text);
-//              _passwordError = _validatePassword(passwordController.text);
-//            });
-//
-//            if (_nameError != null || _emailError != null || _passwordError != null) {
-//              return;
-//            }
-//
-//            auth.signUp(nameController.text, emailController.text, passwordController.text)
-//                .then((String uid) {
-//              if (uid == null) {
-//                emailController.clear();
-//                passwordController.clear();
-//                setState(() {
-//                  _passwordError = 'Email already in use';
-//                });
-//                return;
-//              }
-//              Navigator.of(context).pop();
-//              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-//            });
-//          },
-//          color: Colors.lightBlueAccent,
-//          child: Text('Sign Up', style: TextStyle(color: Colors.white)),
-//        ),
-//      ),
-//    );
-
-    final signupButton = RaisedButton(
-      key: Key('signup_button'),
-      child: Text("Sign Up", style: TextStyle(color: Colors.white)),
-      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-      color: Colors.lightBlueAccent,
-      elevation: 5.0,
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      onPressed: () {
-        analytics?.logSignUp(signUpMethod: "default");
-
-        setState(() {
-          _nameError = _validateName(nameController.text);
-          _emailError = _validateEmail(emailController.text);
-          _passwordError = _validatePassword(passwordController.text);
-        });
-
-        if (_nameError != null || _emailError != null || _passwordError != null) {
-          return;
-        }
-
-        auth.signUp(nameController.text, emailController.text, passwordController.text)
-            .then((String uid) {
-          if (uid == null) {
-            emailController.clear();
-            passwordController.clear();
-            setState(() {
-              _passwordError = 'Email already in use';
-            });
-            return;
-          }
-          Navigator.of(context).pop();
-          Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-        });
-      },
-    );
-
-
-//    Padding(
-//      key: Key('login_button'),
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      child: Material(
-//        borderRadius: BorderRadius.circular(30.0),
-//        shadowColor: Colors.lightBlueAccent.shade100,
-//        elevation: 5.0,
-//        child: MaterialButton(
-//          minWidth: 200.0,
-//          height: 42.0,
-//          onPressed: () {
-//
-//          },
-//          color: Colors.lightBlueAccent,
-//          child: Text('Sign Up', style: TextStyle(color: Colors.white)),
-//        ),
-//      ),
-//    );
-
-//    final testButton = new RaisedButton(
-//      key: Key('test_button'),
-//      child: Text("Sign Up", style: TextStyle(color: Colors.white)),
-//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-//      color: Colors.lightBlueAccent,
-//      elevation: 5.0,
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      onPressed: () {
-//      },
-//    );
-
+    final signupButton = bubbleButton("signup", "Sign Up", _pressSignup);
 
     return Scaffold(
       backgroundColor: Colors.white,

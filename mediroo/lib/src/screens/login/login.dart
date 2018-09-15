@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show Auth;
-import 'package:mediroo/widgets.dart' show bubbleDecoration;
+import 'package:mediroo/widgets.dart' show bubbleDecoration, bubbleButton;
 import 'package:mediroo/screens.dart' show Pillbox, DebugPage, SignupPage;
 
 /// Login page for the user.
@@ -55,6 +55,29 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
+  void _pressLogin() {
+    setState(() {
+      _emailError = _validateEmail(emailController.text);
+      _passwordError = _validatePassword(passwordController.text);
+    });
+
+    if (_emailError != null || _passwordError != null) {
+      return;
+    }
+
+    auth.signIn(emailController.text, passwordController.text).then((String uid) {
+      if (uid == null) {
+        passwordController.clear();
+        setState(() {
+          _passwordError = 'Incorrect email or password';
+        });
+        return;
+      }
+      analytics?.logLogin();
+      Navigator.of(context).pushReplacementNamed(Pillbox.tag);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -87,43 +110,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: bubbleDecoration('Password', _passwordError),
     );
 
-    final loginButton = Padding(
-      key: Key('login_button'),
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: () {
-            setState(() {
-              _emailError = _validateEmail(emailController.text);
-              _passwordError = _validatePassword(passwordController.text);
-            });
-
-            if (_emailError != null || _passwordError != null) {
-              return;
-            }
-
-            auth.signIn(emailController.text, passwordController.text).then((String uid) {
-              if (uid == null) {
-                passwordController.clear();
-                setState(() {
-                  _passwordError = 'Incorrect email or password';
-                });
-                return;
-              }
-              analytics?.logLogin();
-              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-            });
-          },
-          color: Colors.lightBlueAccent,
-          child: Text('Log In', style: TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
+    final loginButton = bubbleButton("login", "Log In", _pressLogin);
 
     final newUser = FlatButton(
       key: Key("new_user"),
