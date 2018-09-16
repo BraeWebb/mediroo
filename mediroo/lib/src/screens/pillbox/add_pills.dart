@@ -31,6 +31,8 @@ class _TempState extends State<AddPillsPage> {
   ValueChanged<Text> val;
   double frequency = null;
   TimeOfDay time;
+  DateTime startDate;
+  DateTime endDate;
   final pillFieldController = TextEditingController();
   final ScriptCountController = TextEditingController();
   var _globalKey = new GlobalKey<ScaffoldState>();
@@ -49,6 +51,7 @@ class _TempState extends State<AddPillsPage> {
     int remaining = int.parse(ScriptCountController.text);
     var temp = new Prescription(null, pillName, pillsLeft: remaining,
         addTime: DateTime.now());
+    //temp.frequency = frequency;
     return temp;
   }
 
@@ -64,7 +67,6 @@ class _TempState extends State<AddPillsPage> {
 
   void _addPill(){
     if (!_isFormComplete()){
-      //TODO this doesn't work properly
       _globalKey.currentState.showSnackBar(new SnackBar(
         content: new Text("please complete the form properly"),
       ));
@@ -97,7 +99,24 @@ class _TempState extends State<AddPillsPage> {
         this.time = picked;
       });
     }
+  }
 
+  Future<Null> _selectDate(BuildContext context) async {
+    DateTime picked;
+    DateTime now = new DateTime.now();
+    
+    picked = await showDatePicker(
+      firstDate: now,
+        lastDate: now.add(new Duration(days: 365)),
+        context: context,
+        initialDate:now,
+    );
+
+    if (picked != null){
+      setState((){
+        this.endDate = picked;
+      });
+    }
   }
 
   @override
@@ -158,11 +177,21 @@ class _TempState extends State<AddPillsPage> {
               ),
               new RaisedButton(
                 child: new Text(
-                    this.time==null ? "When to take":"${this.time.hour}:${this.time.minute}"
+                    this.time==null ? "What time":"${this.time.hour}:${this.time.minute}"
                 ),
                   onPressed: (){
                     _selectTime(context);
               }),
+              new Text(
+                  "\n"
+              ),
+              new RaisedButton(
+                  child: new Text(
+                      this.endDate==null ? "End Date":"ends ${this.endDate.day}/${this.endDate.month}"
+                  ),
+                  onPressed: (){
+                    _selectDate(context);
+                  }),
               new Text(
                   "\n"
               ),
