@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
       controller: emailController,
-      decoration: bubbleInputDecoration('Email', _emailError)
+      decoration: bubbleInputDecoration('Email', _emailError, null)
     );
 
     final password = TextFormField(
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       obscureText: true,
       controller: passwordController,
-      decoration: bubbleInputDecoration('Password', _passwordError)
+      decoration: bubbleInputDecoration('Password', _passwordError, null)
     );
 
     final loginButton = bubbleButton("login", "Log In", _pressLogin);

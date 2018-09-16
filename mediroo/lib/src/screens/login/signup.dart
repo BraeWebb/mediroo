@@ -115,7 +115,7 @@ class _SignupPageState extends State<SignupPage> {
       keyboardType: TextInputType.text,
       controller: nameController,
       validator: _validateName,
-      decoration: bubbleInputDecoration("Name", _nameError),
+      decoration: bubbleInputDecoration("Name", _nameError, null),
     );
 
     final email = TextFormField(
@@ -123,7 +123,7 @@ class _SignupPageState extends State<SignupPage> {
       keyboardType: TextInputType.emailAddress,
       controller: emailController,
       validator: _validateEmail,
-      decoration: bubbleInputDecoration("Email", _emailError),
+      decoration: bubbleInputDecoration("Email", _emailError, null),
     );
 
     final password = TextFormField(
@@ -131,7 +131,7 @@ class _SignupPageState extends State<SignupPage> {
       obscureText: true,
       controller: passwordController,
       validator: _validatePassword,
-      decoration: bubbleInputDecoration("Password", _passwordError),
+      decoration: bubbleInputDecoration("Password", _passwordError, null),
     );
 
     final signupButton = bubbleButton("signup", "Sign Up", _pressSignup);
