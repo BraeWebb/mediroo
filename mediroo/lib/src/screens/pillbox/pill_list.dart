@@ -119,21 +119,42 @@ class ListState extends State<PillList> {
   @override
   Widget build(BuildContext context) {
     checkVerified(context, auth);
-    return new Scaffold (
-      appBar: new AppBar(
-        title: new Text("Upcoming pills"),
-      ),
-      body: new ListView(
-        children: cards
-      ),
-        floatingActionButton: new FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AddPillsPage())
-            );
-          },
-          tooltip: "Add Pills",
-          child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
+    return new DefaultTabController(
+        length: 7,
+        child: new Scaffold (
+            appBar: new AppBar(
+              title: new Text("Upcoming pills"),
+              bottom: TabBar(
+                  tabs: [
+                    Tab(text: "Mo"),
+                    Tab(text: "Tu"),
+                    Tab(text: "We"),
+                    Tab(text: "Th"),
+                    Tab(text: "Fr"),
+                    Tab(text: "Sa"),
+                    Tab(text: "Su"),
+                  ]
+              ),
+            ),
+            body: TabBarView(
+                children: [
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                  new ListView(children: cards),
+                ]
+            ),
+            floatingActionButton: new FloatingActionButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddPillsPage()));
+                },
+              tooltip: "Add Pills",
+              child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
+            )
         )
     );
   }
