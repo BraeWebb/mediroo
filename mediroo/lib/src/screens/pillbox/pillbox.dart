@@ -40,7 +40,7 @@ class Pillbox extends StatelessWidget {
                       .pills))
             );*/
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PillList(this.pills))
+                MaterialPageRoute(builder: (context) => PillList(null, DateTime.now()))
             );
           },
           tooltip: "",

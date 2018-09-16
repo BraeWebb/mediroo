@@ -13,7 +13,7 @@ class PrescriptionInfo extends StatelessWidget {
   Widget build(BuildContext context){
     return Scaffold(
       appBar: AppBar(
-        title: new Text(pill.desc),
+        title: new Text(pill.medNotes),
       ),
       body: new FloatingActionButton(onPressed: null,
       child: new Text('Edit')
