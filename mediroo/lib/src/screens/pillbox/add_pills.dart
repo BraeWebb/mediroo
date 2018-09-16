@@ -121,6 +121,8 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(getFrequency());
     addPillFields.add(whitespace);
     addPillFields.add(whatTime);
+    addPillFields.add(whitespace);
+    addPillFields.add(getNewInterval());
   }
 
   Center getFrequency() {
@@ -152,6 +154,27 @@ class _TempState extends State<AddPillsPage> {
       onPressed: () {
         _selectDate(context, widgetIndex);
       },
+    );
+  }
+
+  Widget getNewInterval() {
+    return new Card(
+      child: new Column(
+        children: <Widget>[
+          new Row(
+            children: <Widget>[
+              new Icon(FontAwesomeIcons.clock),
+              new Text("hello"),
+            ],
+          ),
+          new Row(
+            children: <Widget>[
+              new Icon(FontAwesomeIcons.capsules),
+              new Text("world"),
+            ],
+          )
+        ],
+      ),
     );
   }
 
