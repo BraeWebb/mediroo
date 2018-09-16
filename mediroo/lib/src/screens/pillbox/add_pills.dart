@@ -140,7 +140,7 @@ class _TempState extends State<AddPillsPage> {
 
     timeField = new FlatButton(
       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      child: new Text("time", style: new TextStyle(color: Colors.black45)),
+      child: new Text("enter a time", style: new TextStyle(color: Colors.black45)),
       shape: new OutlineInputBorder(
           borderSide: new BorderSide(
               width: 1.0,
@@ -151,6 +151,7 @@ class _TempState extends State<AddPillsPage> {
       onPressed: () {
         _selectTime(context);
       },
+
     );
 
 
@@ -181,9 +182,23 @@ class _TempState extends State<AddPillsPage> {
     //addPillFields.add(whatTime);
     addPillFields.add(whitespace);
     addPillFields.add(timeFieldContainer);
+    addPillFields.add(makeRow(new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text('Submit', style: new TextStyle(color: Colors.black45)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        //_selectDate(context, widgetIndex, date, icon);
+      },
+    ), new Padding(padding: new EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),)));
   }
 
-  Row makeRow(Widget wid, Icon icon){
+  Row makeRow(Widget wid, Widget icon){
     return new Row(
         children: <Widget>[
           icon,
@@ -301,16 +316,35 @@ class _TempState extends State<AddPillsPage> {
           context: context,
           initialTime:new TimeOfDay.now()
       );
+    String res = "enter a time";
 
     if (picked != null){
       setState((){
         this.time = picked;
       });
+      int hour = this.time.hour;
+      int minute = this.time.minute;
+
+      res= "$hour:$minute";
     }
 
-    setState(() {
+    endDateField = makeRow(new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text(res, style: new TextStyle(color: Colors.black45)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        _selectTime(context);
+      },
 
-    });
+    ), Icon(FontAwesomeIcons.clock, color: Colors.black45,));
+    int side = 14;
+    addPillFields.replaceRange(side, side + 1, [endDateField]);
 
   }
 
