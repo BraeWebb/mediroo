@@ -39,8 +39,14 @@ class _TempState extends State<AddPillsPage> {
   DateTime startDate;
   DateTime endDate;
 
+
+  Row endDateContainer;
+  Row startDateContainer;
+  //Row getFrequencyContainer;
+  Row timeFieldContainer;
   FlatButton endDateField;
   FlatButton startDateField;
+  FlatButton timeField;
 
   DropdownButton<double> frequencyField;
 
@@ -99,13 +105,54 @@ class _TempState extends State<AddPillsPage> {
 //      decoration: bubbleInputDecoration("dd/mm/yyyy", null, Icon(FontAwesomeIcons.calendar)),
 //    );
 
+
+
+//    new FlatButton(
+////      key: Key(''),
+//      child: Text("End date"),
+//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+//      padding: EdgeInsets.symmetric(vertical: 16.0),
+//      onPressed: (){
+//          _selectDate(context);
+//        },
+//    );
+
+//    RaisedButton(
+//        child: new Text("End date"),
+//        onPressed: (){
+//          _selectDate(context);
+//        },
+//    );
     startDateField = getDate("Start date", 7, Colors.black45);
     endDateField = getDate("End date", 9, Colors.black45);
+
+    timeField = new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text("time", style: new TextStyle(color: Colors.black45)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        _selectTime(context);
+      },
+    );
+
+
 
     frequencyOptions = new List<DropdownMenuItem<double>>();
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
+
+
+    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendar));
+    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendar));
+    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock));
+    //getFrequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarAlt)); TODO decide on this
 
     addPillFields.add(SizedBox(height: 30.0));
     addPillFields.add(pillName);
@@ -114,15 +161,26 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(whitespace);
     addPillFields.add(doctorNotes);
     addPillFields.add(whitespace);
-    addPillFields.add(startDateField);
+
+    addPillFields.add(startDateContainer);
     addPillFields.add(whitespace);
-    addPillFields.add(endDateField);
+    addPillFields.add(endDateContainer);
     addPillFields.add(whitespace);
     addPillFields.add(getFrequency());
     addPillFields.add(whitespace);
     addPillFields.add(whatTime);
     addPillFields.add(whitespace);
-    addPillFields.add(getNewInterval());
+    addPillFields.add(timeFieldContainer);
+  }
+
+  Row makeRow(Widget wid, Icon icon){
+    return new Row(
+        children: <Widget>[
+          icon,
+          new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
+          new Expanded(child: wid)
+        ]
+    );
   }
 
   Center getFrequency() {
