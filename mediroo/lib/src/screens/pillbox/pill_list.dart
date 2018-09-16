@@ -24,9 +24,8 @@ class PillList extends StatefulWidget {
 
 class ListState extends State<PillList> {
   final FireAuth auth;
-  User loggedIn;
   Date date;
-  List<Widget> cards = [];
+  List<List<Widget>> cards;
 
   final Color stdColour = const Color(0xFF333366);
   final Color takenColour = const Color(0xFF3aa53f);
@@ -35,16 +34,48 @@ class ListState extends State<PillList> {
   static const int LEEWAY = 15;
 
   ListState(this.date, {this.auth}) {
-    currentUser().then((User user) {
-      loggedIn = user;
-    });
+    cards = genMessage("Loading Pills...");
 
     getUserPrescriptions().listen((List<Prescription> prescriptions) {
       setState(() {
-        cards = genCards(prescriptions, date);
+        if (prescriptions.length == 0) {
+          cards = genMessage("No Pills Yet!");
+        } else {
+          cards = genDays(prescriptions, date);
+        }
       });
     });
-    cards = [];
+  }
+
+  List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
+    List<List<Widget>> days = [];
+    DateTime startDate = new DateTime(start.year, start.month, start.day);
+    for (int i = 0; i < 7; i++) {
+      Duration duration = new Duration(days: i);
+
+      DateTime newDate;
+      if (startDate.weekday - 1 < i) {
+        newDate = startDate.add(duration);
+      } else {
+        newDate = startDate.subtract(duration);
+      }
+
+      Date date = new Date(newDate.year, newDate.month, newDate.day);
+      print(newDate.toString());
+
+      days.add(genCards(prescriptions, date));
+    }
+    return days;
+  }
+
+  List<List<Widget>> genMessage(String message) {
+    List<List<Widget>> pages = [];
+    for (int i = 0; i < 7; i++) {
+      pages.add([new Center(
+        child: new Text(message)
+      )]);
+    }
+    return pages;
   }
 
   List<Widget> genCards(List<Prescription> prescriptions, Date date) {
@@ -54,12 +85,13 @@ class ListState extends State<PillList> {
 
     for(Prescription pre in prescriptions) {
       for(PreInterval interval in pre.intervals.values) {
-        if(TimeUtil.isDay(TimeUtil.currentDate(), interval)) {
-          pre.pillLog[TimeUtil.currentDate()] = pre.pillLog[TimeUtil.currentDate()] ?? {interval.time: false};
+        if(TimeUtil.isDay(date, interval)) {
+          pre.pillLog[date] = pre.pillLog[date] ?? {interval.time: false};
+          pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
           if(TimeUtil.isNow(TimeUtil.currentTime(), interval.time, LEEWAY) ||
               TimeUtil.isUpcoming(TimeUtil.currentTime(), interval.time, LEEWAY)) {
-            upcoming.add(genCard(pre, interval.time, pre.pillLog[TimeUtil.currentDate()][interval.time]));
-          } else if(pre.pillLog[TimeUtil.currentDate()][interval.time]) {
+            upcoming.add(genCard(pre, interval.time, pre.pillLog[date][interval.time]));
+          } else if(pre.pillLog[date][interval.time]) {
             taken.add(genCard(pre, interval.time, true));
           } else {
             taken.add(genCard(pre, interval.time, false));
@@ -68,7 +100,14 @@ class ListState extends State<PillList> {
       }
     }
 
-    return upcoming + missed + taken;
+    List<PillCard> cards = upcoming + missed + taken;
+    if (cards.length == 0) {
+      return [new Center(
+        child: new Text("No Pill Today!")
+      )];
+    }
+
+    return cards;
   }
 
   Widget genCard(Prescription pre, Time time, bool taken) {
@@ -120,6 +159,7 @@ class ListState extends State<PillList> {
   Widget build(BuildContext context) {
     checkVerified(context, auth);
     return new DefaultTabController(
+        initialIndex: DateTime.now().weekday - 1,
         length: 7,
         child: new Scaffold (
             appBar: new AppBar(
@@ -137,15 +177,7 @@ class ListState extends State<PillList> {
               ),
             ),
             body: TabBarView(
-                children: [
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                  new ListView(children: cards),
-                ]
+                children: cards.map((widgets) => new ListView(children: widgets)).toList()
             ),
             floatingActionButton: new FloatingActionButton(
               onPressed: () {
