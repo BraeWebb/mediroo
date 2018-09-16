@@ -142,6 +142,10 @@ class TimeUtil {
     return new Date(dt.year, dt.month, dt.day);
   }
 
+  static DateTime toDateTime(Date date, Time time) {
+    return new DateTime(date.year, date.month, date.day, time.hour, time.minute);
+  }
+
   static Time currentTime() {
     return toTime(DateTime.now());
   }

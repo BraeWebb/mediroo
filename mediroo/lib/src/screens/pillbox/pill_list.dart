@@ -108,11 +108,11 @@ class ListState extends State<PillList> {
           pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
           if(TimeUtil.isNow(TimeUtil.currentTime(), interval.time, LEEWAY) ||
               TimeUtil.isUpcoming(TimeUtil.currentTime(), interval.time, LEEWAY)) {
-            upcoming.add(genCard(pre, interval.time, pre.pillLog[date][interval.time]));
+            upcoming.add(genCard(pre, interval.time, date, pre.pillLog[date][interval.time]));
           } else if(pre.pillLog[date][interval.time]) {
-            taken.add(genCard(pre, interval.time, true));
+            taken.add(genCard(pre, interval.time, date, true));
           } else {
-            taken.add(genCard(pre, interval.time, false));
+            taken.add(genCard(pre, interval.time, date, false));
           }
         }
       }
@@ -128,7 +128,7 @@ class ListState extends State<PillList> {
     return cards;
   }
 
-  Widget genCard(Prescription pre, Time time, bool taken) {
+  Widget genCard(Prescription pre, Time time, Date date, bool taken) {
     String image;
     switch(TimeUtil.getToD(time.hour)) {
       case ToD.MORNING:
@@ -150,10 +150,10 @@ class ListState extends State<PillList> {
     if(taken != null && taken) {
       chosenColour = takenColour;
       note = "Already taken";
-    } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
+    } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY) || date.compareTo(TimeUtil.currentDate()) < 0) {
       chosenColour = missedColour;
       note = "Medication missed!";
-    } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
+    } else if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY) || date.compareTo(TimeUtil.currentDate()) > 0) {
       chosenColour = stdColour;
       int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
       int hours = minutes ~/ 60 + 1;
