@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:mediroo/util.dart' show Auth;
-import 'package:mediroo/screens.dart' show Pillbox, DebugPage;
+import 'package:mediroo/util.dart' show BaseAuth;
+import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
+import 'package:mediroo/screens.dart' show PillList, DebugPage, SignupPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
   static String tag = "loginPage";
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
 
   LoginPage({this.analytics, this.auth}): super();
@@ -24,7 +25,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final FocusNode focus = FocusNode();
 
-  final Auth auth;
+  final BaseAuth auth;
   final FirebaseAnalytics analytics;
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
@@ -54,6 +55,29 @@ class _LoginPageState extends State<LoginPage> {
     return null;
   }
 
+  void _pressLogin() {
+    setState(() {
+      _emailError = _validateEmail(emailController.text);
+      _passwordError = _validatePassword(passwordController.text);
+    });
+
+    if (_emailError != null || _passwordError != null) {
+      return;
+    }
+
+    auth.signIn(emailController.text, passwordController.text).then((String uid) {
+      if (uid == null) {
+        passwordController.clear();
+        setState(() {
+          _passwordError = 'Incorrect email or password';
+        });
+        return;
+      }
+      analytics?.logLogin();
+      Navigator.of(context).pushReplacementNamed(PillList.tag);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -75,13 +99,7 @@ class _LoginPageState extends State<LoginPage> {
       keyboardType: TextInputType.emailAddress,
       focusNode: focus,
       controller: emailController,
-      validator: _validateEmail,
-      decoration: InputDecoration(
-        hintText: 'Email',
-        errorText: _emailError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0)),
-      ),
+      decoration: bubbleInputDecoration('Email', _emailError)
     );
 
     final password = TextFormField(
@@ -89,52 +107,30 @@ class _LoginPageState extends State<LoginPage> {
       autofocus: false,
       obscureText: true,
       controller: passwordController,
-      validator: _validatePassword,
-      decoration: InputDecoration(
-        hintText: 'Password',
-        errorText: _passwordError,
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
-      ),
+      decoration: bubbleInputDecoration('Password', _passwordError)
     );
 
-    final loginButton = Padding(
-      key: Key('login_button'),
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        borderRadius: BorderRadius.circular(30.0),
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 5.0,
-        child: MaterialButton(
-          minWidth: 200.0,
-          height: 42.0,
-          onPressed: () {
-            analytics?.logLogin();
+    final loginButton = bubbleButton("login", "Log In", _pressLogin);
 
-            setState(() {
-              _emailError = _validateEmail(emailController.text);
-              _passwordError = _validatePassword(passwordController.text);
-            });
-
-            if (_emailError != null || _passwordError != null) {
-              return;
-            }
-
-            auth.signIn(emailController.text, passwordController.text).then((String uid) {
-              if (uid == null) {
-                passwordController.clear();
-                setState(() {
-                  _passwordError = 'Incorrect email or password';
-                });
-                return;
-              }
-              Navigator.of(context).pushReplacementNamed(Pillbox.tag);
-            });
-          },
-          color: Colors.lightBlueAccent,
-          child: Text('Log In', style: TextStyle(color: Colors.white)),
+    final newUser = FlatButton(
+      key: Key("new_user"),
+      child: RichText(
+        text: new TextSpan(
+          style: TextStyle(color: Colors.black54),
+          children: <TextSpan>[
+            new TextSpan(
+                text: "New to MediRoo? "
+            ),
+            new TextSpan(
+                text: "Sign up here.",
+                style: new TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)
+            ),
+          ],
         ),
       ),
+      onPressed: () {
+        Navigator.of(context).pushNamed(SignupPage.tag);
+      },
     );
 
     final forgotLabel = FlatButton(
@@ -144,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        Navigator.of(context).pushReplacementNamed(DebugPage.tag);
+        Navigator.of(context).pushNamed(DebugPage.tag);
       },
     );
 
@@ -162,6 +158,9 @@ class _LoginPageState extends State<LoginPage> {
             password,
             SizedBox(height: 24.0),
             loginButton,
+            SizedBox(height: 8.0),
+            newUser,
+            SizedBox(height: 4.0),
             forgotLabel
           ],
         ),

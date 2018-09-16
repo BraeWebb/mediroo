@@ -14,7 +14,7 @@ Stream<List<Prescription>> getUserPills() async* {
   String uuid = await currentUUID();
 
   // get database snapshots
-  Stream<QuerySnapshot> snapshots = Firestore.instance.collection('pills/users/' + uuid).snapshots();
+  Stream<QuerySnapshot> snapshots = Firestore.instance.collection('prescriptions/' + uuid + '/prescription').snapshots();
 
   // asynchronously update when database updates
   await for (QuerySnapshot snapshot in snapshots) {
@@ -22,13 +22,26 @@ Stream<List<Prescription>> getUserPills() async* {
 
     // build a list of prescriptions from database data
     for (DocumentSnapshot document in snapshot.documents) {
-      List<Pill> pills = new List();
+      print(document);
+      String medication = document.data['medication'];
 
-      for (DateTime time in document.data['pills']) {
-        pills.add(new Pill(time));
+      DocumentSnapshot medDocument;
+      if (medication != null) {
+        medDocument = await Firestore.instance.document('medication/' + medication).get();
       }
 
-      prescriptions.add(new Prescription(document.data['name'], pills: pills));
+      String name = document.data['description'];
+      String notes = document.data['notes'];
+
+      if (medication != null) {
+        name ??= medDocument.data['name'];
+        notes ??= medDocument.data['notes'];
+      }
+
+      Prescription prescription = new Prescription(document.documentID, name);
+      prescription.pillsLeft = document.data['remaining'];
+
+      prescriptions.add(prescription);
     }
 
     yield prescriptions;
@@ -40,12 +53,11 @@ Stream<List<Prescription>> getUserPills() async* {
 void addPrescription(Prescription prescription) async {
   String uuid = await currentUUID();
 
-  CollectionReference collection = Firestore.instance.collection('pills/users/' + uuid);
+  CollectionReference collection = Firestore.instance.collection('prescriptions/' + uuid + '/prescription');
 
   collection.add({
-    'name': prescription.desc,
-    'description': prescription.desc,
-    'notes': prescription.notes,
-    'pills': prescription.getPills()
+    'description': prescription.medNotes,
+    'notes': prescription.docNotes,
+    'remaining': prescription.pillsLeft
   });
 }

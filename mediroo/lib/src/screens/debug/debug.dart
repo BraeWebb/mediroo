@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:mediroo/util.dart' show Auth;
+import 'package:mediroo/util.dart' show FireAuth;
 import 'package:mediroo/widgets.dart';
 
 /// Screen that should be used for general application testing.
@@ -16,7 +16,7 @@ class DebugPage extends StatelessWidget {
 
   TextEditingController reset = new TextEditingController();
 
-  Auth auth = new Auth();
+  FireAuth auth = new FireAuth();
 
   @override
   Widget build(BuildContext context) {

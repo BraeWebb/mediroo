@@ -59,7 +59,7 @@ class _UserPills extends StatelessWidget {
             itemExtent: 25.0,
             itemBuilder: (context, index) {
               Prescription ds = snapshot.data[index];
-              return new Text("${ds.desc}");
+              return new Text("${ds.medNotes}");
             }
         );
       });

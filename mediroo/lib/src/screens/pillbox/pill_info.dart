@@ -6,7 +6,7 @@ class PillTakeInfo extends StatefulWidget {
 
   PillTakeInfo(this.pill, this.parent, {Key key, this.title}) : super(key: key);
 
-  final Pill pill;
+  final dynamic pill;
   final PillIconState parent;
   final String title;
 
@@ -19,7 +19,7 @@ class _PillTakeState extends State<PillTakeInfo> {
     setupBtn();
   }
 
-  Pill pill;
+  dynamic pill;
   PillIconState parent;
   RaisedButton btn;
 

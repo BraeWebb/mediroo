@@ -1,30 +1,31 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show getUserPills;
+import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'add_pills.dart' show AddPillsPage;
-import 'pill_info.dart' show PillTakeInfo;
-import 'prescription_info.dart' show PrescriptionInfo;
-import 'prescription_list.dart' show PrescriptionList;
-
 class PillList extends StatefulWidget {
-  final User loggedIn;
-  final Date date;
+  static final tag = "PillList";
+  final FireAuth auth;
+  Date date;
 
-  PillList(this.loggedIn, this.date);
+  PillList({this.date, this.auth}) {
+    if (date == null) {
+      DateTime now = DateTime.now();
+      date = new Date(now.year, now.month, now.day);
+    }
+  }
 
   @override
   State<StatefulWidget> createState() {
-    return new ListState(loggedIn, date);
+    return new ListState(date, auth: auth);
   }
 }
 
 class ListState extends State<PillList> {
+  final FireAuth auth;
   User loggedIn;
   Date date;
-  List<Widget> cards;
+  List<Widget> cards = [];
 
   final Color stdColour = const Color(0xFF333366);
   final Color takenColour = const Color(0xFF3aa53f);
@@ -32,19 +33,11 @@ class ListState extends State<PillList> {
   final Color alertColor = const Color(0xFFa1a1ed);
   static const int LEEWAY = 15;
 
-  ListState(this.loggedIn, this.date) {
-    //TESTING CODE
-    /*DateTime now = DateTime.now();
-    DateTime dt0 = new DateTime(now.year, now.month, now.day, 11);
-    DateTime dt1 = new DateTime(now.year, now.month, now.day, 8);
-    DateTime dt2 = new DateTime(now.year, now.month, now.day, 9);
-    DateTime dt3 = new DateTime(2019, now.month, now.day, 9);
-    model = new Model();
-    PrescriptionModel pre = model.newPrescription("Some meds", notes: "take these meds");
-    pre.timeslots = {dt0: false, dt1: false, dt2: true, dt3: false};*/
-    //END TESTING CODE
-
-    cards = genCards(loggedIn, date);
+  ListState(this.date, {this.auth}) {
+    currentUser().then((User user) {
+      loggedIn = user;
+      cards = genCards(loggedIn, date);
+    });
   }
 
   void refreshCards() {
@@ -96,7 +89,7 @@ class ListState extends State<PillList> {
 
     Color chosenColour;
     String note;
-    if(taken) {
+    if(taken != null && taken) {
       chosenColour = takenColour;
       note = "Already taken";
     } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
@@ -124,7 +117,7 @@ class ListState extends State<PillList> {
 
   @override
   Widget build(BuildContext context) {
-
+    checkVerified(context, auth);
     return new Scaffold (
         appBar: new AppBar(
           title: new Text("Upcoming pills"),

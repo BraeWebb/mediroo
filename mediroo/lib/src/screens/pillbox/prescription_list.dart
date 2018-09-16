@@ -26,11 +26,11 @@ class PrescriptionList extends StatelessWidget {
             timeToTake += "Take this pill at " + time.hour.toString() +
                 ":00 \n";
           }
-          pills[index].pills.forEach(addToString);
+//          pills[index].pills.forEach(addToString);
 
           return ListTile(
             leading: Icon(FontAwesomeIcons.capsules),
-            title: Text(pill.desc),
+            title: Text(pill.medNotes),
             subtitle: Text(timeToTake),
             contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
 

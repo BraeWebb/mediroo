@@ -1,23 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
+
 import 'package:mediroo/util.dart' show getUserPills;
+import 'package:mediroo/util.dart' show FireAuth, getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
 import 'pill_info.dart' show PillTakeInfo;
 import 'prescription_info.dart' show PrescriptionInfo;
-import 'prescription_list.dart' show PrescriptionList;
 import 'pill_list.dart' show PillList;
 
 /// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
   /// Create a with [title] that displays the [model].
-  Pillbox(this.pills, this.date, {Key key, this.title}) : super(key: key);
+  Pillbox(this.pills, this.date, {Key key, this.title, this.auth}) : super(key: key);
 
   /// The [title] to be displayed in the menu bar.
   final String title;
   static String tag = "Pillbox";
+  final FireAuth auth;
+
   /// A [model] representing a pillbox
   final List<Prescription> pills;
   final DateTime date;
@@ -39,9 +42,9 @@ class Pillbox extends StatelessWidget {
               MaterialPageRoute(builder: (context) => PrescriptionList(this
                       .pills))
             );*/
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => PillList(null, DateTime.now()))
-            );
+            //Navigator.push(context,
+            //  MaterialPageRoute(builder: (context) => PillList(this.pills, auth: auth))
+            //);
           },
           tooltip: "",
           child: new Icon(Icons.info_outline),
@@ -105,10 +108,10 @@ class _GridState extends State<_PillboxGrid> {
       );
 
       for (int j = 1; j < 5; j++) {
-        Pill pill = pills[i].getPill(date, ToD.values[j-1]);
-        grid[i * 5 + 5 + j] = new GridTile( // taken/not taken
-            child: new _PillIcon(pill)
-        );
+        //Pill pill = pills[i].getPill(date, ToD.values[j-1]);
+        //grid[i * 5 + 5 + j] = new GridTile( // taken/not taken
+        //    child: new _PillIcon(pill)
+        //);
       }
     }
 
@@ -157,7 +160,7 @@ class _PillDesc extends StatelessWidget {
       child: new Card(
           color: Colors.teal.shade300,
           child: new Center(
-              child: new Text(prescription.desc) //replace with image?
+              child: new Text(prescription.medNotes) //replace with image?
           )
       ),
       onTap: () {
@@ -172,7 +175,7 @@ class _PillDesc extends StatelessWidget {
 }
 
 class _PillIcon extends StatefulWidget {
-  final Pill pill;
+  final dynamic pill;
 
   _PillIcon(this.pill, {Key key}) : super(key: key);
 
@@ -182,7 +185,7 @@ class _PillIcon extends StatefulWidget {
 
 /// A single button representing a pill in a prescription
 class PillIconState extends State<_PillIcon> {
-  Pill pill;
+  dynamic pill;
   Color _typeColor;
   Icon _typeIcon;
 
