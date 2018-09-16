@@ -41,6 +41,7 @@ class _TempState extends State<AddPillsPage> {
 
 
   Row endDateContainer;
+  Row startDateContainer;
   FlatButton endDateField;
   FlatButton startDateField;
 
@@ -122,13 +123,8 @@ class _TempState extends State<AddPillsPage> {
     startDateField = getDate("Start date", 7, Colors.black45);
     endDateField = getDate("End date", 9, Colors.black45);
 
-    endDateContainer = new Row(
-        children: <Widget>[
-          Icon(FontAwesomeIcons.calendar),
-          new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
-          new Expanded(child: endDateField)
-        ]
-    );
+    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendar));
+    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendar));
 
     frequencyOptions = new List<DropdownMenuItem<double>>();
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
@@ -143,13 +139,23 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(doctorNotes);
     addPillFields.add(whitespace);
 
-    addPillFields.add(startDateField);
+    addPillFields.add(startDateContainer);
     addPillFields.add(whitespace);
     addPillFields.add(endDateContainer);
     addPillFields.add(whitespace);
     addPillFields.add(getFrequency());
     addPillFields.add(whitespace);
     addPillFields.add(whatTime);
+  }
+
+  Row makeRow(Widget wid, Icon icon){
+    return new Row(
+        children: <Widget>[
+          icon,
+          new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
+          new Expanded(child: wid)
+        ]
+    );
   }
 
   Center getFrequency() {
