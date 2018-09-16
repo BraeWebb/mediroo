@@ -101,53 +101,41 @@ class _TempState extends State<AddPillsPage> {
       style: TextStyle(color: Colors.black54, fontSize: 17.0),
    );
 
-//    endDateField = new TextFormField(
-//      key: Key('end_date'),
-//      keyboardType: TextInputType.datetime,
-//      controller: endDateController,
-//      decoration: bubbleInputDecoration("dd/mm/yyyy", null, Icon(FontAwesomeIcons.calendar)),
-//    );
-
-
-
-//    new FlatButton(
-////      key: Key(''),
-//      child: Text("End date"),
-//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      onPressed: (){
-//          _selectDate(context);
-//        },
-//    );
-
-//    RaisedButton(
-//        child: new Text("End date"),
-//        onPressed: (){
-//          _selectDate(context);
-//        },
-//    );
-
     frequencyOptions = new List<DropdownMenuItem<double>>();
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
 
-    //startDateField = getDate("Start date", 7, Colors.black45);
-    //endDateField = getDate("End date", 9, Colors.black45);
     startDateField = getDate("Start date", 7, Colors.black45, this.startDate,
         Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45));
     endDateField = getDate("End date", 9, Colors.black45, this.startDate,
         Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45));
 
-    timeField = getTime("What time should the pills be taken", Colors.black45);
+    timeField = getTime("What time should the pills be taken?", Colors.black45);
 
     startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45,));
     endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45,));
     timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock, color: Colors.black45,));
     frequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,));
 
+    final addInterval = new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text('Add new time', style: new TextStyle(color: Colors.black45)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        //_selectDate(context, widgetIndex, date, icon);
+      },
+    );
 
+
+    times.add(getNewInterval(timeFieldContainer, timeFieldContainer));
 
     addPillFields.add(SizedBox(height: 30.0));
     addPillFields.add(pillName);
@@ -164,12 +152,21 @@ class _TempState extends State<AddPillsPage> {
 
     addPillFields.add(frequencyContainer);
     addPillFields.add(whitespace);
-    addPillFields.add(Divider());
-    addPillFields.add(whitespace);
-    addPillFields.add(timeFieldContainer);
+    addPillFields.add(times[0]);
+    addPillFields.add(new Divider());
+    addPillFields.add(addInterval);
+    addPillFields.add(bubbleButton("add", "Add Pill", () {}));
   }
 
-  Row makeRow(Widget wid, Icon icon){
+  void pressAddInterval() {
+    setState(() {
+      Widget interval = getNewInterval(getTime("What time should the pills be taken?", Colors.black54),
+          getTime("What time should the pills be taken?", Colors.black54));
+      times.add(interval);
+    });
+  }
+
+  Row makeRow(Widget wid, Widget icon){
     return new Row(
         children: <Widget>[
           icon,
@@ -191,7 +188,7 @@ class _TempState extends State<AddPillsPage> {
           borderRadius: BorderRadius.circular(20.0)
       ),
       onPressed: () {
-        _selectTime(context, 15);
+        _selectTime(context, 13);
       },
     );
   }
@@ -228,12 +225,12 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 
-  Widget getNewInterval(Widget time, Icon, icon) {
+  Widget getNewInterval(Widget time, Widget dosage) {
     return new Column(
       children: <Widget>[
         new Divider(),
-        makeRow(time, icon),
-        new Divider(),
+        time,
+        dosage,
       ],
     );
   }
@@ -291,23 +288,24 @@ class _TempState extends State<AddPillsPage> {
     TimeOfDay picked;
       picked = await showTimePicker(
           context: context,
-          initialTime:new TimeOfDay.now()
+          initialTime: new TimeOfDay.now()
       );
+
+    String timeString = "What time should the pills be taken?";
 
     if (picked != null){
       setState((){
         this.time = picked;
       });
+      int hour = this.time.hour;
+      int minute = this.time.minute;
+
+      timeString = "$hour:$minute";
     }
 
-    String timeString = this.time.hour.toString() + ":" + this.time.minute.toString();
-
     timeField = makeRow(getTime(timeString, Colors.black87), Icon(FontAwesomeIcons.clock, color: Colors.black45,));
-    addPillFields.replaceRange(side, side + 1, [timeField]);
-    setState(() {
-
-    });
-
+    times[0] = timeField;
+    addPillFields.replaceRange(side, side + 1, [times[0]]);
   }
 
   Future<Null> _selectDate(BuildContext context, int side, DateTime dateTime, Icon icon) async {
@@ -425,6 +423,42 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 }
+
+//class Interval extends StatelessWidget {
+//  final TimeOfDay timeToTake;
+//  final int dosage;
+//  final dosageController = new TextEditingController();
+//
+//  Interval(this.timeToTake, this.dosage);
+//
+//  Widget getTime(String text, Color colour) {
+//    return new FlatButton(
+//      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+//      child: new Text(text, style: new TextStyle(color: colour)),
+//      shape: new OutlineInputBorder(
+//          borderSide: new BorderSide(
+//            width: 1.0,
+//            color: Colors.black45,
+//          ),
+//          borderRadius: BorderRadius.circular(20.0)
+//      ),
+//      onPressed: () {
+//        _selectTime(context, 15);
+//      },
+//    );
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return new Column(
+//      children: <Widget>[
+//        new Divider(),
+//        timeToTake,
+//        dosage,
+//      ],
+//    );
+//  }
+//}
 
 
 class ToDGrid extends StatefulWidget {
