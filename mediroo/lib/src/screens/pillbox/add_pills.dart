@@ -49,6 +49,8 @@ class _TempState extends State<AddPillsPage> {
   Widget startDateField;
   Widget timeField;
 
+  List<Widget> times = new List<Widget>();
+
   DropdownButton<double> frequencyField;
 
   List<Widget> addPillFields = new List<Widget>();
@@ -138,23 +140,7 @@ class _TempState extends State<AddPillsPage> {
     endDateField = getDate("End date", 9, Colors.black45, this.startDate,
         Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45));
 
-    timeField = new FlatButton(
-      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      child: new Text("time", style: new TextStyle(color: Colors.black45)),
-      shape: new OutlineInputBorder(
-          borderSide: new BorderSide(
-              width: 1.0,
-              color: Colors.black45
-          ),
-          borderRadius: BorderRadius.circular(20.0)
-      ),
-      onPressed: () {
-        _selectTime(context);
-      },
-    );
-
-
-
+    timeField = getTime("What time should the pills be taken", Colors.black45);
 
     startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45,));
     endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45,));
@@ -169,7 +155,7 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(pillCount);
     addPillFields.add(whitespace);
     addPillFields.add(doctorNotes);
-    addPillFields.add(whitespace);
+    addPillFields.add(whitespace); // 6
 
     addPillFields.add(startDateContainer);
     addPillFields.add(whitespace);
@@ -178,7 +164,7 @@ class _TempState extends State<AddPillsPage> {
 
     addPillFields.add(frequencyContainer);
     addPillFields.add(whitespace);
-    //addPillFields.add(whatTime);
+    addPillFields.add(Divider());
     addPillFields.add(whitespace);
     addPillFields.add(timeFieldContainer);
   }
@@ -190,6 +176,23 @@ class _TempState extends State<AddPillsPage> {
           new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
           new Expanded(child: wid)
         ]
+    );
+  }
+
+  Widget getTime(String text, Color colour) {
+    return new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text(text, style: new TextStyle(color: colour)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45,
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        _selectTime(context, 15);
+      },
     );
   }
 
@@ -225,24 +228,13 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 
-  Widget getNewInterval() {
-    return new Card(
-      child: new Column(
-        children: <Widget>[
-          new Row(
-            children: <Widget>[
-              new Icon(FontAwesomeIcons.clock),
-              new Text("hello"),
-            ],
-          ),
-          new Row(
-            children: <Widget>[
-              new Icon(FontAwesomeIcons.capsules),
-              new Text("world"),
-            ],
-          )
-        ],
-      ),
+  Widget getNewInterval(Widget time, Icon, icon) {
+    return new Column(
+      children: <Widget>[
+        new Divider(),
+        makeRow(time, icon),
+        new Divider(),
+      ],
     );
   }
 
@@ -295,7 +287,7 @@ class _TempState extends State<AddPillsPage> {
     super.dispose();
   }
 
-  Future<Null> _selectTime(BuildContext context) async {
+  Future<Null> _selectTime(BuildContext context, int side) async {
     TimeOfDay picked;
       picked = await showTimePicker(
           context: context,
@@ -308,6 +300,10 @@ class _TempState extends State<AddPillsPage> {
       });
     }
 
+    String timeString = this.time.hour.toString() + ":" + this.time.minute.toString();
+
+    timeField = makeRow(getTime(timeString, Colors.black87), Icon(FontAwesomeIcons.clock, color: Colors.black45,));
+    addPillFields.replaceRange(side, side + 1, [timeField]);
     setState(() {
 
     });
