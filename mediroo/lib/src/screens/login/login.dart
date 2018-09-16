@@ -30,8 +30,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-  String _emailError = null;
-  String _passwordError = null;
+  String _emailError;
+  String _passwordError;
+  // true iff the user has started logging in
+  bool _loggingIn = false;
 
   _LoginPageState({this.analytics, this.auth}): super();
 
@@ -65,10 +67,15 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    setState(() {
+      _loggingIn = true;
+    });
+
     auth.signIn(emailController.text, passwordController.text).then((String uid) {
       if (uid == null) {
         passwordController.clear();
         setState(() {
+          _loggingIn = false;
           _passwordError = 'Incorrect email or password';
         });
         return;
@@ -147,23 +154,36 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24.0, right: 24.0),
-          children: <Widget>[
-            logo,
-            SizedBox(height: 48.0),
-            email,
-            SizedBox(height: 8.0),
-            password,
-            SizedBox(height: 24.0),
-            loginButton,
-            SizedBox(height: 8.0),
-            newUser,
-            SizedBox(height: 4.0),
-            forgotLabel
-          ],
-        ),
+        child: Stack(
+          fit: StackFit.passthrough,
+          children: [
+            ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 24.0, right: 24.0),
+              children: <Widget>[
+                logo,
+                SizedBox(height: 48.0),
+                email,
+                SizedBox(height: 8.0),
+                password,
+                SizedBox(height: 24.0),
+                loginButton,
+                SizedBox(height: 8.0),
+                newUser,
+                SizedBox(height: 4.0),
+                forgotLabel
+              ],
+            ),
+            new Offstage(
+              offstage: !_loggingIn,
+              child: new Center(
+                child: new CircularProgressIndicator(
+                  value: null,
+                  strokeWidth: 7.0,
+                )
+              )
+            )
+          ]),
       ),
     );
   }
