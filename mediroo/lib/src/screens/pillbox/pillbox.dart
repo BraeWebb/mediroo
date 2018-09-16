@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, getUserPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 import 'add_pills.dart' show AddPillsPage;
 import 'pill_info.dart' show PillTakeInfo;
@@ -13,7 +15,9 @@ import 'pill_list.dart' show PillList;
 /// Screen that displays data from the [PillboxModel] in a grid.
 class Pillbox extends StatelessWidget {
   /// Create a with [title] that displays the [model].
-  Pillbox(this.pills, this.date, {Key key, this.title, this.auth}) : super(key: key);
+  Pillbox(firebaseMessageing, this.pills, this.date, {Key key, this.title, this.auth}) : super(key: key){
+    this._fireBaseMessageing = firebaseMessageing;
+  }
 
   /// The [title] to be displayed in the menu bar.
   final String title;
@@ -22,7 +26,7 @@ class Pillbox extends StatelessWidget {
   /// A [model] representing a pillbox
   final List<Prescription> pills;
   final DateTime date;
-
+  FirebaseMessaging _fireBaseMessageing;
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -31,7 +35,7 @@ class Pillbox extends StatelessWidget {
           title: new Text(title),
         ),
         body: new Center(
-          child: new _PillboxGrid(pills, date),
+          child: new _PillboxGrid(this._fireBaseMessageing, pills, date),
         ),
         floatingActionButton: new FloatingActionButton(
           onPressed: () {
@@ -55,18 +59,40 @@ class Pillbox extends StatelessWidget {
 class _PillboxGrid extends StatefulWidget {
   final List<Prescription> pills; //the model the grid is representing
   final DateTime date; //the day the grid is representing
+  FirebaseMessaging _fireBaseMessageing;
 
-  _PillboxGrid(this.pills, this.date, {Key key}) : super(key: key);
+  _PillboxGrid(fireBaseMessageing, this.pills, this.date, {Key key}) : super(key: key){
+    this._fireBaseMessageing = fireBaseMessageing;
+  }
+
+
+
 
   @override
-  _GridState createState() => new _GridState(pills, date);
+  _GridState createState() => new _GridState(this._fireBaseMessageing, pills, date);
 }
 
 class _GridState extends State<_PillboxGrid> {
   List<Prescription> pills;
   DateTime date;
+  FirebaseMessaging _fireBaseMessageing;
 
-  _GridState(this.pills, this.date) {
+  @override
+  void initState(){
+    super.initState();
+    this._fireBaseMessageing.configure(
+        onMessage: (Map<String, dynamic> message) {print('on message $message');},
+        onResume: (Map<String, dynamic> message) {print('on resume $message');},
+        onLaunch: (Map<String, dynamic> message) {print('on launch $message');},
+    );
+    this._fireBaseMessageing.getToken().then((token) {
+      print(token);
+    });
+  }
+
+
+  _GridState(fireBaseMessageing, this.pills, this.date) {
+    this._fireBaseMessageing = fireBaseMessageing;
 
     // Listen for any updates to the database
     Stream<List<Prescription>> pillStream = getUserPills();
@@ -223,9 +249,32 @@ class PillIconState extends State<_PillIcon> {
     });
   }
 
-  void takePill() {
+  void _showAlert(){
+    double temp = this.pill.master.numberOfPills * 0.1;
+    AlertDialog dialog = new AlertDialog(
+      content: new Text(
+        "you have less than $temp pills remaining"
+      ),
+      actions: <Widget>[
+        new FlatButton (
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: new Text(
+            "Dismiss"
+          ),
+        )
+      ],
+    );
+    showDialog(context: context, child: dialog);
+  }
+
+  void takePill() { //Hope this is used
     if(pill.status == PillType.STD) {
       pill.status = PillType.TAKEN;
+      if (this.pill.master.numberOfPills * 0.1 > this.pill.master.getPills().length){
+        _showAlert();
+      }
       setIconType();
     }
   }

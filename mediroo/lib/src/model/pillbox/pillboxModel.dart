@@ -80,11 +80,11 @@ class Prescription {
     }
   }
 
-  setWhenToTake(TimeOfDay t){
+  void setWhenToTake(TimeOfDay t){
     this.whenToTake = t;
   }
 
-  setNumberOfPills(int i){
+  void setNumberOfPills(int i){
     this.numberOfPills = i;
   }
 

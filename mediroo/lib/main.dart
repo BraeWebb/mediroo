@@ -17,16 +17,17 @@ class MediRooApp extends StatelessWidget {
 
   static FirebaseAnalytics analytics = new FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
-  final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
+  static final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging(); // TODO lord i dont know if this breaks
 
   /// The structure of [MediRooApp] mapping a route to a window widget.
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
-    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox", auth: new FireAuth()),
+    Pillbox.tag: (context) => Pillbox(_firebaseMessaging, [], DateTime.now(), title: "Pillbox", auth: new FireAuth()),
     DebugPage.tag: (context) => DebugPage(),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
   };
+
 
   /// Construct a material application based on the [routes] of the application.
   @override
