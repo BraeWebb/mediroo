@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:mediroo/model.dart' show Prescription, Pill;
+import 'package:mediroo/model.dart';
 import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 
 
@@ -13,8 +13,10 @@ import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 Stream<List<Prescription>> getUserPrescriptions() async* {
   String uuid = await currentUUID();
 
+  String prescriptionCollection = 'prescriptions/' + uuid + '/prescription/';
+
   // get database snapshots
-  Stream<QuerySnapshot> snapshots = Firestore.instance.collection('prescriptions/' + uuid + '/prescription').snapshots();
+  Stream<QuerySnapshot> snapshots = Firestore.instance.collection(prescriptionCollection).snapshots();
 
   // asynchronously update when database updates
   await for (QuerySnapshot snapshot in snapshots) {
@@ -32,14 +34,36 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
 
       String name = document.data['description'];
       String notes = document.data['notes'];
+      int remaining = document.data['remaining'];
 
       if (medication != null) {
         name ??= medDocument.data['name'];
         notes ??= medDocument.data['notes'];
       }
 
-      Prescription prescription = new Prescription(document.documentID, name);
-      prescription.pillsLeft = document.data['remaining'];
+      Prescription prescription = new Prescription(document.documentID, name,
+        pillsLeft: remaining,
+        pillLog: {}
+      );
+      prescription.intervals = new Map();
+
+      QuerySnapshot intervalSnapshots = await Firestore.instance
+          .collection(prescriptionCollection + document.documentID + '/intervals').getDocuments();
+
+      for (DocumentSnapshot intervalDoc in intervalSnapshots.documents) {
+        DateTime dateTime = intervalDoc.data['time'];
+        DateTime start = intervalDoc.data['start'];
+        DateTime end = intervalDoc.data['end'];
+        Time time = new Time(dateTime.hour, dateTime.minute);
+
+        PreInterval interval = new PreInterval(
+          time, new Date(start.year, start.month, start.day),
+          endDate: new Date(end.year, end.month, end.day),
+          dateDelta: intervalDoc.data['days'],
+          dosage: intervalDoc.data['dosage']
+        );
+        prescription.intervals[time] = interval;
+      }
 
       prescriptions.add(prescription);
     }

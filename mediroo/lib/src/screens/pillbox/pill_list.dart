@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser;
+import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser, getUserPrescriptions;
 import 'package:mediroo/screens.dart' show AddPillsPage;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -37,25 +37,25 @@ class ListState extends State<PillList> {
   ListState(this.date, {this.auth}) {
     currentUser().then((User user) {
       loggedIn = user;
-      cards = genCards(loggedIn, date);
     });
+
+    getUserPrescriptions().listen((List<Prescription> prescriptions) {
+      setState(() {
+        cards = genCards(prescriptions, date);
+      });
+    });
+    cards = [];
   }
 
-  void refreshCards() {
-    setState(() {
-      cards = genCards(loggedIn, date);
-    });
-  }
-
-  List<Widget> genCards(User loggedIn, Date date) {
+  List<Widget> genCards(List<Prescription> prescriptions, Date date) {
     List<PillCard> upcoming = new List();
     List<PillCard> missed = new List();
     List<PillCard> taken = new List();
 
-    for(Prescription pre in loggedIn.prescriptions) {
+    for(Prescription pre in prescriptions) {
       for(PreInterval interval in pre.intervals.values) {
         if(TimeUtil.isDay(TimeUtil.currentDate(), interval)) {
-          pre.pillLog[TimeUtil.currentDate()] = pre.pillLog[TimeUtil.currentDate()] ?? new Map();
+          pre.pillLog[TimeUtil.currentDate()] = pre.pillLog[TimeUtil.currentDate()] ?? {interval.time: false};
           if(TimeUtil.isNow(TimeUtil.currentTime(), interval.time, LEEWAY) ||
               TimeUtil.isUpcoming(TimeUtil.currentTime(), interval.time, LEEWAY)) {
             upcoming.add(genCard(pre, interval.time, pre.pillLog[TimeUtil.currentDate()][interval.time]));
