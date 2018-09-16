@@ -39,7 +39,8 @@ class _TempState extends State<AddPillsPage> {
   DateTime startDate;
   DateTime endDate;
 
-  Widget endDateField;
+  FlatButton endDateField;
+  FlatButton startDateField;
 
   DropdownButton<double> frequencyField;
 
@@ -86,41 +87,20 @@ class _TempState extends State<AddPillsPage> {
 
     final testButton = bubbleButton("test", "test", _pressTest);
 
+    final whatTime = new Text(
+      "What time should the pills be taken?",
+      style: TextStyle(color: Colors.black54, fontSize: 17.0),
+   );
+
 //    endDateField = new TextFormField(
 //      key: Key('end_date'),
 //      keyboardType: TextInputType.datetime,
 //      controller: endDateController,
 //      decoration: bubbleInputDecoration("dd/mm/yyyy", null, Icon(FontAwesomeIcons.calendar)),
 //    );
-    
-    endDateField = new FlatButton(
-        child: new Text("End date", style: new TextStyle(color: Colors.black45)),
-        shape: new OutlineInputBorder(
-            borderSide: new BorderSide(
-                width: 1.0, color: Colors.black45
-            ),
-            borderRadius: BorderRadius.circular(20.0)),
-        onPressed: (){
-          _selectDate(context);
-        },
-    );
 
-//    new FlatButton(
-////      key: Key(''),
-//      child: Text("End date"),
-//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-//      padding: EdgeInsets.symmetric(vertical: 16.0),
-//      onPressed: (){
-//          _selectDate(context);
-//        },
-//    );
-
-//    RaisedButton(
-//        child: new Text("End date"),
-//        onPressed: (){
-//          _selectDate(context);
-//        },
-//    );
+    startDateField = getDate("Start date", 7, Colors.black45);
+    endDateField = getDate("End date", 9, Colors.black45);
 
     frequencyOptions = new List<DropdownMenuItem<double>>();
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
@@ -134,24 +114,46 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(whitespace);
     addPillFields.add(doctorNotes);
     addPillFields.add(whitespace);
+    addPillFields.add(startDateField);
+    addPillFields.add(whitespace);
     addPillFields.add(endDateField);
     addPillFields.add(whitespace);
     addPillFields.add(getFrequency());
+    addPillFields.add(whitespace);
+    addPillFields.add(whatTime);
   }
 
-  DropdownButton<double> getFrequency() {
-    return new DropdownButton<double>(
-        value: frequency,
-        items: frequencyOptions,
-        hint: new Text("Frequency of medication"),
+  Center getFrequency() {
+    return new Center(
+        child: DropdownButton<double>(
+            value: frequency,
+            items: frequencyOptions,
+            hint: new Text("Frequency of medication"),
 
-        onChanged: (val) {
-          frequency = val;
-          setState(() {});
-        }
+            onChanged: (val) {
+              frequency = val;
+              setState(() {});
+            },
+        )
     );
   }
 
+  FlatButton getDate(String text, int widgetIndex, Color textColor) {
+    return new FlatButton(
+      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+      child: new Text(text, style: new TextStyle(color: textColor)),
+      shape: new OutlineInputBorder(
+          borderSide: new BorderSide(
+              width: 1.0,
+              color: Colors.black45
+          ),
+          borderRadius: BorderRadius.circular(20.0)
+      ),
+      onPressed: () {
+        _selectDate(context, widgetIndex);
+      },
+    );
+  }
 
   bool _isFormComplete(){
     if (pillNameController.text == "" || frequency == 0.0 || TimeOfDay == null
@@ -221,7 +223,7 @@ class _TempState extends State<AddPillsPage> {
 
   }
 
-  Future<Null> _selectDate(BuildContext context) async {
+  Future<Null> _selectDate(BuildContext context, int side) async {
     DateTime picked;
     DateTime now = new DateTime.now();
 
@@ -236,13 +238,12 @@ class _TempState extends State<AddPillsPage> {
         this.endDate = picked;
       });
     }
-    endDateField = new FlatButton(
-      onPressed: () {
-        _selectDate(context);
-        },
-      child: Text(this.endDate.toString()),
-    );
-    addPillFields.replaceRange(7, 8, [endDateField]);
+    String date = this.endDate.day.toString() + "/" +
+        this.endDate.month.toString() + "/" +
+        this.endDate.year.toString();
+
+    endDateField = getDate(date, side, Colors.black87);
+    addPillFields.replaceRange(side, side + 1, [endDateField]);
   }
 
 
@@ -256,7 +257,7 @@ class _TempState extends State<AddPillsPage> {
   @override
   Widget build(BuildContext context) {
     //this.context = context.currentContext();
-    addPillFields.replaceRange(9, 10, [getFrequency()]);
+    addPillFields.replaceRange(11, 12, [getFrequency()]);
 
     return this.scaffold =  new Scaffold (
       key: _globalKey,
