@@ -93,7 +93,7 @@ class _TempState extends State<AddPillsPage> {
 //      decoration: bubbleInputDecoration("dd/mm/yyyy", null, Icon(FontAwesomeIcons.calendar)),
 //    );
     
-    endDateField = endDateField = new FlatButton(
+    endDateField = new FlatButton(
         child: new Text("End date", style: new TextStyle(color: Colors.black45)),
         shape: new OutlineInputBorder(
             borderSide: new BorderSide(
