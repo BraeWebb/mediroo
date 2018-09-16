@@ -34,11 +34,14 @@ class _TempState extends State<AddPillsPage> {
   Scaffold scaffold;
   ValueChanged<Text> val;
   double frequency = null;
+  List frequencyOptions;
   TimeOfDay time;
   DateTime startDate;
   DateTime endDate;
 
   Widget endDateField;
+
+  DropdownButton<double> frequencyField;
 
   List<Widget> addPillFields = new List<Widget>();
 
@@ -53,10 +56,6 @@ class _TempState extends State<AddPillsPage> {
   var _globalKey = new GlobalKey<ScaffoldState>();
 
   _TempState() {
-    final items = new List<DropdownMenuItem<double>>();
-    items.add(new  DropdownMenuItem(child: new Text('Daily'), value: 1.0));
-    items.add(new  DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
-    items.add(new  DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
     final pillName = new TextFormField(
         key: Key('pill_name_field'),
@@ -94,12 +93,39 @@ class _TempState extends State<AddPillsPage> {
 //      decoration: bubbleInputDecoration("dd/mm/yyyy", null, Icon(FontAwesomeIcons.calendar)),
 //    );
     
-    endDateField = new RaisedButton(
-        child: new Text("End date"),
+    endDateField = endDateField = new FlatButton(
+        child: new Text("End date", style: new TextStyle(color: Colors.black45)),
+        shape: new OutlineInputBorder(
+            borderSide: new BorderSide(
+                width: 1.0, color: Colors.black45
+            ),
+            borderRadius: BorderRadius.circular(20.0)),
         onPressed: (){
           _selectDate(context);
         },
     );
+
+//    new FlatButton(
+////      key: Key(''),
+//      child: Text("End date"),
+//      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+//      padding: EdgeInsets.symmetric(vertical: 16.0),
+//      onPressed: (){
+//          _selectDate(context);
+//        },
+//    );
+
+//    RaisedButton(
+//        child: new Text("End date"),
+//        onPressed: (){
+//          _selectDate(context);
+//        },
+//    );
+
+    frequencyOptions = new List<DropdownMenuItem<double>>();
+    frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
+    frequencyOptions.add(new DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
+    frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
     addPillFields.add(SizedBox(height: 30.0));
     addPillFields.add(pillName);
@@ -109,6 +135,21 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(doctorNotes);
     addPillFields.add(whitespace);
     addPillFields.add(endDateField);
+    addPillFields.add(whitespace);
+    addPillFields.add(getFrequency());
+  }
+
+  DropdownButton<double> getFrequency() {
+    return new DropdownButton<double>(
+        value: frequency,
+        items: frequencyOptions,
+        hint: new Text("Frequency of medication"),
+
+        onChanged: (val) {
+          frequency = val;
+          setState(() {});
+        }
+    );
   }
 
 
@@ -195,7 +236,7 @@ class _TempState extends State<AddPillsPage> {
         this.endDate = picked;
       });
     }
-    endDateField = new RaisedButton(
+    endDateField = new FlatButton(
       onPressed: () {
         _selectDate(context);
         },
@@ -215,6 +256,7 @@ class _TempState extends State<AddPillsPage> {
   @override
   Widget build(BuildContext context) {
     //this.context = context.currentContext();
+    addPillFields.replaceRange(9, 10, [getFrequency()]);
 
     return this.scaffold =  new Scaffold (
       key: _globalKey,
