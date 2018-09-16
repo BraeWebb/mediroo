@@ -382,7 +382,8 @@ class _TempState extends State<AddPillsPage> {
   @override
   Widget build(BuildContext context) {
     //this.context = context.currentContext();
-    addPillFields.replaceRange(11, 12, [makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,))]);
+    addPillFields.replaceRange(11, 12,
+        [makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,))]);
 
     return this.scaffold =  new Scaffold (
       key: _globalKey,
