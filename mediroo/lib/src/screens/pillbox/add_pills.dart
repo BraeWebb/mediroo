@@ -44,9 +44,10 @@ class _TempState extends State<AddPillsPage> {
   Row startDateContainer;
   Row frequencyContainer;
   Row timeFieldContainer;
-  FlatButton endDateField;
-  FlatButton startDateField;
-  FlatButton timeField;
+
+  Widget endDateField;
+  Widget startDateField;
+  Widget timeField;
 
   DropdownButton<double> frequencyField;
 
@@ -124,17 +125,18 @@ class _TempState extends State<AddPillsPage> {
 //        },
 //    );
 
-
-
-
     frequencyOptions = new List<DropdownMenuItem<double>>();
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
 
-    startDateField = getDate("Start date", 7, Colors.black45);
-    endDateField = getDate("End date", 9, Colors.black45);
+    //startDateField = getDate("Start date", 7, Colors.black45);
+    //endDateField = getDate("End date", 9, Colors.black45);
+    startDateField = getDate("Start date", 7, Colors.black45, this.startDate,
+        Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45));
+    endDateField = getDate("End date", 9, Colors.black45, this.startDate,
+        Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45));
 
     timeField = new FlatButton(
       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -151,10 +153,15 @@ class _TempState extends State<AddPillsPage> {
       },
     );
 
-    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarAlt));
-    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarAlt));
-    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock));
-    frequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarTimes));
+
+
+
+    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45,));
+    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45,));
+    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock, color: Colors.black45,));
+    frequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,));
+
+
 
     addPillFields.add(SizedBox(height: 30.0));
     addPillFields.add(pillName);
@@ -170,6 +177,8 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(whitespace);
 
     addPillFields.add(getFrequency());
+    addPillFields.add(whitespace);
+    //addPillFields.add(whatTime);
     addPillFields.add(whitespace);
     addPillFields.add(timeFieldContainer);
   }
@@ -199,7 +208,7 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 
-  FlatButton getDate(String text, int widgetIndex, Color textColor) {
+  FlatButton getDate(String text, int widgetIndex, Color textColor, DateTime date, Icon icon) {
     return new FlatButton(
       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
       child: new Text(text, style: new TextStyle(color: textColor)),
@@ -211,8 +220,29 @@ class _TempState extends State<AddPillsPage> {
           borderRadius: BorderRadius.circular(20.0)
       ),
       onPressed: () {
-        _selectDate(context, widgetIndex);
+        _selectDate(context, widgetIndex, date, icon);
       },
+    );
+  }
+
+  Widget getNewInterval() {
+    return new Card(
+      child: new Column(
+        children: <Widget>[
+          new Row(
+            children: <Widget>[
+              new Icon(FontAwesomeIcons.clock),
+              new Text("hello"),
+            ],
+          ),
+          new Row(
+            children: <Widget>[
+              new Icon(FontAwesomeIcons.capsules),
+              new Text("world"),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -284,7 +314,7 @@ class _TempState extends State<AddPillsPage> {
 
   }
 
-  Future<Null> _selectDate(BuildContext context, int side) async {
+  Future<Null> _selectDate(BuildContext context, int side, DateTime dateTime, Icon icon) async {
     DateTime picked;
     DateTime now = new DateTime.now();
 
@@ -303,7 +333,7 @@ class _TempState extends State<AddPillsPage> {
         this.endDate.month.toString() + "/" +
         this.endDate.year.toString();
 
-    endDateField = getDate(date, side, Colors.black87);
+    endDateField = makeRow(getDate(date, side, Colors.black87, dateTime, icon), icon);
     addPillFields.replaceRange(side, side + 1, [endDateField]);
   }
 
