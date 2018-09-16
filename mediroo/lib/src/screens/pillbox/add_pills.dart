@@ -39,6 +39,7 @@ class _TempState extends State<AddPillsPage> {
   DateTime endDate;
 
   Widget endDateField;
+  Row endDateContainer;
 
   List<Widget> addPillFields = new List<Widget>();
 
@@ -106,6 +107,15 @@ class _TempState extends State<AddPillsPage> {
         },
     );
 
+
+    endDateContainer = new Row(
+        children: <Widget>[
+          Icon(FontAwesomeIcons.calendar),
+          new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
+          new Expanded(child: endDateField)
+        ]
+    );
+
     addPillFields.add(SizedBox(height: 30.0));
     addPillFields.add(pillName);
     addPillFields.add(whitespace);
@@ -113,7 +123,7 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(whitespace);
     addPillFields.add(doctorNotes);
     addPillFields.add(whitespace);
-    addPillFields.add(endDateField);
+    addPillFields.add(endDateContainer);
   }
 
 
