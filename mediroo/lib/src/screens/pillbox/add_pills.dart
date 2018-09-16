@@ -149,9 +149,9 @@ class _TempState extends State<AddPillsPage> {
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
 
-    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendar));
-    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendar));
-    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock));
+    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendar, color: Colors.black45,));
+    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendar, color: Colors.black45,));
+    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock, color: Colors.black45,));
     //getFrequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarAlt)); TODO decide on this
 
     addPillFields.add(SizedBox(height: 30.0));
