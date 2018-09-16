@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mediroo/util.dart' show MockAuth;
-import 'package:mediroo/screens.dart' show SignupPage, Pillbox, DebugPage, SignupPage;
+import 'package:mediroo/screens.dart' show SignupPage, PillList;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -135,7 +135,7 @@ void main() {
     SignupPage widget = new SignupPage(auth: MockAuth(userId: null));
     await tester.pumpWidget(buildTestableWidget(widget));
 
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
 
     await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
@@ -145,7 +145,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Email already in use or password is less than 6 characters"), findsOneWidget);
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
   });
 
   /// Ensure that signup is successful when details are valid
@@ -154,7 +154,7 @@ void main() {
     SignupPage widget = new SignupPage(auth: MockAuth(userId: 'userid'));
     await tester.pumpWidget(buildTestableWidget(widget));
 
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
 
     await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
@@ -164,6 +164,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Email already in use or password is less than 6 characters"), findsNothing);
-    expect(find.byType(Pillbox), findsOneWidget);
+    expect(find.byType(PillList), findsOneWidget);
   });
 }

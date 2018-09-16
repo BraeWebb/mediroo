@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mediroo/util.dart' show MockAuth;
-import 'package:mediroo/screens.dart' show LoginPage, Pillbox, DebugPage, SignupPage;
+import 'package:mediroo/screens.dart' show LoginPage, PillList, DebugPage, SignupPage;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -118,7 +118,7 @@ void main() {
     LoginPage widget = new LoginPage(auth: MockAuth(userId: null));
     await tester.pumpWidget(buildTestableWidget(widget));
 
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
 
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
     await tester.enterText(find.byKey(Key("password_field")), "failurepassword");
@@ -127,7 +127,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Incorrect email or password"), findsOneWidget);
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
   });
 
   /// Ensure that login is successful when details can be authenticated
@@ -136,7 +136,7 @@ void main() {
     LoginPage widget = new LoginPage(auth: MockAuth(userId: 'userid'));
     await tester.pumpWidget(buildTestableWidget(widget));
 
-    expect(find.byType(Pillbox), findsNothing);
+    expect(find.byType(PillList), findsNothing);
 
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
     await tester.enterText(find.byKey(Key("password_field")), "mediroo");
@@ -145,7 +145,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Incorrect email or password"), findsNothing);
-    expect(find.byType(Pillbox), findsOneWidget);
+    expect(find.byType(PillList), findsOneWidget);
   });
 
   /// Ensure that the forgot password link works
