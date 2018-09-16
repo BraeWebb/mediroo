@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser, getUserPrescriptions;
@@ -26,6 +27,7 @@ class ListState extends State<PillList> {
   final FireAuth auth;
   Date date;
   List<List<Widget>> cards;
+  StreamSubscription<List<Prescription>> databaseConnection;
 
   final Color stdColour = const Color(0xFF333366);
   final Color takenColour = const Color(0xFF3aa53f);
@@ -36,15 +38,31 @@ class ListState extends State<PillList> {
   ListState(this.date, {this.auth}) {
     cards = genMessage("Loading Pills...");
 
-    getUserPrescriptions().listen((List<Prescription> prescriptions) {
-      setState(() {
-        if (prescriptions.length == 0) {
-          cards = genMessage("No Pills Yet!");
-        } else {
-          cards = genDays(prescriptions, date);
-        }
+    databaseConnection = getUserPrescriptions()
+      .listen((List<Prescription> prescriptions) {
+        refreshState(prescriptions);
       });
+  }
+
+  void refreshState(List<Prescription> prescriptions) {
+    setState(() {
+      if (prescriptions.length == 0) {
+        cards = genMessage("No Pills Yet!");
+      } else {
+        cards = genDays(prescriptions, date);
+      }
     });
+  }
+
+  Future<Null> _handleRefresh() async {
+    databaseConnection.cancel();
+
+    databaseConnection = getUserPrescriptions()
+        .listen((List<Prescription> prescriptions) {
+      refreshState(prescriptions);
+    });
+
+    return null;
   }
 
   List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
@@ -177,7 +195,12 @@ class ListState extends State<PillList> {
               ),
             ),
             body: TabBarView(
-                children: cards.map((widgets) => new ListView(children: widgets)).toList()
+              children: cards.map((widgets) {
+                return new RefreshIndicator(
+                  child: new ListView(children: widgets),
+                  onRefresh: _handleRefresh
+                );
+              }).toList()
             ),
             floatingActionButton: new FloatingActionButton(
               onPressed: () {
