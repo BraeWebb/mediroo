@@ -44,9 +44,10 @@ class _TempState extends State<AddPillsPage> {
   Row startDateContainer;
   //Row getFrequencyContainer;
   Row timeFieldContainer;
-  FlatButton endDateField;
-  FlatButton startDateField;
-  FlatButton timeField;
+
+  Widget endDateField;
+  Widget startDateField;
+  Widget timeField;
 
   DropdownButton<double> frequencyField;
 
@@ -123,8 +124,10 @@ class _TempState extends State<AddPillsPage> {
 //          _selectDate(context);
 //        },
 //    );
-    startDateField = getDate("Start date", 7, Colors.black45);
-    endDateField = getDate("End date", 9, Colors.black45);
+    startDateField = getDate("Start date", 7, Colors.black45, this.startDate,
+        Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45));
+    endDateField = getDate("End date", 9, Colors.black45, this.startDate,
+        Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45));
 
     timeField = new FlatButton(
       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
@@ -149,8 +152,8 @@ class _TempState extends State<AddPillsPage> {
     frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
 
 
-    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendar, color: Colors.black45,));
-    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendar, color: Colors.black45,));
+    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45,));
+    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45,));
     timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock, color: Colors.black45,));
     //getFrequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarAlt)); TODO decide on this
 
@@ -198,7 +201,7 @@ class _TempState extends State<AddPillsPage> {
     );
   }
 
-  FlatButton getDate(String text, int widgetIndex, Color textColor) {
+  FlatButton getDate(String text, int widgetIndex, Color textColor, DateTime date, Icon icon) {
     return new FlatButton(
       padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
       child: new Text(text, style: new TextStyle(color: textColor)),
@@ -210,7 +213,7 @@ class _TempState extends State<AddPillsPage> {
           borderRadius: BorderRadius.circular(20.0)
       ),
       onPressed: () {
-        _selectDate(context, widgetIndex);
+        _selectDate(context, widgetIndex, date, icon);
       },
     );
   }
@@ -304,7 +307,7 @@ class _TempState extends State<AddPillsPage> {
 
   }
 
-  Future<Null> _selectDate(BuildContext context, int side) async {
+  Future<Null> _selectDate(BuildContext context, int side, DateTime dateTime, Icon icon) async {
     DateTime picked;
     DateTime now = new DateTime.now();
 
@@ -323,7 +326,7 @@ class _TempState extends State<AddPillsPage> {
         this.endDate.month.toString() + "/" +
         this.endDate.year.toString();
 
-    endDateField = getDate(date, side, Colors.black87);
+    endDateField = makeRow(getDate(date, side, Colors.black87, dateTime, icon), icon);
     addPillFields.replaceRange(side, side + 1, [endDateField]);
   }
 
