@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show BaseAuth;
-import 'package:mediroo/screens.dart' show Pillbox;
+import 'package:mediroo/screens.dart' show PillList;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
 
 
@@ -94,7 +94,7 @@ class _SignupPageState extends State<SignupPage> {
       if (navState.canPop()) {
         navState.pop();
       }
-      navState.pushReplacementNamed(Pillbox.tag);
+      navState.pushReplacementNamed(PillList.tag);
     });
   }
 
