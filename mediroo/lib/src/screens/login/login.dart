@@ -177,10 +177,10 @@ class _LoginPageState extends State<LoginPage> {
             new Offstage(
               offstage: !_loggingIn,
               child: new Center(
-                child: new CircularProgressIndicator(
+                child: _loggingIn ? new CircularProgressIndicator(
                   value: null,
                   strokeWidth: 7.0,
-                )
+                ) : null
               )
             )
           ]),
