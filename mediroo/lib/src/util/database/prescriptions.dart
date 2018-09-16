@@ -10,7 +10,7 @@ import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 /// Stream of the prescriptions associated with the current user.
 ///
 /// Updated from the database automatically using a stream
-Stream<List<Prescription>> getUserPills() async* {
+Stream<List<Prescription>> getUserPrescriptions() async* {
   String uuid = await currentUUID();
 
   // get database snapshots

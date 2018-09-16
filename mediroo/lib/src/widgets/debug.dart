@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mediroo/util.dart' show currentUUID, getUserPills;
+import 'package:mediroo/util.dart' show currentUUID, getUserPrescriptions;
 import 'package:mediroo/model.dart' show Prescription;
 
 
@@ -48,7 +48,7 @@ class _UserPills extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder(
-      stream: getUserPills(),
+      stream: getUserPrescriptions(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Text('Loading...');
         if (snapshot.hasError) return const Text('Error');

@@ -16,14 +16,14 @@ Future<User> currentUser() async {
   }
 
   List<Prescription> prescriptions = [];
-  prescriptions.add(new Prescription("test", "test", pillLog: {}));
+  prescriptions.add(new Prescription("test", "test", pillsLeft: 10, pillLog: {}));
   prescriptions[0].intervals = new Map<Time, PreInterval>();
   PreInterval interval = new PreInterval(
-      new Time(23, 10),
+      new Time(13, 10),
       new Date(1998, 05, 24),
       endDate: new Date(2019, 01, 01)
   );
-  prescriptions[0].intervals[new Time(23, 10)] = interval;
+  prescriptions[0].intervals[new Time(13, 10)] = interval;
 
   return new User(user.uid, user.displayName, user.email, prescriptions: prescriptions);
 }

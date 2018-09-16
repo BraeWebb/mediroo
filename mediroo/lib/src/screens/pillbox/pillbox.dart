@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 
-import 'package:mediroo/util.dart' show getUserPills;
-import 'package:mediroo/util.dart' show FireAuth, getUserPills;
+import 'package:mediroo/util.dart' show FireAuth, getUserPrescriptions;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'add_pills.dart' show AddPillsPage;
@@ -71,7 +70,7 @@ class _GridState extends State<_PillboxGrid> {
   _GridState(this.pills, this.date) {
 
     // Listen for any updates to the database
-    Stream<List<Prescription>> pillStream = getUserPills();
+    Stream<List<Prescription>> pillStream = getUserPrescriptions();
     pillStream.listen((List<Prescription> prescription) {
       pills.clear();
       pills.addAll(prescription);

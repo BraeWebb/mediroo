@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser;
+import 'package:mediroo/screens.dart' show AddPillsPage;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PillList extends StatefulWidget {
@@ -119,11 +120,20 @@ class ListState extends State<PillList> {
   Widget build(BuildContext context) {
     checkVerified(context, auth);
     return new Scaffold (
-        appBar: new AppBar(
-          title: new Text("Upcoming pills"),
-        ),
-        body: new ListView(
-          children: cards
+      appBar: new AppBar(
+        title: new Text("Upcoming pills"),
+      ),
+      body: new ListView(
+        children: cards
+      ),
+        floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddPillsPage())
+            );
+          },
+          tooltip: "Add Pills",
+          child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
         )
     );
   }
