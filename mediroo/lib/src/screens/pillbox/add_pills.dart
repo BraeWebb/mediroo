@@ -176,7 +176,7 @@ class _TempState extends State<AddPillsPage> {
     addPillFields.add(endDateContainer);
     addPillFields.add(whitespace);
 
-    addPillFields.add(getFrequency());
+    addPillFields.add(frequencyContainer);
     addPillFields.add(whitespace);
     //addPillFields.add(whatTime);
     addPillFields.add(whitespace);
@@ -348,7 +348,7 @@ class _TempState extends State<AddPillsPage> {
   @override
   Widget build(BuildContext context) {
     //this.context = context.currentContext();
-    addPillFields.replaceRange(11, 12, [frequencyContainer]);
+    addPillFields.replaceRange(11, 12, [makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,))]);
 
     return this.scaffold =  new Scaffold (
       key: _globalKey,
