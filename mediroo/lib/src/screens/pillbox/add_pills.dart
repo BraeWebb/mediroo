@@ -95,7 +95,7 @@ class _TempState extends State<AddPillsPage> {
 //    );
     
     endDateField = new FlatButton(
-        child: new Text("End date"),
+        child: new Text("End date", style: new TextStyle(color: Colors.black45)),
         shape: new OutlineInputBorder(
             borderSide: new BorderSide(
                 width: 1.0, color: Colors.black45
