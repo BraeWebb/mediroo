@@ -32,7 +32,7 @@ class ListState extends State<PillList> {
   final Color stdColour = const Color(0xFF333366);
   final Color takenColour = const Color(0xFF3aa53f);
   final Color missedColour = const Color(0xFFBC2222);
-  final Color alertColor = const Color(0xFFa1a1ed);
+  final Color alertColour = const Color(0xFFa1a1ed);
   static const int LEEWAY = 15;
 
   ListState(this.date, {this.auth}) {
@@ -108,11 +108,11 @@ class ListState extends State<PillList> {
           pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
           if(TimeUtil.isNow(TimeUtil.currentTime(), interval.time, LEEWAY) ||
               TimeUtil.isUpcoming(TimeUtil.currentTime(), interval.time, LEEWAY)) {
-            upcoming.add(genCard(pre, interval.time, date, pre.pillLog[date][interval.time]));
+            upcoming.add(genCard(pre, interval.time, date, pre.pillLog[date][interval.time], interval.dosage));
           } else if(pre.pillLog[date][interval.time]) {
-            taken.add(genCard(pre, interval.time, date, true));
+            taken.add(genCard(pre, interval.time, date, true, interval.dosage));
           } else {
-            taken.add(genCard(pre, interval.time, date, false));
+            missed.add(genCard(pre, interval.time, date, false, interval.dosage));
           }
         }
       }
@@ -128,7 +128,7 @@ class ListState extends State<PillList> {
     return cards;
   }
 
-  Widget genCard(Prescription pre, Time time, Date date, bool taken) {
+  Widget genCard(Prescription pre, Time time, Date date, bool taken, int dosage) {
     String image;
     switch(TimeUtil.getToD(time.hour)) {
       case ToD.MORNING:
@@ -147,30 +147,43 @@ class ListState extends State<PillList> {
 
     Color chosenColour;
     String note;
+
+    if(date.compareTo(TimeUtil.currentDate()) > 0) {
+      chosenColour = stdColour;
+      note = "";
+    } else if(date.compareTo(TimeUtil.currentDate()) == 0) {
+      print(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY));
+      print(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY));
+      print(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY));
+      if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
+        chosenColour = stdColour;
+        int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
+        int hours = minutes ~/ 60 + 1;
+        int hoursSub1 = hours - 1;
+        if(hoursSub1 == 0) {
+          note = "Take in " + minutes.toString() + " minutes";
+        } else {
+          note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
+        }
+      } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
+        chosenColour = missedColour;
+        note = "Medication missed!";
+      } else {
+        chosenColour = alertColour;
+        note = "Take now!";
+      }
+    } else {
+      chosenColour = missedColour;
+      note = "Medication missed!";
+    }
     if(taken != null && taken) {
       chosenColour = takenColour;
       note = "Already taken";
-    } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY) || date.compareTo(TimeUtil.currentDate()) < 0) {
-      chosenColour = missedColour;
-      note = "Medication missed!";
-    } else if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY) || date.compareTo(TimeUtil.currentDate()) > 0) {
-      chosenColour = stdColour;
-      int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
-      int hours = minutes ~/ 60 + 1;
-      int hoursSub1 = hours - 1;
-      if(hoursSub1 == 0) {
-        note = "Take in " + minutes.toString() + " minutes";
-      } else {
-        note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
-      }
-    } else {
-      chosenColour = alertColor;
-      note = "Tap here to take now";
     }
 
     return new PillCard(pre.medNotes, image, notes: note,
         time: TimeUtil.getFormatted(time.hour, time.minute),
-        count: pre.pillsLeft.toString() + " pills", colour: chosenColour);
+        count: dosage.toString() + " pills", colour: chosenColour);
   }
 
   @override
@@ -224,6 +237,17 @@ class PillCard extends StatelessWidget {
   final Color colour;
 
   PillCard(this.title, this.icon, {this.notes, this.time, this.count, this.colour});
+
+  SimpleDialog getDialog() {
+    return new SimpleDialog(
+        title: new Text("Take pill"),
+        children: [new Text("Do you want to take this pill???")]
+    );
+  }
+
+  void _dialog(BuildContext context) {
+
+  }
 
   final headerFont = const TextStyle(
       color: Colors.white,
@@ -322,18 +346,25 @@ class PillCard extends StatelessWidget {
       ),
     );
 
-    return  new Container(
+    return new Container(
         margin: const EdgeInsets.symmetric(
             vertical: 16.0,
             horizontal: 24.0
         ),
-        child: new Stack(
+        child: new InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => getDialog()
+            );
+          },
+            child: new Stack(
           children: <Widget>[
             card,
             content,
             thumbnail,
           ],
-        ),
+        )),
       height: 130.0
 
     );

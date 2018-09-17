@@ -118,12 +118,13 @@ class TimeUtil {
 
   ///Returns whether the other time is occuring after the current time (within a given leeway)
   static bool isUpcoming(Time current, Time other, int leeway) {
-    return other.compareTo(current) > 0 && current.difference(other).inMinutes > leeway;
+    return other.compareTo(current) > 0 && current.difference(other).inMinutes < -leeway;
   }
 
   ///Returns whether the times are equal (within a given leeway)
   static bool isNow(Time current, Time other, int leeway) {
-    return current.difference(other).inMinutes <= leeway;
+    int diff = current.difference(other).inMinutes;
+    return -leeway <= diff && diff <= leeway;
   }
 
   ///Returns whether the date falls into a given interval
