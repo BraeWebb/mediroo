@@ -5,7 +5,7 @@ import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, getUserPrescriptions;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'add_pills.dart' show AddPillsPage;
+import 'add_pills.dart' show AddPills;
 import 'pill_info.dart' show PillTakeInfo;
 import 'prescription_info.dart' show PrescriptionInfo;
 import 'pill_list.dart' show PillList;
@@ -126,7 +126,7 @@ class _GridState extends State<_PillboxGrid> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddPillsPage())
+            MaterialPageRoute(builder: (context) => AddPills())
           );
         },
       ),

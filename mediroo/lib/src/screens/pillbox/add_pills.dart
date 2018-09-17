@@ -6,566 +6,286 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show addPrescription;
-import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
+import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, picker;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
-/// Homepage for the Mediroo Application.
-///
-/// Renders a click counter activated by a '+' FAB.
-class AddPillsPage extends StatefulWidget {
-  AddPillsPage({Key key}) : super(key: key);
+/// Screen to add a prescription to the pillbox
+class AddPills extends StatefulWidget {
+  /// Tag of this screen
+  static final String tag = "AddPills";
+
+  AddPills({Key key}) : super(key: key);
 
   @override
-  _TempState createState() => new _TempState();
+  _AddPillsState createState() => new _AddPillsState();
 }
 
-
-class _TempState extends State<AddPillsPage> {
-
+class _AddPillsState extends State<AddPills> {
   /// The title to be displayed in the menu bar.
   final String title = "Add Pills";
-  static String tag = "Addpill";
 
+  /// Firebase analytics instance
   static FirebaseAnalytics analytics = new FirebaseAnalytics();
 
-  List<DropdownMenuItem<double>> items = new List<DropdownMenuItem<double>>();
-  Scaffold scaffold;
-  ValueChanged<Text> val;
-  double frequency = null;
-  List frequencyOptions;
-  TimeOfDay time;
-  DateTime startDate;
-  DateTime endDate;
+  /// Prescription information entry form
+  final PrescriptionEntry prescriptionEntry = new PrescriptionEntry();
+  /// List of interval information entry forms
+  final List<IntervalEntry> intervals = new List();
 
-
-  Row endDateContainer;
-  Row startDateContainer;
-  Row frequencyContainer;
-  Row timeFieldContainer;
-
-  Widget endDateField;
-  Widget startDateField;
-  Widget timeField;
-
-  List<Widget> times = new List<Widget>();
-
-  DropdownButton<double> frequencyField;
-
-  List<Widget> addPillFields = new List<Widget>();
-
-  final whitespace = SizedBox(height: 8.0);
-
-  final pillNameController = TextEditingController();
-  final pillCountController = TextEditingController();
-  final doctorNotesController = TextEditingController();
-  final endDateController = TextEditingController();
-
-  final ScriptCountController = TextEditingController();
-  var _globalKey = new GlobalKey<ScaffoldState>();
-
-  _TempState() {
-
-    final pillName = new TextFormField(
-        key: Key('pill_name_field'),
-        keyboardType: TextInputType.text,
-        controller: pillNameController,
-        decoration: bubbleInputDecoration('Pill name', null, Icon(FontAwesomeIcons.notesMedical))
-    );
-
-    final pillCount = new TextFormField(
-      key: Key('pill_count_field'),
-      keyboardType: TextInputType.number,
-      controller: pillCountController,
-      decoration: bubbleInputDecoration('Pill count', null, Icon(FontAwesomeIcons.capsules)),
-    );
-
-    final doctorNotes = new TextFormField(
-      key: Key('doctor_notes_field'),
-      keyboardType: TextInputType.multiline,
-      maxLines: 5,
-      controller: doctorNotesController,
-      decoration: InputDecoration(
-        hintText: "Doctor's notes",
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-        icon: Icon(FontAwesomeIcons.userMd),
-      ),
-    );
-
-    final testButton = bubbleButton("test", "test", _pressTest);
-
-    final whatTime = new Text(
-      "What time should the pills be taken?",
-      style: TextStyle(color: Colors.black54, fontSize: 17.0),
-   );
-
-    frequencyOptions = new List<DropdownMenuItem<double>>();
-    frequencyOptions.add(new DropdownMenuItem(child: new Text('Daily'), value: 1.0));
-    frequencyOptions.add(new DropdownMenuItem(child: new Text('Weekly'), value: 7.0));
-    frequencyOptions.add(new DropdownMenuItem(child: new Text('Fortnightly'), value: 14.0));
-
-
-    startDateField = getDate("Start date", 7, Colors.black45, this.startDate,
-        Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45));
-    endDateField = getDate("End date", 9, Colors.black45, this.startDate,
-        Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45));
-
-    timeField = getTime("What time should the pills be taken?", Colors.black45);
-
-    startDateContainer = makeRow(startDateField, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45,));
-    endDateContainer = makeRow(endDateField, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45,));
-    timeFieldContainer = makeRow(timeField, Icon(FontAwesomeIcons.clock, color: Colors.black45,));
-    frequencyContainer = makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,));
-
-    final addInterval = new FlatButton(
-      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      child: new Text('Add new time', style: new TextStyle(color: Colors.black45)),
-      shape: new OutlineInputBorder(
-          borderSide: new BorderSide(
-              width: 1.0,
-              color: Colors.black45
-          ),
-          borderRadius: BorderRadius.circular(20.0)
-      ),
-      onPressed: () {
-        //_selectDate(context, widgetIndex, date, icon);
-      },
-    );
-
-
-    times.add(getNewInterval(timeFieldContainer, timeFieldContainer));
-
-    addPillFields.add(SizedBox(height: 30.0));
-    addPillFields.add(pillName);
-    addPillFields.add(whitespace);
-    addPillFields.add(pillCount);
-    addPillFields.add(whitespace);
-    addPillFields.add(doctorNotes);
-    addPillFields.add(whitespace); // 6
-
-    addPillFields.add(startDateContainer);
-    addPillFields.add(whitespace);
-    addPillFields.add(endDateContainer);
-    addPillFields.add(whitespace);
-
-    addPillFields.add(frequencyContainer);
-    addPillFields.add(whitespace);
-    addPillFields.add(times[0]);
-    addPillFields.add(new Divider());
-    addPillFields.add(addInterval);
-    addPillFields.add(bubbleButton("add", "Add Pill", () {}));
-  }
-
-  void pressAddInterval() {
-    setState(() {
-      Widget interval = getNewInterval(getTime("What time should the pills be taken?", Colors.black54),
-          getTime("What time should the pills be taken?", Colors.black54));
-      times.add(interval);
-    });
-  }
-
-  Row makeRow(Widget wid, Widget icon){
-    return new Row(
-        children: <Widget>[
-          icon,
-          new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 20.0, 00.0)),
-          new Expanded(child: wid)
-        ]
-    );
-  }
-
-  Widget getTime(String text, Color colour) {
-    return new FlatButton(
-      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      child: new Text(text, style: new TextStyle(color: colour)),
-      shape: new OutlineInputBorder(
-          borderSide: new BorderSide(
-              width: 1.0,
-              color: Colors.black45,
-          ),
-          borderRadius: BorderRadius.circular(20.0)
-      ),
-      onPressed: () {
-        _selectTime(context, 13);
-      },
-    );
-  }
-
-  Center getFrequency() {
-    return new Center(
-        child: DropdownButton<double>(
-            value: frequency,
-            items: frequencyOptions,
-            hint: new Text("Frequency of medication"),
-
-            onChanged: (val) {
-              frequency = val;
-              setState(() {});
-            },
-        )
-    );
-  }
-
-  FlatButton getDate(String text, int widgetIndex, Color textColor, DateTime date, Icon icon) {
-    return new FlatButton(
-      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      child: new Text(text, style: new TextStyle(color: textColor)),
-      shape: new OutlineInputBorder(
-          borderSide: new BorderSide(
-              width: 1.0,
-              color: Colors.black45
-          ),
-          borderRadius: BorderRadius.circular(20.0)
-      ),
-      onPressed: () {
-        _selectDate(context, widgetIndex, date, icon);
-      },
-    );
-  }
-
-  Widget getNewInterval(Widget time, Widget dosage) {
-    return new Column(
-      children: <Widget>[
-        new Divider(),
-        time,
-        dosage,
-      ],
-    );
-  }
-
-  bool _isFormComplete(){
-    if (pillNameController.text == "" || frequency == 0.0 || TimeOfDay == null
-        || ScriptCountController.text.isEmpty){
-      return false;
-    }
-    return true;
-  }
-
-  Prescription _getInfo(){
-    String pillName = pillNameController.text;
-    int remaining = int.parse(ScriptCountController.text);
-    var temp = new Prescription(null, pillName, pillsLeft: remaining,
-        addTime: DateTime.now());
-    return temp;
-  }
-
-  Future<Null> _sendAnalyticsEvent() async {
-    Prescription pill = _getInfo();
+  /// Log that a [Prescription] has been added to the analytics system
+  Future<Null> _sendAnalyticsEvent(Prescription prescription) async {
     await analytics.logEvent(
       name: 'added_pill',
       parameters: <String, dynamic>{
-        'name': pill.medNotes
+        'name': prescription.medNotes,
+        'remaining': prescription.pillsLeft
       }
     );
   }
 
-  void _addPill(){
-    if (!_isFormComplete()){
-      //TODO this doesn't work properly
-      _globalKey.currentState.showSnackBar(new SnackBar(
-        content: new Text("please complete the form properly"),
-      ));
-      analytics.logEvent(name: "added_pill_error");
+  /// Collect information from subwidgets and submit the prescription
+  _submitPrescription() {
+    Prescription prescription = prescriptionEntry.prescription;
+    if (prescription == null) {
       return;
     }
-    _sendAnalyticsEvent();
-    Prescription pill = _getInfo();
-    addPrescription(pill);
+
+    // Pull all the interval classes from the interval entry widgets
+    prescription.intervals = {};
+    for (IntervalEntry interval in intervals) {
+      PreInterval preInterval = interval.interval;
+      if (preInterval == null) {
+        continue;
+      }
+      prescription.intervals[preInterval.time] = preInterval;
+    }
+
+    // Log add_pills event
+    _sendAnalyticsEvent(prescription);
+    // Close the add pills screen
     Navigator.pop(context);
   }
 
+  /// Add a new dynamic [IntervalEntry] to the screen
+  _addInterval() {
+    setState(() {
+      intervals.add(new IntervalEntry());
+    });
+  }
 
   @override
-  void dispose() {
-    // Clean up the controller when the Widget is disposed
-    pillCountController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return new Scaffold (
+      appBar: new AppBar(
+        title: new Text(title),
+      ),
+      body: new Padding(
+        child: new ListView(
+          children: <Widget>[
+            prescriptionEntry,
+          ] + intervals + [
+            bubbleButton("addInterval", "Add Interval", _addInterval),
+            bubbleButton("submitPrescription", "Add Prescription", _submitPrescription)
+          ]
+        ),
+        padding: EdgeInsets.only(left: 24.0, right: 24.0)
+      )
+    );
   }
+}
 
-  Future<Null> _selectTime(BuildContext context, int side) async {
-    TimeOfDay picked;
-      picked = await showTimePicker(
-          context: context,
-          initialTime: new TimeOfDay.now()
-      );
+/// Form for entering details about a [Prescription]
+class PrescriptionEntry extends StatefulWidget {
+  /// The current prescription state, this is updated when data is entered
+  final Prescription prescription = new Prescription("", "");
 
-    String timeString = "What time should the pills be taken?";
-
-    if (picked != null){
-      setState((){
-        this.time = picked;
-      });
-      int hour = this.time.hour;
-      int minute = this.time.minute;
-
-      timeString = "$hour:$minute";
-    }
-
-    timeField = makeRow(getTime(timeString, Colors.black87), Icon(FontAwesomeIcons.clock, color: Colors.black45,));
-    times[0] = timeField;
-    addPillFields.replaceRange(side, side + 1, [times[0]]);
+  @override
+  State<StatefulWidget> createState() {
+      return new _PrescriptionEntryState(prescription);
   }
+}
 
-  Future<Null> _selectDate(BuildContext context, int side, DateTime dateTime, Icon icon) async {
-    DateTime picked;
+/// State for [PrescriptionEntry]
+class _PrescriptionEntryState extends State<PrescriptionEntry> {
+  /// The current prescription state, this is updated when data is entered
+  final Prescription prescription;
+
+  /// Default whitespace between the items in the form
+  final Widget whitespace = SizedBox(height: 8.0);
+
+  /// Text controllers for text entry fields
+  final TextEditingController pillNameController = TextEditingController();
+  final TextEditingController pillCountController = TextEditingController();
+  final TextEditingController doctorNotesController = TextEditingController();
+
+  /// List of actual [DateTime] values entered in the form
+  List<DateTime> _dates = [null, null];
+  /// List of representations of the actual [DateTime] values entered
+  List<String> _dateValues = [null, null];
+
+  /// Construct a new [_PrescriptionEntryState] with a given [Prescription]
+  _PrescriptionEntryState(this.prescription);
+
+  /// Prompt user to enter a date, updates the date value at the given [valueIndex]
+  Future<Null> _pickDate(BuildContext context, int valueIndex) async {
     DateTime now = new DateTime.now();
 
-    picked = await showDatePicker(
+    // Prompt user for a date
+    DateTime picked = await showDatePicker(
       firstDate: now,
       lastDate: now.add(new Duration(days: 365)),
       context: context,
       initialDate:now,
     );
-    if (picked != null){
-      setState((){
-        this.endDate = picked;
-      });
+
+    if (picked == null){
+      return;
     }
-    String date = this.endDate.day.toString() + "/" +
-        this.endDate.month.toString() + "/" +
-        this.endDate.year.toString();
 
-    endDateField = makeRow(getDate(date, side, Colors.black87, dateTime, icon), icon);
-    addPillFields.replaceRange(side, side + 1, [endDateField]);
+    // Construct a string representation of the date
+    String date = picked.day.toString() + "/" + picked.month.toString() + "/" + picked.year.toString();
+
+    // Update the state using entered date
+    setState(() {
+      _dates[valueIndex] = picked;
+      _dateValues[valueIndex] = date;
+    });
   }
 
+  /// Update the stored [Prescription] based on the form input values
+  void buildPrescription([String input]) {
+    prescription.medNotes = pillNameController.text;
+    try {
+      prescription.pillsLeft = int.parse(pillCountController.text ?? null);
+    } on FormatException {
 
-  void _pressTest() {
-    addPillFields.add(bubbleButton("yo", "yo", null));
-    setState(() {
-
-    });
+    }
+    prescription.docNotes = doctorNotesController.text;
   }
 
   @override
   Widget build(BuildContext context) {
-    //this.context = context.currentContext();
-    addPillFields.replaceRange(11, 12,
-        [makeRow(getFrequency(), Icon(FontAwesomeIcons.calendarPlus, color: Colors.black45,))]);
-
-    return this.scaffold =  new Scaffold (
-      key: _globalKey,
-      appBar: new AppBar(
-        title: new Text(title),
-      ),
-      body: new ListView.builder(
-        itemCount: addPillFields.length,
-        itemBuilder: (context, index) {
-          return addPillFields[index];
-        },
-        shrinkWrap: true,
-        padding: EdgeInsets.only(left: 24.0, right: 24.0),
-//        children: addPillFields,
-      ),
-//        new Center(
-//          child: new Column(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              new Padding(
-//                padding: EdgeInsets.symmetric(horizontal: 40.0),
-//                child: new TextField(
-//                  controller: pillFieldController,
-//                  decoration: InputDecoration(
-//                      hintText: 'Pill Name'
-//                  ),
-//                )
-//              ),
-//              new Padding(
-//                padding: EdgeInsets.symmetric(horizontal: 40.0),
-//                child:new TextField(
-//                  decoration: new InputDecoration(
-//                      labelText: "number of pills in perscription"
-//                  ),
-//                  keyboardType: TextInputType.number,
-//                  controller: ScriptCountController,
-//                )
-//              ),
-//              new Text(
-//                  '\n'
-//              ),
-//              new DropdownButton(
-//                value: frequency,
-//                items: items,
-//                hint: new Text(
-//                    "frequency of dose"
-//                ),
-//                onChanged: (val) {
-//                  frequency = val;
-//                  setState(() {
-//
-//                  });
-//                }
-//              ),
-//              new Text(
-//                  '\n'
-//              ),
-//              new RaisedButton(
-//                child: new Text(
-//                    this.time==null ? "When to take":"${this.time.hour}:${this.time.minute}"
-//                ),
-//                  onPressed: (){
-//                    _selectTime(context);
-//              }),
-//              new Text(
-//                  "\n"
-//              ),
-//              new RaisedButton(
-//                  onPressed: _addPill,
-//                  child: new Text(
-//                      'Add Pill'
-//                  )
-//              ),
-//            ],
-//          ),
-//        )
-    );
-  }
-}
-
-//class Interval extends StatelessWidget {
-//  final TimeOfDay timeToTake;
-//  final int dosage;
-//  final dosageController = new TextEditingController();
-//
-//  Interval(this.timeToTake, this.dosage);
-//
-//  Widget getTime(String text, Color colour) {
-//    return new FlatButton(
-//      padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-//      child: new Text(text, style: new TextStyle(color: colour)),
-//      shape: new OutlineInputBorder(
-//          borderSide: new BorderSide(
-//            width: 1.0,
-//            color: Colors.black45,
-//          ),
-//          borderRadius: BorderRadius.circular(20.0)
-//      ),
-//      onPressed: () {
-//        _selectTime(context, 15);
-//      },
-//    );
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return new Column(
-//      children: <Widget>[
-//        new Divider(),
-//        timeToTake,
-//        dosage,
-//      ],
-//    );
-//  }
-//}
-
-
-class ToDGrid extends StatefulWidget {
-  @override
-  ToDGridState createState() => new ToDGridState();
-}
-
-class ToDGridState extends State<ToDGrid> {
-  List<bool> status;
-
-  Color grey = Colors.grey.shade300;
-  Color green = Colors.green.shade300;
-  Color greyAccent = Colors.grey.shade100;
-  Color greenAccent = Colors.green.shade100;
-
-  List<Color> colours;
-  List<Color> accents;
-  List<Image> icons;
-
-  ToDGridState() {
-    status = [false, false, false, false];
-    icons = [null, null, null, null];
-    colours = [grey, grey, grey, grey];
-    accents = [greyAccent, greyAccent, greyAccent, greyAccent];
-
-    icons = [
-      new Image.asset("assets/wi-sunrise.png", color: accents[0]),
-      new Image.asset("assets/wi-day-sunny.png", color: accents[1]),
-      new Image.asset("assets/wi-sunset.png", color: accents[2]),
-      new Image.asset("assets/wi-night-clear.png", color: accents[3])
-    ];
-  }
-
-  void tap0() {
-    tap(0);
-  }
-
-  void tap1() {
-    tap(1);
-  }
-
-  void tap2() {
-    tap(2);
-  }
-
-  void tap3() {
-    tap(3);
-  }
-
-  void tap(int index) {
-    setState(() {
-      if(status[index]) {
-        status[index] = false;
-        colours[index] = grey;
-        accents[index] = greyAccent;
-      } else {
-        status[index] = true;
-        colours[index] = green;
-        accents[index] = greenAccent;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> grid = new List(4);
-    grid[0] = new GridTile(
-      child: new InkWell(
-        child: new Card(
-          child: icons[0],
-          color: colours[0]
+    return new ListView(
+      children: <Widget>[
+        SizedBox(height: 30.0),
+        new TextFormField(
+          key: Key('pill_name_field'),
+          keyboardType: TextInputType.text,
+          controller: pillNameController,
+          decoration: bubbleInputDecoration('Pill Name', null, Icon(FontAwesomeIcons.notesMedical)),
+          onFieldSubmitted: buildPrescription
         ),
-        onTap: tap0
-      ),
-    );
-    grid[1] = new GridTile(
-      child: new InkWell(
-          child: new Card(
-              child: icons[1],
-              color: colours[1]
-          ),
-          onTap: tap1
-      ),
-    );
-    grid[2] = new GridTile(
-      child: new InkWell(
-          child: new Card(
-              child: icons[2],
-              color: colours[2]
-          ),
-          onTap: tap2
-      ),
-    );
-    grid[3] = new GridTile(
-      child: new InkWell(
-          child: new Card(
-              child: icons[3],
-              color: colours[3]
-          ),
-          onTap: tap2
-      ),
-    );
-
-    return new GridView.count(
-        crossAxisCount: 4,
-        children: grid
+        whitespace,
+        new TextFormField(
+          key: Key('pill_count_field'),
+          keyboardType: TextInputType.number,
+          controller: pillCountController,
+          decoration: bubbleInputDecoration('Pill Count', null, Icon(FontAwesomeIcons.prescriptionBottleAlt)),
+          onFieldSubmitted: buildPrescription
+        ),
+        whitespace,
+        new TextFormField(
+          key: Key('doctor_notes_field'),
+          keyboardType: TextInputType.multiline,
+          maxLines: 5,
+          controller: doctorNotesController,
+          decoration: bubbleInputDecoration("Doctor's Notes", null, new Icon(FontAwesomeIcons.userMd), width: 20.0),
+          onFieldSubmitted: buildPrescription
+        ),
+        whitespace,
+        picker(_dateValues[0] ?? "Start Date", Colors.black87, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45), () {
+          _pickDate(context, 0);
+          buildPrescription();
+        }),
+        whitespace,
+        picker(_dateValues[1] ?? "End Date", Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
+          _pickDate(context, 1);
+          buildPrescription();
+        })
+      ],
+      shrinkWrap: true,
     );
   }
+}
 
+
+/// Interval form widget for entering interval data
+class IntervalEntry extends StatefulWidget {
+  /// The current interval state, this is updated when data is entered
+  final PreInterval interval = new PreInterval(null, null);
+
+  @override
+  State<StatefulWidget> createState() {
+    return new _IntervalState(interval);
+  }
+}
+
+/// State for [IntervalEntry]
+class _IntervalState extends State<IntervalEntry> {
+  /// The current interval state, this is updated when data is entered
+  final PreInterval interval;
+
+  /// Text controller for the dosage input field
+  final TextEditingController dosageController = new TextEditingController();
+
+  /// Entered [TimeOfDay] to take medication
+  TimeOfDay timeToTake;
+  /// String representation of the entered [TimeOfDay]
+  String timeValue;
+  /// Entered [dosage] of medication to take
+  int dosage;
+
+  _IntervalState(this.interval);
+
+  /// Prompt user to enter a time, updates the [TimeOfDay] value for this interval
+  Future<Null> _pickTime(BuildContext context) async {
+    // Prompt user for a time
+    TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: new TimeOfDay.now()
+    );
+
+    if (picked == null){
+      return;
+    }
+
+    // Update the state with the entered time
+    setState(() {
+      timeToTake = picked;
+      timeValue = "${picked.hour}:${picked.minute}";
+    });
+  }
+
+  /// Update the stored [PreInterval] based on the form input values
+  void buildInterval([String input]) {
+    interval.time = new Time(timeToTake?.hour, timeToTake?.minute);
+    try {
+      interval.dosage = int.parse(dosageController.text);
+    } on FormatException {
+
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Column(
+      children: <Widget>[
+        new Divider(),
+        picker(timeValue ?? "Time of Day", Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
+          _pickTime(context);
+          buildInterval();
+        }),
+        new SizedBox(height: 8.0),
+        new TextFormField(
+          key: Key('pill_count_field'),
+          keyboardType: TextInputType.number,
+          controller: dosageController,
+          decoration: bubbleInputDecoration('Dosage', null, Icon(FontAwesomeIcons.capsules)),
+          onFieldSubmitted: buildInterval
+        ),
+      ],
+    );
+  }
 }

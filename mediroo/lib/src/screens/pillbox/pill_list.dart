@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser, getUserPrescriptions;
-import 'package:mediroo/screens.dart' show AddPillsPage;
+import 'package:mediroo/screens.dart' show AddPills;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PillList extends StatefulWidget {
@@ -216,7 +216,7 @@ class ListState extends State<PillList> {
             floatingActionButton: new FloatingActionButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddPillsPage()));
+                    MaterialPageRoute(builder: (context) => AddPills()));
                 },
               tooltip: "Add Pills",
               child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),

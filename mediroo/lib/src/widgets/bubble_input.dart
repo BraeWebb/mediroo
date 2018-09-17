@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Generates a text input decoration for a bubbled input
 ///
 /// Placeholder text of [hint] and error text of [errorText]
-InputDecoration bubbleInputDecoration(String hint, String errorText, Icon icon) {
+InputDecoration bubbleInputDecoration(String hint, String errorText, Icon icon, {double width: 30.0}) {
   return InputDecoration(
     icon: icon,
     hintText: hint,
