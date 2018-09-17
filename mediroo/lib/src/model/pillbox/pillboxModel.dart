@@ -56,6 +56,34 @@ class Date implements Comparable<Date> {
     return new DateTime(year, month, day).difference(new DateTime(date.year, date.month, date.day));
   }
 
+  String getWeekday() {
+    int weekday = new DateTime(year, month, day).weekday;
+    switch(weekday) {
+      case 1: return "Mo";
+      case 2: return "Tu";
+      case 3: return "We";
+      case 4: return "Th";
+      case 5: return "Fr";
+      case 6: return "Sa";
+      case 7: return "Su";
+    }
+    return "";
+  }
+
+  String getWeekdayFull() {
+    int weekday = new DateTime(year, month, day).weekday;
+    switch(weekday) {
+      case 1: return "Monday";
+      case 2: return "Tuesday";
+      case 3: return "Wednesday";
+      case 4: return "Thursday";
+      case 5: return "Friday";
+      case 6: return "Saturday";
+      case 7: return "Sunday";
+    }
+    return "";
+  }
+
 }
 
 class Time implements Comparable<Time> {
@@ -109,6 +137,10 @@ class TimeUtil {
   static String getFormatted(int hour, int minute) {
     return hour.toString().padLeft(2, "0") + ":" +
         minute.toString().padLeft(2, "0");
+  }
+
+  static String getDateFormatted(int year, int month, int day) {
+    return day.toString().padLeft(2, "0") + "/" + month.toString().padLeft(2, "0") + "/" + year.toString();
   }
 
   ///Returns whether the other time has occured before the current time (within a given leeway)

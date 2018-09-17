@@ -29,10 +29,10 @@ class ListState extends State<PillList> {
   List<List<Widget>> cards;
   StreamSubscription<List<Prescription>> databaseConnection;
 
-  final Color stdColour = const Color(0xFF333366);
-  final Color takenColour = const Color(0xFF3aa53f);
-  final Color missedColour = const Color(0xFFBC2222);
-  final Color alertColour = const Color(0xFFa1a1ed);
+  static const Color STD_COLOUR = const Color(0xFF333366);
+  static const Color TAKEN_COLOUR = const Color(0xFF3aa53f);
+  static const Color MISSED_COLOUR = const Color(0xFFBC2222);
+  static const Color ALERT_COLOUR = const Color(0xFFa1a1ed);
   static const int LEEWAY = 15;
 
   ListState(this.date, {this.auth}) {
@@ -149,14 +149,11 @@ class ListState extends State<PillList> {
     String note;
 
     if(date.compareTo(TimeUtil.currentDate()) > 0) {
-      chosenColour = stdColour;
+      chosenColour = STD_COLOUR;
       note = "";
     } else if(date.compareTo(TimeUtil.currentDate()) == 0) {
-      print(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY));
-      print(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY));
-      print(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY));
       if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
-        chosenColour = stdColour;
+        chosenColour = STD_COLOUR;
         int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
         int hours = minutes ~/ 60 + 1;
         int hoursSub1 = hours - 1;
@@ -166,23 +163,24 @@ class ListState extends State<PillList> {
           note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
         }
       } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
-        chosenColour = missedColour;
+        chosenColour = MISSED_COLOUR;
         note = "Medication missed!";
       } else {
-        chosenColour = alertColour;
+        chosenColour = ALERT_COLOUR;
         note = "Take now!";
       }
     } else {
-      chosenColour = missedColour;
+      chosenColour = MISSED_COLOUR;
       note = "Medication missed!";
     }
     if(taken != null && taken) {
-      chosenColour = takenColour;
+      chosenColour = TAKEN_COLOUR;
       note = "Already taken";
     }
 
     return new PillCard(pre.medNotes, image, notes: note,
         time: TimeUtil.getFormatted(time.hour, time.minute),
+        date: date.getWeekdayFull() + " " + TimeUtil.getDateFormatted(date.year, date.month, date.day),
         count: dosage.toString() + " pills", colour: chosenColour);
   }
 
@@ -233,20 +231,109 @@ class PillCard extends StatelessWidget {
   final String notes;
   final String icon;
   final String time;
+  final String date;
   final String count;
   final Color colour;
 
-  PillCard(this.title, this.icon, {this.notes, this.time, this.count, this.colour});
+  PillCard(this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
 
-  SimpleDialog getDialog() {
+  SimpleDialog getDialog(BuildContext context) {
+    String descText;
+    RaisedButton btn;
+    if(colour == ListState.STD_COLOUR) {
+      descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
+      btn = new RaisedButton(
+        onPressed: () {Navigator.pop(context);},
+        child: new Text("Take early"),
+        color: Colors.redAccent.shade100
+      );
+    } else if(colour == ListState.ALERT_COLOUR) {
+      descText = "Tap below to take this medication now";
+      btn = new RaisedButton(
+        onPressed: () {Navigator.pop(context);},
+        child: new Text("Take now"),
+        color: Colors.green.shade100
+      );
+    } else if(colour == ListState.MISSED_COLOUR) {
+      descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
+      btn = new RaisedButton(
+          onPressed: () {Navigator.pop(context);},
+          child: new Text("Take late"),
+          color: Colors.redAccent.shade100
+      );
+    } else if(colour == ListState.TAKEN_COLOUR) {
+      descText = "You have already taken this medication!";
+      btn = new RaisedButton(
+          onPressed: () {Navigator.pop(context);},
+          child: new Text("Undo"),
+          color: Colors.blue.shade50
+      );
+    }
     return new SimpleDialog(
-        title: new Text("Take pill"),
-        children: [new Text("Do you want to take this pill???")]
+        title: new Text(title),
+        children: <Widget>[
+          new Padding(
+            padding: new EdgeInsets.only(bottom: 20.0, left: 20.0, right: 20.0),
+            child: new Column(
+              children: <Widget>[
+                new Padding(child: new Row(
+                  children: <Widget>[
+                    new Icon(FontAwesomeIcons.calendar),
+                    new Padding(child: new Text(date),
+                      padding: new EdgeInsets.symmetric(horizontal: 5.0),
+                    )
+                  ]
+                ), padding: new EdgeInsets.only(bottom: 5.0),
+                ),
+                new Padding(child: new Row(
+                  children: <Widget>[
+                    new Expanded(
+                        child: new Row(
+                          children: <Widget>[
+                            new Icon(FontAwesomeIcons.clock),
+                            new Padding(child: new Text(time),
+                              padding: new EdgeInsets.symmetric(horizontal: 5.0),
+                            )
+                          ]
+                        )
+                    ),
+                    new Expanded(
+                        child: new Row(
+                          children: <Widget>[
+                            new Icon(FontAwesomeIcons.capsules),
+                            new Padding(child: new Text(count),
+                                padding: new EdgeInsets.symmetric(horizontal: 5.0),
+                            )
+                          ]
+                        )
+                    )
+                  ],
+                ), padding: new EdgeInsets.only(bottom: 5.0)),
+                new Text(descText)
+              ]
+            )
+          ),
+          new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Padding(
+                  child: btn,
+                  padding: new EdgeInsets.only(left: 10.0, right: 5.0),
+                )
+              ),
+              new Expanded(
+                child: new Padding(
+                    padding: new EdgeInsets.only(left: 5.0, right: 10.0),
+                  child: new RaisedButton(
+                    onPressed: () {Navigator.pop(context);},
+                    child: new Text("Cancel"),
+                  )
+                )
+              )
+            ]
+          )
+        ]
     );
-  }
-
-  void _dialog(BuildContext context) {
-
   }
 
   final headerFont = const TextStyle(
@@ -355,7 +442,7 @@ class PillCard extends StatelessWidget {
           onTap: () {
             showDialog(
               context: context,
-              builder: (_) => getDialog()
+              builder: (_) => getDialog(context, )
             );
           },
             child: new Stack(
