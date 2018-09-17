@@ -167,7 +167,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
 
   @override
   Widget build(BuildContext context) {
-    return new ListView(
+    return new Column(
       children: <Widget>[
         SizedBox(height: 30.0),
         new TextFormField(
@@ -204,8 +204,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
           _pickDate(context, 1);
           buildPrescription();
         })
-      ],
-      shrinkWrap: true,
+      ]
     );
   }
 }
