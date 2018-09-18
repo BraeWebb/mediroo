@@ -86,7 +86,9 @@ class _AddPillsState extends State<AddPills> {
           children: <Widget>[
             prescriptionEntry,
           ] + intervals + [
+            new Padding(padding: new EdgeInsets.all(10.0)),
             bubbleButton("addInterval", "Add Interval", _addInterval),
+            new Padding(padding: new EdgeInsets.all(10.0)),
             bubbleButton("submitPrescription", "Add Prescription", _submitPrescription)
           ]
         ),
