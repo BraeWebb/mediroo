@@ -7,6 +7,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show addPrescription;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, picker;
+import 'package:mediroo/util.dart' show TimeUtil;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -145,7 +146,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
     }
 
     // Construct a string representation of the date
-    String date = picked.day.toString() + "/" + picked.month.toString() + "/" + picked.year.toString();
+    String date = TimeUtil.getDateFormatted(picked.year, picked.month, picked.day);
 
     // Update the state using entered date
     setState(() {
@@ -253,7 +254,7 @@ class _IntervalState extends State<IntervalEntry> {
     // Update the state with the entered time
     setState(() {
       timeToTake = picked;
-      timeValue = "${picked.hour}:${picked.minute}";
+      timeValue = TimeUtil.getFormatted(picked.hour, picked.minute);
     });
   }
 
