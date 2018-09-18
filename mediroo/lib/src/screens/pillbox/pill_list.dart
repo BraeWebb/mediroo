@@ -4,6 +4,7 @@ import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, currentUser, getUserPrescriptions;
 import 'package:mediroo/screens.dart' show AddPills;
+import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PillList extends StatefulWidget {
@@ -36,12 +37,16 @@ class ListState extends State<PillList> {
   static const Color ALERT_COLOUR = const Color(0xFFa1a1ed);
   static const int LEEWAY = 15;
 
+  //
+  List<Prescription> test;
+
   ListState(this.date, {this.auth}) {
     cards = genMessage("Loading Pills...");
 
     databaseConnection = getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
+        test = prescriptions;
       });
   }
 
@@ -194,6 +199,15 @@ class ListState extends State<PillList> {
         child: new Scaffold (
             appBar: new AppBar(
               title: new Text("Upcoming pills"),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.info_outline),
+                    onPressed: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PrescriptionList(test)));
+                    }
+                )
+              ],
               bottom: TabBar(
                   tabs: [
                     Tab(text: "Mo"),
