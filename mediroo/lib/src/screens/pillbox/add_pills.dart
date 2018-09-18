@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show addPrescription;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, picker;
 import 'package:mediroo/util.dart' show TimeUtil;
 

@@ -4,7 +4,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:mediroo/model.dart' show Date;
 import 'package:mediroo/util.dart' show FireAuth;
 import 'screens.dart';
 

@@ -32,9 +32,9 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController emailController = new TextEditingController();
   final TextEditingController passwordController = new TextEditingController();
 
-  String _nameError = null;
-  String _emailError = null;
-  String _passwordError = null;
+  String _nameError;
+  String _emailError;
+  String _passwordError;
 
   _SignupPageState({this.analytics, this.auth}): super();
 

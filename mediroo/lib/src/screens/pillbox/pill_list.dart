@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
-import 'package:mediroo/util.dart' show checkVerified, currentUser, getUserPrescriptions;
+import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
