@@ -6,6 +6,7 @@ import 'package:mediroo/model.dart' show Prescription;
 
 class PrescriptionList extends StatelessWidget {
   final List<Prescription> pills;
+  final int lowPillCount = 5;
 
   PrescriptionList(this.pills, {Key key}) : super(key: key);
 
@@ -28,13 +29,40 @@ class PrescriptionList extends StatelessWidget {
           }
 //          pills[index].pills.forEach(addToString);
 
-          return ListTile(
-            leading: Icon(FontAwesomeIcons.capsules),
-            title: Text(pill.medNotes),
-            subtitle: Text(timeToTake),
-            contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
+          String sub = "some description here\n"; //TODO: sync with docNotes
 
-          );
+          if(pill.pillsLeft < lowPillCount) {
+            return ListTile(
+              leading: new Icon(FontAwesomeIcons.pills),
+              title: Text(pill.medNotes),
+              subtitle: RichText(
+                  text: new TextSpan(
+                    text: sub,
+                    style: new TextStyle(
+                      color: Colors.black54,
+                      fontSize: 11.9,
+                    ),
+                    children: <TextSpan> [
+                      new TextSpan(
+                        text: "Remaining pills: " + pill.pillsLeft.toString(),
+                        style: new TextStyle(color: Colors.red),
+                      )
+                    ]
+                  )
+              ),
+              //subtitle: Text(sub + "Remaining pills: " + pill.pillsLeft.toString(), style: new TextStyle(color : Colors.red)),
+              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
+            );
+          } else {
+            return ListTile(
+              leading: new Icon(FontAwesomeIcons.pills),
+              title: Text(pill.medNotes),
+              subtitle: Text(sub + "Remaining pills: " + pill.pillsLeft.toString()),
+              contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
+            );
+          }
+
+
         },
       ),
     );
