@@ -15,7 +15,8 @@ class SignupPage extends StatefulWidget {
   /// Allows firebase to analyse the usage of the app
   final FirebaseAnalytics analytics;
 
-  /// Creates a new Signup Page
+  /// Creates a new Signup Page with [auth] capabilities and firebase
+  /// [analytics] enabled
   SignupPage({this.analytics, this.auth}): super();
 
   @override
@@ -50,7 +51,7 @@ class _SignupPageState extends State<SignupPage> {
   // Creates a new state for a Signup Page
   _SignupPageState({this.analytics, this.auth}): super();
 
-  // Checks that a given [name] is valid when submitting the form
+  // Checks that a given name is valid when submitting the form
   String _validateName(String toCheck) {
     if (toCheck.isEmpty) {
       return 'Please enter a name';
