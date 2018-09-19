@@ -46,6 +46,7 @@ class FireAuth extends BaseAuth {
     return user.uid;
   }
 
+  @override
   Future<String> signUp(String name, String email, String password) async {
     // signup using firebase
     final FirebaseUser user = await _auth
@@ -84,17 +85,20 @@ class FireAuth extends BaseAuth {
     return user.uid;
   }
 
+  @override
   void sendVerifyEmail() {
     _auth.currentUser().then((FirebaseUser user) {
       user?.sendEmailVerification();
     });
   }
 
+  @override
   Future<bool> isVerified() async {
     FirebaseUser user = await _auth.currentUser();
     return user.isEmailVerified;
   }
 
+  @override
   void resetPassword(String email) {
     _auth.sendPasswordResetEmail(email: email);
   }
@@ -106,6 +110,7 @@ class MockAuth extends BaseAuth {
 
   String userId;
 
+  @override
   Future<String> signIn(String email, String password) async {
     if (userId != null) {
       return Future.value(userId);
@@ -114,18 +119,22 @@ class MockAuth extends BaseAuth {
     }
   }
 
+  @override
   Future<String> signUp(String name, String email, String password) async {
     return signIn(email, password);
   }
 
+  @override
   Future<bool> isVerified() {
     return null;
   }
 
+  @override
   void sendVerifyEmail() {
     return null;
   }
 
+  @override
   void resetPassword(String email) {
 
   }

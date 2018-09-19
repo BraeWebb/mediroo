@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+/// Returns a new clickable widget which displays a date or time picker when
+/// clicked.
+///
+/// The picker has the given [label] and [textColor], and performs a set of
+/// actions defined in [onPressed]. It also has an [icon] displayed next to it.
 Widget picker(String label, Color textColor, Icon icon, Function onPressed) {
   return new Row(
     children: [
