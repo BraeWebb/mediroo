@@ -4,14 +4,20 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesome
 
 import 'package:mediroo/model.dart' show Prescription;
 
+/// Gives information about the pills in the current pillbox
 class PrescriptionList extends StatelessWidget {
+  /// the current prescriptions being stored
   final List<Prescription> pills;
+  /// the pill count at which a notification will be sent to remind the user
+  /// to refill their prescription
   final int lowPillCount = 5;
 
+  /// Creates a new PrescriptionList containing various [pills]
   PrescriptionList(this.pills, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context){
+    // creates the prescription list page to be returned
     return Scaffold(
       appBar: AppBar(
         title: new Text("Prescription List"),
@@ -31,7 +37,9 @@ class PrescriptionList extends StatelessWidget {
 
           String sub = "some description here\n"; //TODO: sync with docNotes
 
-          if(pill.pillsLeft < lowPillCount) {
+          // displays a low pill count indicator when there are fewer pills
+          // remaining than indicated by pillsLeft
+          if (pill.pillsLeft < lowPillCount) {
             return ListTile(
               leading: new Icon(FontAwesomeIcons.pills),
               title: Text(pill.medNotes),
