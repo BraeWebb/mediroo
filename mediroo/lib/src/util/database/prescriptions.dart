@@ -56,7 +56,7 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
         DateTime end = intervalDoc.data['end'];
         Time time = new Time(dateTime.hour, dateTime.minute);
 
-        PreInterval interval = new PreInterval(
+        PrescriptionInterval interval = new PrescriptionInterval(
           time, new Date(start.year, start.month, start.day),
           endDate: new Date(end.year, end.month, end.day),
           dateDelta: intervalDoc.data['days'],

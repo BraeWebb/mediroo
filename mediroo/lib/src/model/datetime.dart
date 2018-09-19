@@ -6,11 +6,18 @@ enum ToD {
   NIGHT
 }
 
+/// Represents a calendar date
 class Date implements Comparable<Date> {
+  /// the year of the date
   int year;
+
+  /// the month of the date
   int month;
+
+  /// the day of the date
   int day;
 
+  /// Constructs a new Date with the given [year], [month], and [day]
   Date(this.year, this.month, this.day);
 
   @override
@@ -33,10 +40,14 @@ class Date implements Comparable<Date> {
     return new DateTime(year, month, day).compareTo(new DateTime(date.year, date.month, date.day));
   }
 
+  /// The difference between the given [date] and this Date.
   Duration difference(Date date) {
     return new DateTime(year, month, day).difference(new DateTime(date.year, date.month, date.day));
   }
 
+  /// Returns the string representation of this Date in the form of a shortened
+  /// weekday (one of Mo, Tu, We, Th, Fr, Sa, Su), or an empty string in the
+  /// case of an incorrectly formatted Date.
   String getWeekday() {
     int weekday = new DateTime(year, month, day).weekday;
     switch(weekday) {
@@ -51,6 +62,10 @@ class Date implements Comparable<Date> {
     return "";
   }
 
+  /// Returns the string representation of this Date in the form of a
+  /// full-length weekday name (one of Monday, Tuesday, Wednesday, Thursday,
+  /// Friday, Saturday, Sunday), or an empty string in the case of an
+  /// incorrectly formatted Date.
   String getWeekdayFull() {
     int weekday = new DateTime(year, month, day).weekday;
     switch(weekday) {
@@ -67,10 +82,15 @@ class Date implements Comparable<Date> {
 
 }
 
+/// Represents a time od day
 class Time implements Comparable<Time> {
+  /// the hour of the time
   int hour;
+
+  /// the minute of the time
   int minute;
 
+  /// Constructs a new Time with the given [hour] and [minute]
   Time(this.hour, this.minute);
 
   @override
@@ -91,6 +111,7 @@ class Time implements Comparable<Time> {
     return new DateTime(0, 0, 0, hour, minute).compareTo(new DateTime(0, 0, 0, time.hour, time.minute));
   }
 
+  /// The difference between the given [time] and this Time
   Duration difference(Time time) {
     return new DateTime(0, 0, 0, hour, minute).difference(new DateTime(0, 0, 0, time.hour, time.minute));
   }

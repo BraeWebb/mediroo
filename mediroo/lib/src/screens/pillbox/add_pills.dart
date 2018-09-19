@@ -55,7 +55,7 @@ class _AddPillsState extends State<AddPills> {
     // Pull all the interval classes from the interval entry widgets
     prescription.intervals = {};
     for (IntervalEntry interval in intervals) {
-      PreInterval preInterval = interval.interval;
+      PrescriptionInterval preInterval = interval.interval;
       if (preInterval == null) {
         continue;
       }
@@ -215,7 +215,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
 /// Interval form widget for entering interval data
 class IntervalEntry extends StatefulWidget {
   /// The current interval state, this is updated when data is entered
-  final PreInterval interval = new PreInterval(null, null);
+  final PrescriptionInterval interval = new PrescriptionInterval(null, null);
 
   @override
   State<StatefulWidget> createState() {
@@ -226,7 +226,7 @@ class IntervalEntry extends StatefulWidget {
 /// State for [IntervalEntry]
 class _IntervalState extends State<IntervalEntry> {
   /// The current interval state, this is updated when data is entered
-  final PreInterval interval;
+  final PrescriptionInterval interval;
 
   /// Text controller for the dosage input field
   final TextEditingController dosageController = new TextEditingController();
@@ -259,7 +259,7 @@ class _IntervalState extends State<IntervalEntry> {
     });
   }
 
-  /// Update the stored [PreInterval] based on the form input values
+  /// Update the stored [PrescriptionInterval] based on the form input values
   void buildInterval([String input]) {
     interval.time = new Time(timeToTake?.hour, timeToTake?.minute);
     try {

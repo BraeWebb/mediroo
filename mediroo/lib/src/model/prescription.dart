@@ -10,30 +10,55 @@ enum PillType {
 
 /// A user's prescription
 class Prescription {
-  String _id; //prescription id (used for DB purposes)
-  String medNotes; //the name of the medication
-  String docNotes; //any notes the GP left
-  int pillsLeft; //the number of pills the user has left
-  DateTime addTime; //TODO: what's this?
-  Map<Time, PreInterval> intervals; //TODO: make this a mapping from time to list of interval
-  Map<Date, Map<Time, bool>> pillLog; //log of pills - this is a nested map so that the app
+  /// prescription id (used for database purposes)
+  String _id;
+
+  /// the name of the medication
+  String medNotes;
+
+  /// notes left for the user by the GP
+  String docNotes;
+
+  /// the number of pills the user has left in this prescription
+  int pillsLeft;
+
+  /// the date and time at which the prescription was added
+  DateTime addTime;
+
+  /// the intervals at which the pills should be taken
+  Map<Time, PrescriptionInterval> intervals; // TODO: make this a mapping from time to list of interval
+
+  /// a log of the times pills need to be taken and whether or not they've been taken
+  Map<Date, Map<Time, bool>> pillLog; //this is a nested map so that the app
   // can look things up by date alone
 
+  /// Constructs a new Prescription
   Prescription(this._id, this.medNotes, {this.docNotes, this.pillsLeft, this.addTime, this.intervals, this.pillLog});
 
+  /// returns the user's [id]
   String get id => _id;
 }
 
 
 /// The interval a user takes prescription medication over
-class PreInterval {
-  Time time; //the time of day the meds need to be taken at TODO: make this a list?
-  Date startDate; //the day the user started taking meds
-  Date endDate; //the day the user stops taking meds (null if no end date)
-  int dateDelta; //the number of days between each dose
-  int dosage; //the number of pills to take each time
+class PrescriptionInterval {
+  /// the time of the day the pills should be taken
+  Time time; // TODO: make this a list?
 
-  PreInterval(this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {
+  /// the date the prescription started
+  Date startDate;
+
+  /// the date the prescription ends (null if no end date)
+  Date endDate;
+
+  /// the number of days between each dose of pills
+  int dateDelta;
+
+  /// the number of pills to take at each interval
+  int dosage;
+
+  /// Constructs a new interval
+  PrescriptionInterval(this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {
     this.dosage = dosage ?? 1;
     this.dateDelta = dateDelta ?? 1;
   }

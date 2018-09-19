@@ -108,7 +108,7 @@ class ListState extends State<PillList> {
     List<PillCard> taken = new List();
 
     for(Prescription pre in prescriptions) {
-      for(PreInterval interval in pre.intervals.values) {
+      for(PrescriptionInterval interval in pre.intervals.values) {
         if(TimeUtil.isDay(date, interval)) {
           pre.pillLog[date] = pre.pillLog[date] ?? {interval.time: false};
           pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
