@@ -6,14 +6,16 @@ import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/screens.dart' show PillList;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
 
-
 /// Signup page for the user.
 class SignupPage extends StatefulWidget {
+  /// Tag of this screen
   static String tag = "signupPage";
-
+  /// Used for authenticating the current user
   final BaseAuth auth;
+  /// Allows firebase to analyse the usage of the app
   final FirebaseAnalytics analytics;
 
+  /// Creates a new Signup Page
   SignupPage({this.analytics, this.auth}): super();
 
   @override
@@ -23,21 +25,32 @@ class SignupPage extends StatefulWidget {
   );
 }
 
+/// Stores information required for the state of the Signup Page
 class _SignupPageState extends State<SignupPage> {
+  /// The currently highlighted widget on the screen
   final FocusNode focus = FocusNode();
 
+  /// Used for authenticating the user
   final BaseAuth auth;
+  /// Used for analysing app usage data
   final FirebaseAnalytics analytics;
+
+  /// Retrieves the text in the name entry field
   final TextEditingController nameController = new TextEditingController();
+  /// Retrieves the text in the email entry field
   final TextEditingController emailController = new TextEditingController();
+  /// Retrieves the text in the password entry field
   final TextEditingController passwordController = new TextEditingController();
 
+  // Stores the error information associated with the various entry fields
   String _nameError;
   String _emailError;
   String _passwordError;
 
+  // Creates a new state for a Signup Page
   _SignupPageState({this.analytics, this.auth}): super();
 
+  // Checks that a given [name] is valid when submitting the form
   String _validateName(String toCheck) {
     if (toCheck.isEmpty) {
       return 'Please enter a name';
@@ -46,6 +59,7 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  // Checks that a given email address is valid when submitting the form
   String _validateEmail(String email) {
     if (email.isEmpty) {
       return 'Please enter an email address';
@@ -58,6 +72,7 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  // Checks that a given password is valid when submitting the form
   String _validatePassword(String password) {
     if (password.isEmpty) {
       return 'Please enter a password';
@@ -66,22 +81,29 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  // Handles the validation and database communication which occurs on pressing
+  // the signup button
   void _pressSignup() {
+    // logs the action for analytics
     analytics?.logSignUp(signUpMethod: "default");
 
+    // validates the information the user has entered
     setState(() {
       _nameError = _validateName(nameController.text);
       _emailError = _validateEmail(emailController.text);
       _passwordError = _validatePassword(passwordController.text);
     });
 
+    // exits in the event of an error
     if (_nameError != null || _emailError != null || _passwordError != null) {
       return;
     }
 
+    // enters the user's information into the database
     auth.signUp(nameController.text, emailController.text, passwordController.text)
         .then((String uid) {
       if (uid == null) {
+        // information validation and error checking
         emailController.clear();
         passwordController.clear();
         setState(() {
@@ -90,6 +112,7 @@ class _SignupPageState extends State<SignupPage> {
         return;
       }
 
+      // navigates to the pillbox screen if signup was successful
       NavigatorState navState = Navigator.of(context);
       if (navState.canPop()) {
         navState.pop();
@@ -100,6 +123,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
+    // the logo at the top of the screen
     final logo = Hero(
         tag: 'signup',
         key: Key('signup_logo'),
@@ -110,6 +134,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
     );
 
+    // the name entry field
     final name = TextFormField(
       key: Key('name_field'),
       keyboardType: TextInputType.text,
@@ -118,6 +143,7 @@ class _SignupPageState extends State<SignupPage> {
       decoration: bubbleInputDecoration("Name", _nameError, null),
     );
 
+    // email entry field
     final email = TextFormField(
       key: Key('email_field'),
       keyboardType: TextInputType.emailAddress,
@@ -126,6 +152,7 @@ class _SignupPageState extends State<SignupPage> {
       decoration: bubbleInputDecoration("Email", _emailError, null),
     );
 
+    // password entry field
     final password = TextFormField(
       key: Key('password_field'),
       obscureText: true,
@@ -136,6 +163,7 @@ class _SignupPageState extends State<SignupPage> {
 
     final signupButton = bubbleButton("signup", "Sign Up", _pressSignup);
 
+    // builds the screen using the above components
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -144,6 +172,7 @@ class _SignupPageState extends State<SignupPage> {
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
             logo,
+            // SizedBoxes are used to add whitespace and padding to the screen
             SizedBox(height: 48.0),
             name,
             SizedBox(height: 8.0),
