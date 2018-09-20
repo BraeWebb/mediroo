@@ -49,6 +49,7 @@ class ForgottenPasswordPage extends StatelessWidget {
                   style: new TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 24.0,
+                    color: Colors.blue,
                   )),
               new Text("Don't stress. Enter your email address "
                   "below and we'll email you a temporary password.",
@@ -78,7 +79,7 @@ class ForgottenPasswordPage extends StatelessWidget {
                               minWidth: 200.0,
                               height: 42.0,
                               onPressed: () {
-                                if (reset.text != null) {
+                                if (reset.text != null && reset.text != '') {
                                   auth.resetPassword(reset.text);
                                 }
                               },
