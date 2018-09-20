@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +25,7 @@ abstract class BaseAuth {
   void sendVerifyEmail();
 
   /// Send an email to the given [email] address to reset their password
-  void resetPassword(String email);
+  Future<bool> resetPassword(String email);
 }
 
 /// Implementation of an authentication system for Google Firebase
@@ -99,8 +100,13 @@ class FireAuth extends BaseAuth {
   }
 
   @override
-  void resetPassword(String email) {
-    _auth.sendPasswordResetEmail(email: email);
+  Future<bool> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } on PlatformException {
+      return false;
+    }
   }
 }
 
@@ -135,7 +141,7 @@ class MockAuth extends BaseAuth {
   }
 
   @override
-  void resetPassword(String email) {
+  Future<bool> resetPassword(String email) {
 
   }
 

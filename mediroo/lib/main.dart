@@ -25,7 +25,7 @@ class MediRooApp extends StatelessWidget {
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
     PillList.tag: (context) => PillList(auth: new FireAuth()),
     DebugPage.tag: (context) => DebugPage(),
-    ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(),
+    ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(auth: new FireAuth()),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
 
   };
