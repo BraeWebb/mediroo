@@ -4,7 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton;
-import 'package:mediroo/screens.dart' show PillList, DebugPage, SignupPage;
+import 'package:mediroo/screens.dart' show PillList, SignupPage, ForgottenPasswordPage;
 
 /// Login page for the user.
 class LoginPage extends StatefulWidget {
@@ -173,11 +173,11 @@ class _LoginPageState extends State<LoginPage> {
     final forgotLabel = FlatButton(
       key: Key('forgot_password'),
       child: Text(
-        'Forgot password?',
+        'Forgot your details?',
         style: TextStyle(color: Colors.black54),
       ),
       onPressed: () {
-        Navigator.of(context).pushNamed(DebugPage.tag);
+        Navigator.of(context).pushNamed(ForgottenPasswordPage.tag);
       },
     );
 
