@@ -1,14 +1,16 @@
-import { fetchPatientList } from 'service/patients';
+import { firestore } from 'config/firebase';
 
 export const fetchPatients = () => (dispatch) => {
-  return fetchPatientList()
-    .then(patients => {
-      dispatch({
-        type: 'PATIENT_COMMIT',
-        payload: { patients }
-      });
+  return firestore.collection('users/').get().then(querySnapshot => {
+    const patients = [];
+    querySnapshot.forEach(patient => {
+      const data = patient.data();
+      const uid = patient.id;
+      patients.push({ ...data, uid });
     });
-}
-
-export const fetchPatient = (patientId) => (dispatch) => {
+    dispatch({
+      type: 'PATIENTS_COMMIT',
+      payload: {patients}
+    });
+  })
 }

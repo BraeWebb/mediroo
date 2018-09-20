@@ -4,4 +4,4 @@ import { auth } from 'config/firebase';
 export const registerWithEmailAndPassword = (email, password) => auth.createUserWithEmailAndPassword(email, password);
 
 // Login practioner
-export const loginWithEmailAndPassword = (email, password) => auth.loginWithEmailAndPassword(email, password);
+export const loginWithEmailAndPassword = (email, password) => auth.signInWithEmailAndPassword(email, password);

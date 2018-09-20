@@ -1,20 +1,18 @@
 import React, { Component } from 'react';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import { TableCell, TableRow } from '@material-ui/core';
 
+// Table row item for patient list
 class PatientTableRow extends Component {
   handleClick = () => {
-    this.props.history.push(`/patients/${this.props.patientId}`);
+    this.props.history.push(`/patients/${this.props.uid}`);
   }
 
   render() {
-    const { name, patientId, email, phone } = this.props;
+    const { name, email } = this.props;
     return (
       <TableRow hover onClick={this.handleClick}>
         <TableCell>{name}</TableCell>
-        <TableCell numeric>{patientId}</TableCell>
-        <TableCell numeric>{email}</TableCell>
-        <TableCell numeric>{phone}</TableCell>
+        <TableCell>{email}</TableCell>
       </TableRow>
     );
   }

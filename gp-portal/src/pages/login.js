@@ -6,6 +6,7 @@ import LoginForm from '../components/forms/login-form';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 
+// Material UI styling override
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -27,10 +28,13 @@ const styles = theme => ({
 })
 
 class Login extends Component {
+  // Handle form submission from child
   onSubmit = state => {
     const { email, password } = state;
-    this.props.userLogin(email, password);
-    this.props.history.push('/');
+    this.props.userLogin(email, password)
+      .then(user => {
+        this.props.history.push('/patients');
+      });
   }
 
   render() {

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom'
 import { CssBaseline, createMuiTheme, MuiThemeProvider } from '@material-ui/core';
-import Main from './main';
-import Header from './components/header';
+import Main from 'main';
+import Header from 'components/header';
 
 class app extends Component {
   render() {
+    // Sets global material ui theme
     const theme = createMuiTheme({
       palette: {
         primary: {
@@ -16,6 +17,7 @@ class app extends Component {
         },
       },
     });
+    // Initialise router
     return (
       <BrowserRouter>
         <MuiThemeProvider theme={theme}>

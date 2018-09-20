@@ -15,8 +15,6 @@ const styles = theme => ({
 class Header extends Component {
   render() {
     const { classes, loggedIn, userLogout } = this.props;
-    console.log(this.props);
-    console.log(loggedIn);
     return (
       <div>
         <AppBar position="static">
