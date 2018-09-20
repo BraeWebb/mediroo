@@ -51,6 +51,23 @@ class ListState extends State<PillList> {
   }
 
   void refreshState(List<Prescription> prescriptions) {
+    for (int i = 0; i < prescriptions.length; i++){
+      int lowAmount = (prescriptions[i].pillsLeft * 0.1).round();
+
+      if (prescriptions[i].pillsLeft < lowAmount){
+
+        String plural;
+        lowAmount == 1 ? plural  = "": plural = "s";
+
+        showDialog(context: context, child:
+          new AlertDialog(
+            title: new Text("Low Pill Count Alert"),
+            content: new Text("You only have $lowAmount ${prescriptions[i].medNotes} pill$plural left."),
+          )
+        );
+
+      }
+    }
     setState(() {
       if (prescriptions.length == 0) {
         cards = genMessage("No Pills Yet!");
@@ -184,7 +201,7 @@ class ListState extends State<PillList> {
       note = "Already taken";
     }
 
-    return new PillCard(pre.medNotes, image, notes: note,
+    return new PillCard(pre, pre.medNotes, image, notes: note,
         time: TimeUtil.getFormatted(time.hour, time.minute),
         date: date.getWeekdayFull() + " " + TimeUtil.getDateFormatted(date.year, date.month, date.day),
         count: dosage.toString() + " pills", colour: chosenColour);
@@ -249,37 +266,47 @@ class PillCard extends StatelessWidget {
   final String date;
   final String count;
   final Color colour;
+  final Prescription pre;
 
-  PillCard(this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
+  PillCard(this.pre, this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
+
+  void take(bool take){
+    take ? pre.pillsLeft-- : pre.pillsLeft++;
+    //TODO update DB
+
+
+
+  }
 
   SimpleDialog getDialog(BuildContext context) {
+
     String descText;
     RaisedButton btn;
     if(colour == ListState.STD_COLOUR) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context);}, //TODO sync with db
+        onPressed: () {take(true); Navigator.pop(context);}, //TODO sync with db
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.ALERT_COLOUR) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context);}, //TODO sync with db
+        onPressed: () {take(true); Navigator.pop(context);}, //TODO sync with db
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
     } else if(colour == ListState.MISSED_COLOUR) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context);}, //TODO sync with db
+          onPressed: () {take(true);Navigator.pop(context);}, //TODO sync with db
           child: new Text("Take late"),
           color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.TAKEN_COLOUR) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context);}, //TODO sync with db
+          onPressed: () {take(false);Navigator.pop(context);}, //TODO sync with db
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
