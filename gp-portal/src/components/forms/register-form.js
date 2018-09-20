@@ -22,9 +22,7 @@ const styles = theme => ({
 class RegisterForm extends Component {
   state = {
     email: '',
-    password: '',
-    name: '',
-    practice: ''
+    password: ''
   }
 
   onChange = e => {
@@ -59,25 +57,6 @@ class RegisterForm extends Component {
             onChange={this.onChange}
             autoComplete="current-password"
           />
-        </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="name">Full Name</InputLabel>
-          <Input
-            name="name"
-            type="text"
-            id="name"
-            onChange={this.onChange}
-          />
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="practice">Practice</InputLabel>
-          <Input
-            name="practice"
-            type="text"
-            id="practice"
-            onChange={this.onChange}
-          />
-        </FormControl>
-
         </FormControl>
         <Button
           type="submit"

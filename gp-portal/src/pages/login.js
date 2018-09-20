@@ -5,8 +5,6 @@ import compose from 'recompose/compose';
 import LoginForm from '../components/forms/login-form';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { firestore } from '../config/firebase';
-import { QuerySnapshot } from '@google-cloud/firestore';
 
 const styles = theme => ({
   layout: {
@@ -30,9 +28,8 @@ const styles = theme => ({
 
 class Login extends Component {
   onSubmit = state => {
-    console.log(state);
-    // check if logged in from firebase endpoint
-    this.props.userLogin();
+    const { email, password } = state;
+    this.props.userLogin(email, password);
     this.props.history.push('/');
   }
 
