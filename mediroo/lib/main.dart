@@ -25,7 +25,9 @@ class MediRooApp extends StatelessWidget {
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
     PillList.tag: (context) => PillList(auth: new FireAuth()),
     DebugPage.tag: (context) => DebugPage(),
+    ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
+
   };
 
   /// Construct a material application based on the [routes] of the application.
