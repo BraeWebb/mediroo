@@ -48,7 +48,7 @@ class TimeUtil {
   ///Returns whether the [Date] falls into a given interval
   static bool isDay(Date current, PrescriptionInterval interval) {
     return interval.startDate.difference(current).inDays % interval.dateDelta == 0 &&
-        interval.endDate.compareTo(current) > 0;
+        interval.endDate.compareTo(current) >= 0;
   }
 
   ///Converts a [DateTime] object to a [Time] object
