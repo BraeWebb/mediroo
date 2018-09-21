@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { userLogin } from '../actions/auth';
+import { userRegister } from 'actions/auth';
 import compose from 'recompose/compose';
-import RegisterForm from '../components/forms/register-form';
+import RegisterForm from 'components/forms/register-form';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
 
+// Material UI styling override
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -27,11 +28,11 @@ const styles = theme => ({
 })
 
 class Register extends Component {
+  // Handle form submission from child
   onSubmit = state => {
-    console.log(state);
-    // user register
-    // this.props.userRegister();
-    this.props.history.push('/');
+    const { email, password } = state;
+    this.props.userRegister(email, password)
+      .then(() => this.props.history.push('/patients'));
   }
 
   render() {
@@ -54,7 +55,7 @@ const mapStateToProps = (state) => {
   }
 };
 const mapDispatchToProps = {
-  // userLogin
+  userRegister
 };
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), connect(), withStyles(styles))(Register);

@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show FireAuth, checkVerified, currentUser, getUserPrescriptions;
+import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
+import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions;
 import 'package:mediroo/screens.dart' show AddPills;
+import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class PillList extends StatefulWidget {
@@ -35,16 +37,37 @@ class ListState extends State<PillList> {
   static const Color ALERT_COLOUR = const Color(0xFFa1a1ed);
   static const int LEEWAY = 15;
 
+  //
+  List<Prescription> test;
+
   ListState(this.date, {this.auth}) {
     cards = genMessage("Loading Pills...");
 
     databaseConnection = getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
+        test = prescriptions;
       });
   }
 
   void refreshState(List<Prescription> prescriptions) {
+    for (int i = 0; i < prescriptions.length; i++){
+      int lowAmount = (prescriptions[i].pillsLeft * 0.1).round();
+
+      if (prescriptions[i].pillsLeft < lowAmount){
+
+        String plural;
+        lowAmount == 1 ? plural  = "": plural = "s";
+
+        showDialog(context: context, child:
+          new AlertDialog(
+            title: new Text("Low Pill Count Alert"),
+            content: new Text("You only have $lowAmount ${prescriptions[i].medNotes} pill$plural left."),
+          )
+        );
+
+      }
+    }
     setState(() {
       if (prescriptions.length == 0) {
         cards = genMessage("No Pills Yet!");
@@ -102,7 +125,7 @@ class ListState extends State<PillList> {
     List<PillCard> taken = new List();
 
     for(Prescription pre in prescriptions) {
-      for(PreInterval interval in pre.intervals.values) {
+      for(PrescriptionInterval interval in pre.intervals.values) {
         if(TimeUtil.isDay(date, interval)) {
           pre.pillLog[date] = pre.pillLog[date] ?? {interval.time: false};
           pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
@@ -182,7 +205,7 @@ class ListState extends State<PillList> {
       note = "Already taken";
     }
 
-    return new PillCard(pre.medNotes, image, notes: note,
+    return new PillCard(pre, pre.medNotes, image, notes: note,
         time: TimeUtil.getFormatted(time.hour, time.minute),
         date: date.getWeekdayFull() + " " + TimeUtil.getDateFormatted(date.year, date.month, date.day),
         count: dosage.toString() + " pills", colour: chosenColour);
@@ -197,6 +220,15 @@ class ListState extends State<PillList> {
         child: new Scaffold (
             appBar: new AppBar(
               title: new Text("Upcoming pills"),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.info_outline),
+                    onPressed: () {
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PrescriptionList(test)));
+                    }
+                )
+              ],
               bottom: TabBar(
                   tabs: [
                     Tab(text: "Mo"),
@@ -238,8 +270,17 @@ class PillCard extends StatefulWidget {
   final String date;
   final String count;
   final Color colour;
+  final Prescription pre;
 
-  PillCard(this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
+  PillCard(this.pre, this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
+
+  void take(bool take){
+    take ? pre.pillsLeft-- : pre.pillsLeft++;
+    //TODO update DB
+
+
+
+  }
 
   @override
   State<StatefulWidget> createState() => new CardState(title, icon, notes, time, date, count, colour);
@@ -266,6 +307,7 @@ class CardState extends State<PillCard> {
   }
 
   SimpleDialog getDialog(BuildContext context) {
+
     String descText;
     RaisedButton btn;
     if(colour == ListState.STD_COLOUR) {

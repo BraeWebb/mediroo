@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show PlatformException;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +25,7 @@ abstract class BaseAuth {
   void sendVerifyEmail();
 
   /// Send an email to the given [email] address to reset their password
-  void resetPassword(String email);
+  Future<bool> resetPassword(String email);
 }
 
 /// Implementation of an authentication system for Google Firebase
@@ -46,6 +47,7 @@ class FireAuth extends BaseAuth {
     return user.uid;
   }
 
+  @override
   Future<String> signUp(String name, String email, String password) async {
     // signup using firebase
     final FirebaseUser user = await _auth
@@ -84,19 +86,27 @@ class FireAuth extends BaseAuth {
     return user.uid;
   }
 
+  @override
   void sendVerifyEmail() {
     _auth.currentUser().then((FirebaseUser user) {
       user?.sendEmailVerification();
     });
   }
 
+  @override
   Future<bool> isVerified() async {
     FirebaseUser user = await _auth.currentUser();
     return user.isEmailVerified;
   }
 
-  void resetPassword(String email) {
-    _auth.sendPasswordResetEmail(email: email);
+  @override
+  Future<bool> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } on PlatformException {
+      return false;
+    }
   }
 }
 
@@ -106,6 +116,7 @@ class MockAuth extends BaseAuth {
 
   String userId;
 
+  @override
   Future<String> signIn(String email, String password) async {
     if (userId != null) {
       return Future.value(userId);
@@ -114,20 +125,24 @@ class MockAuth extends BaseAuth {
     }
   }
 
+  @override
   Future<String> signUp(String name, String email, String password) async {
     return signIn(email, password);
   }
 
+  @override
   Future<bool> isVerified() {
     return null;
   }
 
+  @override
   void sendVerifyEmail() {
     return null;
   }
 
-  void resetPassword(String email) {
-
+  @override
+  Future<bool> resetPassword(String email) {
+    return null;
   }
 
 }

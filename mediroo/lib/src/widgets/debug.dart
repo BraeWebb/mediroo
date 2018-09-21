@@ -20,7 +20,7 @@ class DebugInfo extends StatelessWidget {
 /// Renders the UUID for the current user
 class _UserID extends StatelessWidget {
 
-  List<Prescription> prescriptions = new List();
+  final List<Prescription> prescriptions = new List();
 
   @override
   Widget build(BuildContext context) {

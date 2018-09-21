@@ -5,9 +5,8 @@ import compose from 'recompose/compose';
 import LoginForm from '../components/forms/login-form';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { firestore } from '../config/firebase';
-import { QuerySnapshot } from '@google-cloud/firestore';
 
+// Material UI styling override
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -29,11 +28,13 @@ const styles = theme => ({
 })
 
 class Login extends Component {
+  // Handle form submission from child
   onSubmit = state => {
-    console.log(state);
-    // check if logged in from firebase endpoint
-    this.props.userLogin();
-    this.props.history.push('/');
+    const { email, password } = state;
+    this.props.userLogin(email, password)
+      .then(user => {
+        this.props.history.push('/patients');
+      });
   }
 
   render() {

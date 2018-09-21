@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mediroo/util.dart' show MockAuth;
-import 'package:mediroo/screens.dart' show LoginPage, PillList, DebugPage, SignupPage;
+import 'package:mediroo/screens.dart' show LoginPage, PillList, DebugPage, SignupPage, ForgottenPasswordPage;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -159,7 +159,7 @@ void main() {
     await tester.tap(find.byKey(Key('forgot_password')));
     await tester.pumpAndSettle();
 
-    expect(find.byType(DebugPage), findsOneWidget);
+    expect(find.byType(ForgottenPasswordPage), findsOneWidget);
   });
 
   /// Ensure that the signup link words

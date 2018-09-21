@@ -4,7 +4,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:mediroo/model.dart' show Date;
 import 'package:mediroo/util.dart' show FireAuth;
 import 'screens.dart';
 
@@ -24,10 +23,11 @@ class MediRooApp extends StatelessWidget {
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
-    Pillbox.tag: (context) => Pillbox([], DateTime.now(), title: "Pillbox", auth: new FireAuth()),
     PillList.tag: (context) => PillList(auth: new FireAuth()),
     DebugPage.tag: (context) => DebugPage(),
+    ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(auth: new FireAuth()),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
+
   };
 
   /// Construct a material application based on the [routes] of the application.

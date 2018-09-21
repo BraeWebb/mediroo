@@ -14,9 +14,9 @@ class DebugPage extends StatelessWidget {
   final String title = "Debug";
   static String tag = "Debug";
 
-  TextEditingController reset = new TextEditingController();
+  final TextEditingController reset = new TextEditingController();
 
-  FireAuth auth = new FireAuth();
+  final FireAuth auth = new FireAuth();
 
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show addPrescription;
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, picker;
+import 'package:mediroo/util.dart' show TimeUtil;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -55,7 +55,7 @@ class _AddPillsState extends State<AddPills> {
     // Pull all the interval classes from the interval entry widgets
     prescription.intervals = {};
     for (IntervalEntry interval in intervals) {
-      PreInterval preInterval = interval.interval;
+      PrescriptionInterval preInterval = interval.interval;
       if (preInterval == null) {
         continue;
       }
@@ -149,7 +149,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
     }
 
     // Construct a string representation of the date
-    String date = picked.day.toString() + "/" + picked.month.toString() + "/" + picked.year.toString();
+    String date = TimeUtil.getDateFormatted(picked.year, picked.month, picked.day);
 
     // Update the state using entered date
     setState(() {
@@ -217,7 +217,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
 /// Interval form widget for entering interval data
 class IntervalEntry extends StatefulWidget {
   /// The current interval state, this is updated when data is entered
-  final PreInterval interval = new PreInterval(null, null);
+  final PrescriptionInterval interval = new PrescriptionInterval(null, null);
 
   @override
   State<StatefulWidget> createState() {
@@ -228,7 +228,7 @@ class IntervalEntry extends StatefulWidget {
 /// State for [IntervalEntry]
 class _IntervalState extends State<IntervalEntry> {
   /// The current interval state, this is updated when data is entered
-  final PreInterval interval;
+  final PrescriptionInterval interval;
 
   /// Text controller for the dosage input field
   final TextEditingController dosageController = new TextEditingController();
@@ -257,11 +257,11 @@ class _IntervalState extends State<IntervalEntry> {
     // Update the state with the entered time
     setState(() {
       timeToTake = picked;
-      timeValue = "${picked.hour}:${picked.minute}";
+      timeValue = TimeUtil.getFormatted(picked.hour, picked.minute);
     });
   }
 
-  /// Update the stored [PreInterval] based on the form input values
+  /// Update the stored [PrescriptionInterval] based on the form input values
   void buildInterval([String input]) {
     interval.time = new Time(timeToTake?.hour, timeToTake?.minute);
     try {
