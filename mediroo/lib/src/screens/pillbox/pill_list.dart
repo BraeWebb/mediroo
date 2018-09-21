@@ -29,6 +29,7 @@ class ListState extends State<PillList> {
   final FireAuth auth;
   Date date;
   List<List<Widget>> cards;
+  List<String> weekdays;
   StreamSubscription<List<Prescription>> databaseConnection;
 
   static const Color STD_COLOUR = const Color(0xFF333366);
@@ -91,6 +92,24 @@ class ListState extends State<PillList> {
   List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
     List<List<Widget>> days = [];
     DateTime startDate = new DateTime(start.year, start.month, start.day);
+    weekdays = [];
+    for(int i = -1; i < 6; i++) {
+      Duration duration = new Duration(days: i);
+
+      DateTime newDate;
+      newDate = startDate.add(duration);
+      Date date = new Date(newDate.year, newDate.month, newDate.day);
+
+      days.add(genCards(prescriptions, date));
+      weekdays.add(date.getWeekday());
+    }
+
+    return days;
+  }
+
+  /*List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
+    List<List<Widget>> days = [];
+    DateTime startDate = new DateTime(start.year, start.month, start.day);
     for (int i = 0; i < 7; i++) {
       Duration duration = new Duration(days: i);
 
@@ -107,7 +126,7 @@ class ListState extends State<PillList> {
       days.add(genCards(prescriptions, date));
     }
     return days;
-  }
+  }*/
 
   List<List<Widget>> genMessage(String message) {
     List<List<Widget>> pages = [];
@@ -231,13 +250,13 @@ class ListState extends State<PillList> {
               ],
               bottom: TabBar(
                   tabs: [
-                    Tab(text: "Mo"),
-                    Tab(text: "Tu"),
-                    Tab(text: "We"),
-                    Tab(text: "Th"),
-                    Tab(text: "Fr"),
-                    Tab(text: "Sa"),
-                    Tab(text: "Su"),
+                    Tab(text: weekdays[0]),
+                    Tab(text: weekdays[1]),
+                    Tab(text: weekdays[2]),
+                    Tab(text: weekdays[3]),
+                    Tab(text: weekdays[4]),
+                    Tab(text: weekdays[5]),
+                    Tab(text: weekdays[6]),
                   ]
               ),
             ),
