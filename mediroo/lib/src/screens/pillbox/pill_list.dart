@@ -7,11 +7,19 @@ import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+/// Represents a visal list of pills
 class PillList extends StatefulWidget {
+
+  /// Identifier for this page
   static final tag = "PillList";
+
+  /// Used to connect to the database
   final FireAuth auth;
+
+  /// The current date
   Date date;
 
+  /// Constructs a new PillList with a [date] and [auth] for user authenticaiton
   PillList({this.date, this.auth}) {
     if (date == null) {
       DateTime now = DateTime.now();
@@ -25,32 +33,48 @@ class PillList extends StatefulWidget {
   }
 }
 
+/// The current state of a PillList widget
 class ListState extends State<PillList> {
+
+  /// Used to connect to the database
   final FireAuth auth;
+
+  /// The current date
   Date date;
+
+  /// The cards inside this list
   List<List<Widget>> cards;
+
+  /// A list of ordered weekdays
   List<String> weekdays;
+
+  /// A database connection
   StreamSubscription<List<Prescription>> databaseConnection;
 
+  /// Colours used to colour the cards
   static const Color STD_COLOUR = const Color(0xFF333366);
   static const Color TAKEN_COLOUR = const Color(0xFF3aa53f);
   static const Color MISSED_COLOUR = const Color(0xFFBC2222);
   static const Color ALERT_COLOUR = const Color(0xFFa1a1ed);
+
+  /// The amount of time in minutes before a pill is marked as missed
   static const int LEEWAY = 15;
 
-  //
-  List<Prescription> test;
+  /// The current prescriptions
+  List<Prescription> prescriptions;
 
+  /// Constructs a new ListState with [date] and [auth]
   ListState(this.date, {this.auth}) {
     cards = genMessage("Loading Pills...");
 
     databaseConnection = getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
-        test = prescriptions;
+        this.prescriptions = prescriptions;
       });
   }
 
+  /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
     for (int i = 0; i < prescriptions.length; i++){
       int lowAmount = (prescriptions[i].pillsLeft * 0.1).round();
@@ -78,6 +102,7 @@ class ListState extends State<PillList> {
     });
   }
 
+  /// Retrieves the latest database state
   Future<Null> _handleRefresh() async {
     databaseConnection.cancel();
 
@@ -89,45 +114,32 @@ class ListState extends State<PillList> {
     return null;
   }
 
+  /// Generates the cards for each day, using the given [prescriptions]
+  ///  and [start] date
   List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
     List<List<Widget>> days = [];
     DateTime startDate = new DateTime(start.year, start.month, start.day);
     weekdays = [];
     for(int i = -1; i < 6; i++) {
-      Duration duration = new Duration(days: i);
 
       DateTime newDate;
-      newDate = startDate.add(duration);
+      if (i >= 0) {
+        Duration duration = new Duration(days: i);
+        newDate = startDate.add(duration);
+      } else {
+        Duration duration = new Duration(days: -i);
+        newDate = startDate.subtract(duration);
+      }
+
       Date date = new Date(newDate.year, newDate.month, newDate.day);
 
       days.add(genCards(prescriptions, date));
       weekdays.add(date.getWeekday());
     }
-
     return days;
   }
 
-  /*List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
-    List<List<Widget>> days = [];
-    DateTime startDate = new DateTime(start.year, start.month, start.day);
-    for (int i = 0; i < 7; i++) {
-      Duration duration = new Duration(days: i);
-
-      DateTime newDate;
-      if (startDate.weekday - 1 < i) {
-        newDate = startDate.add(duration);
-      } else {
-        newDate = startDate.subtract(duration);
-      }
-
-      Date date = new Date(newDate.year, newDate.month, newDate.day);
-      print(newDate.toString());
-
-      days.add(genCards(prescriptions, date));
-    }
-    return days;
-  }*/
-
+  /// Places a [message] on the screen
   List<List<Widget>> genMessage(String message) {
     List<List<Widget>> pages = [];
     for (int i = 0; i < 7; i++) {
@@ -138,29 +150,45 @@ class ListState extends State<PillList> {
     return pages;
   }
 
+  /// Generates the cards for the given [date], using the given list of [prescriptions]
   List<Widget> genCards(List<Prescription> prescriptions, Date date) {
     List<PillCard> upcoming = new List();
     List<PillCard> missed = new List();
     List<PillCard> taken = new List();
 
     for(Prescription pre in prescriptions) {
-      for(PrescriptionInterval interval in pre.intervals.values) {
+      for(MapEntry<Time, PrescriptionInterval> entry in pre.intervals.entries) {
+        Time time = entry.key;
+        PrescriptionInterval interval = entry.value;
         if(TimeUtil.isDay(date, interval)) {
-          pre.pillLog[date] = pre.pillLog[date] ?? {interval.time: false};
-          pre.pillLog[date][interval.time] = pre.pillLog[date][interval.time] ?? false;
-          if(TimeUtil.isNow(TimeUtil.currentTime(), interval.time, LEEWAY) ||
-              TimeUtil.isUpcoming(TimeUtil.currentTime(), interval.time, LEEWAY)) {
-            upcoming.add(genCard(pre, interval.time, date, pre.pillLog[date][interval.time], interval.dosage));
-          } else if(pre.pillLog[date][interval.time]) {
-            taken.add(genCard(pre, interval.time, date, true, interval.dosage));
+          pre.pillLog[date] = pre.pillLog[date] ?? {time: false};
+          pre.pillLog[date][time] = pre.pillLog[date][time] ?? false;
+          if(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY) ||
+              TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
+
+            upcoming.add(genCard(pre, time, date, pre.pillLog[date][time], interval.dosage));
+          } else if(pre.pillLog[date][time]) {
+
+            taken.add(genCard(pre, time, date, true, interval.dosage));
           } else {
-            missed.add(genCard(pre, interval.time, date, false, interval.dosage));
+
+            missed.add(genCard(pre, time, date, false, interval.dosage));
           }
         }
       }
     }
 
-    List<PillCard> cards = upcoming + missed + taken;
+    List<PillCard> cards = [];
+    for(PillCard card in upcoming.reversed) {
+      cards.add(card);
+    }
+    for(PillCard card in missed.reversed) {
+      cards.add(card);
+    }
+    for(PillCard card in taken.reversed) {
+      cards.add(card);
+    }
+
     if (cards.length == 0) {
       return [new Center(
         child: new Text("No Pill Today!")
@@ -170,6 +198,8 @@ class ListState extends State<PillList> {
     return cards;
   }
 
+  /// Generates a single card, with prescription [pre], [time], [date],
+  ///   the pill's [taken] status, and the pill's [dosage]
   Widget genCard(Prescription pre, Time time, Date date, bool taken, int dosage) {
     String image;
     switch(TimeUtil.getToD(time.hour)) {
@@ -195,7 +225,6 @@ class ListState extends State<PillList> {
       note = "";
     } else if(date == TimeUtil.currentDate()) {
       if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
-        print(time.hour);
         chosenColour = STD_COLOUR;
         int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
         int hours = minutes ~/ 60 + 1;
@@ -206,8 +235,6 @@ class ListState extends State<PillList> {
           note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
         }
       } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
-        print(TimeUtil.currentTime().hour);
-        print(time.hour);
         chosenColour = MISSED_COLOUR;
         note = "Medication missed!";
       } else {
@@ -215,7 +242,6 @@ class ListState extends State<PillList> {
         note = "Take now!";
       }
     } else {
-      print(date.day);
       chosenColour = MISSED_COLOUR;
       note = "Medication missed!";
     }
@@ -234,7 +260,7 @@ class ListState extends State<PillList> {
   Widget build(BuildContext context) {
     checkVerified(context, auth);
     return new DefaultTabController(
-        initialIndex: DateTime.now().weekday - 1,
+        initialIndex: 1,
         length: 7,
         child: new Scaffold (
             appBar: new AppBar(
@@ -244,20 +270,26 @@ class ListState extends State<PillList> {
                     icon: Icon(Icons.info_outline),
                     onPressed: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PrescriptionList(test)));
+                        MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions)));
                     }
                 )
               ],
               bottom: TabBar(
-                  tabs: [
+                  tabs: weekdays != null ? [
                     Tab(text: weekdays[0]),
-                    Tab(text: weekdays[1]),
+                    Tab(child: new Text(weekdays[1], style: TextStyle(color: Colors.yellow),)),
                     Tab(text: weekdays[2]),
                     Tab(text: weekdays[3]),
                     Tab(text: weekdays[4]),
                     Tab(text: weekdays[5]),
                     Tab(text: weekdays[6]),
-                  ]
+                  ] : [Tab(text: ""),
+                      Tab(text: ""),
+                      Tab(text: ""),
+                      Tab(text: ""),
+                      Tab(text: ""),
+                      Tab(text: ""),
+                      Tab(text: "")]
               ),
             ),
             body: TabBarView(
@@ -281,18 +313,38 @@ class ListState extends State<PillList> {
   }
 }
 
+/// Represents a single card in the list of pill cards
 class PillCard extends StatefulWidget {
+
+  ///The pill's name
   final String title;
+
+  ///Any notes to display on the card
   final String notes;
+
+  ///The time of day icon to display
   final String icon;
+
+  ///The current time, in hh:mm format
   final String time;
+
+  ///The current date, in dd/mm/yyyy format
   final String date;
+
+  ///The number of pills to take, in string format
   final String count;
+
+  ///The colour of the card
   final Color colour;
+
+  ///The prescription this card is representing
   final Prescription pre;
 
+  ///Constructs a new pill card, with prescription [pre], [title], [icon],
+  /// [notes], [time], [date], [count], and [colour]
   PillCard(this.pre, this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
 
+  /// Decrements the number of pills left
   void take(bool take){
     take ? pre.pillsLeft-- : pre.pillsLeft++;
     //TODO update DB
@@ -306,18 +358,33 @@ class PillCard extends StatefulWidget {
 
 }
 
+///The state of a specific card
 class CardState extends State<PillCard> {
 
+  ///The pill's name
   String title;
+
+  ///Any notes to display
   String notes;
+
+  ///The card's icon
   String icon;
+
+  ///The current time, in hh:mm format
   String time;
+
+  ///The current date, in dd/mm/yyyy format
   String date;
+
+  ///The number of pills to take, in string format
   String count;
+
+  ///The colour of this card
   Color colour;
 
   CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour);
 
+  ///Sets the card's colour to [newColour]
   void updateColour(Color newColour) {
     setState(() {
       colour = newColour;
@@ -325,6 +392,7 @@ class CardState extends State<PillCard> {
     });
   }
 
+  ///Creates a dialog in [context] with the card's info
   SimpleDialog getDialog(BuildContext context) {
 
     String descText;
@@ -425,12 +493,14 @@ class CardState extends State<PillCard> {
     );
   }
 
+  ///The font of the card header
   final headerFont = const TextStyle(
       color: Colors.white,
       fontSize: 18.0,
       fontWeight: FontWeight.w600
   );
 
+  ///The font of the card notes
   final subHeaderFont = const TextStyle(
       color: const Color(0xd0ffffff),
       fontSize: 14.0,
@@ -438,12 +508,14 @@ class CardState extends State<PillCard> {
       fontStyle: FontStyle.italic
   );
 
+  ///The card's default font
   final normalFont = const TextStyle(
       color: const Color(0xb0ffffff),
       fontSize: 12.0,
       fontWeight: FontWeight.w400
   );
 
+  ///Returns a row of card information, with [icon] and [text]
   Widget getRow(String text, IconData icon) {
     return new Row(
         children: <Widget>[
