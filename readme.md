@@ -49,47 +49,45 @@ To create a new Flutter project which existing Flutter source code files:
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
+To run the tests the following command can be used:
 
-### Break down into end to end tests
+`flutter test`,
 
-Explain what these tests test and why
+Run the command inside the project direction
 
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+To deploy to Android, the following command can be used in the project directory
+
+`flutter build apk`
+
+The resulting `.apk` can then be deployed to the Google Play Store.
+
+
+To deploy to iOS, the following command can be used 
+
+`flutter build ios`
+
+The result `.app` can then be deployed to the Apple Store.
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+* [Flutter](https://flutter.io/) - Mobile development SDK
+* [Jenkins](https://jenkins.io/) - Continous Integration
+ 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+###tilde ~
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Brae Webb**
+* **Henry O'Brien**
+* **Emily Bennet**
+* **Abhishek Jagtap**
+* **Lius Woodrow**
+* **Nick Garner**
+* **Andrew Chan**
 
 ## License
 
@@ -97,64 +95,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# hello, This is Markdown Live Preview
-
-
-
-----
-## what is Markdown?
-see [Wikipedia](http://en.wikipedia.org/wiki/Markdown)
-
-> Markdown is a lightweight markup language, originally created by John Gruber and Aaron Swartz allowing people "to write using an easy-to-read, easy-to-write plain text format, then convert it to structurally valid XHTML (or HTML)".
-
-----
-## usage
-1. Write markdown text in this textarea.
-2. Click 'HTML Preview' button.
-
-----
-## markdown quick reference
-# headers
-
-*emphasis*
-
-**strong**
-
-* list
-
->block quote
-
-    code (4 spaces indent)
-[links](http://wikipedia.org)
-
-----
-## changelog
-* 17-Feb-2013 re-design
-
-----
-## thanks
-* [markdown-js](https://github.com/evilstreak/markdown-js)
+* 
