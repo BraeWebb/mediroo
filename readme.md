@@ -67,6 +67,14 @@ To deploy to iOS, the following command can be used
 
 `flutter build ios`, the result `.app` can then be deployed to the Apple Store.
 
+### GP Portal
+
+Inside the **gp-portal** directory
+
+* Installing dependencies: `npm install`
+* Run development server: `npm start`
+* Run build: `npm run build`
+
 ## Built with
 
 * [Flutter](https://flutter.io/) - Mobile development SDK
