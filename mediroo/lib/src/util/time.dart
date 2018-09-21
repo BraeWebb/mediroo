@@ -31,18 +31,18 @@ class TimeUtil {
 
   ///Returns whether the other time has occurred before the current time (within a given leeway)
   static bool hasHappened(Time current, Time other, int leeway) {
-    return other.compareTo(current) < 0 && current.difference(other).inMinutes > leeway;
+    return other.compareTo(current) < 0 && current.difference(other).inMinutes.abs() > leeway;
   }
 
   ///Returns whether the other time is occurring after the current time (within a given leeway)
   static bool isUpcoming(Time current, Time other, int leeway) {
-    return other.compareTo(current) > 0 && current.difference(other).inMinutes < -leeway;
+    return other.compareTo(current) > 0 && current.difference(other).inMinutes.abs() > leeway;
   }
 
   ///Returns whether the times are equal (within a given leeway)
   static bool isNow(Time current, Time other, int leeway) {
     int diff = current.difference(other).inMinutes;
-    return -leeway <= diff && diff <= leeway;
+    return diff.abs() <= leeway;
   }
 
   ///Returns whether the [Date] falls into a given interval
