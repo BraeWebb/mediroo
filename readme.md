@@ -1,4 +1,5 @@
 [![Build Status](https://jenkins.braewebb.com/job/mediroo/badge/icon)](https://jenkins.braewebb.com/job/mediroo/)
+
 # MediRoo
 
 MediRoo is a digital pillbox and medication reminder application designed to simplify the process of remembering when and how to take medication for patients. Team tilde has found that around 50% of the time, medication is not being taken as prescribed. They aim to combat this by creating a platform where users receive notifications and information specifically tailored to their situation and medical needs, without disrupting their daily routines.
@@ -93,10 +94,3 @@ Inside the **gp-portal** directory
 * **Nick Garner**
 * **Andrew Chan**
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* 
