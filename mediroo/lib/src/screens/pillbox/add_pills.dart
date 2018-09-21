@@ -86,8 +86,12 @@ class _AddPillsState extends State<AddPills> {
           children: <Widget>[
             prescriptionEntry,
           ] + intervals + [
-            bubbleButton("addInterval", "Add Interval", _addInterval),
-            bubbleButton("submitPrescription", "Add Prescription", _submitPrescription)
+            new Padding(
+              child: bubbleButton("addInterval", "Add Interval", _addInterval),
+              padding: new EdgeInsets.symmetric(vertical: 10.0)),
+            new Padding(
+              child: bubbleButton("submitPrescription", "Add Prescription", _submitPrescription),
+                padding: new EdgeInsets.symmetric(vertical: 10.0))
           ]
         ),
         padding: EdgeInsets.only(left: 24.0, right: 24.0)

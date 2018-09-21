@@ -59,13 +59,13 @@ class Date implements Comparable<Date> {
   String getWeekday() {
     int weekday = new DateTime(year, month, day).weekday;
     switch(weekday) {
-      case 1: return "Mo";
-      case 2: return "Tu";
-      case 3: return "We";
-      case 4: return "Th";
-      case 5: return "Fr";
-      case 6: return "Sa";
-      case 7: return "Su";
+      case 1: return "Mon";
+      case 2: return "Tue";
+      case 3: return "Wed";
+      case 4: return "Thu";
+      case 5: return "Fri";
+      case 6: return "Sat";
+      case 7: return "Sun";
     }
     return "";
   }
@@ -134,6 +134,13 @@ class TimeUtil {
     }
   }
 
+  static int _abs(int input) {
+    if(input < 0) {
+      return -input;
+    }
+    return input;
+  }
+
   static String getFormatted(int hour, int minute) {
     return hour.toString().padLeft(2, "0") + ":" +
         minute.toString().padLeft(2, "0");
@@ -145,18 +152,18 @@ class TimeUtil {
 
   ///Returns whether the other time has occured before the current time (within a given leeway)
   static bool hasHappened(Time current, Time other, int leeway) {
-    return other.compareTo(current) < 0 && current.difference(other).inMinutes > leeway;
+    return other.compareTo(current) < 0 && current.difference(other).inMinutes.abs() > leeway;
   }
 
   ///Returns whether the other time is occuring after the current time (within a given leeway)
   static bool isUpcoming(Time current, Time other, int leeway) {
-    return other.compareTo(current) > 0 && current.difference(other).inMinutes < -leeway;
+    return other.compareTo(current) > 0 && current.difference(other).inMinutes.abs() > leeway;
   }
 
   ///Returns whether the times are equal (within a given leeway)
   static bool isNow(Time current, Time other, int leeway) {
     int diff = current.difference(other).inMinutes;
-    return -leeway <= diff && diff <= leeway;
+    return diff.abs() <= leeway;
   }
 
   ///Returns whether the date falls into a given interval

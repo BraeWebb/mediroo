@@ -151,8 +151,9 @@ class ListState extends State<PillList> {
     if(date.compareTo(TimeUtil.currentDate()) > 0) {
       chosenColour = STD_COLOUR;
       note = "";
-    } else if(date.compareTo(TimeUtil.currentDate()) == 0) {
+    } else if(date == TimeUtil.currentDate()) {
       if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
+        print(time.hour);
         chosenColour = STD_COLOUR;
         int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
         int hours = minutes ~/ 60 + 1;
@@ -163,6 +164,8 @@ class ListState extends State<PillList> {
           note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
         }
       } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
+        print(TimeUtil.currentTime().hour);
+        print(time.hour);
         chosenColour = MISSED_COLOUR;
         note = "Medication missed!";
       } else {
@@ -170,6 +173,7 @@ class ListState extends State<PillList> {
         note = "Take now!";
       }
     } else {
+      print(date.day);
       chosenColour = MISSED_COLOUR;
       note = "Medication missed!";
     }
@@ -226,7 +230,7 @@ class ListState extends State<PillList> {
   }
 }
 
-class PillCard extends StatelessWidget {
+class PillCard extends StatefulWidget {
   final String title;
   final String notes;
   final String icon;
@@ -237,34 +241,58 @@ class PillCard extends StatelessWidget {
 
   PillCard(this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
 
+  @override
+  State<StatefulWidget> createState() => new CardState(title, icon, notes, time, date, count, colour);
+
+}
+
+class CardState extends State<PillCard> {
+
+  String title;
+  String notes;
+  String icon;
+  String time;
+  String date;
+  String count;
+  Color colour;
+
+  CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour);
+
+  void updateColour(Color newColour) {
+    setState(() {
+      colour = newColour;
+      notes = "";
+    });
+  }
+
   SimpleDialog getDialog(BuildContext context) {
     String descText;
     RaisedButton btn;
     if(colour == ListState.STD_COLOUR) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context);}, //TODO sync with db
+        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.ALERT_COLOUR) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context);}, //TODO sync with db
+        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
     } else if(colour == ListState.MISSED_COLOUR) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context);}, //TODO sync with db
+          onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
           child: new Text("Take late"),
           color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.TAKEN_COLOUR) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context);}, //TODO sync with db
+          onPressed: () {Navigator.pop(context); updateColour(ListState.STD_COLOUR);}, //TODO sync with db
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
