@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mediroo/util.dart' show MockAuth;
-import 'package:mediroo/screens.dart' show LoginPage, PillList, DebugPage, SignupPage, ForgottenPasswordPage;
+import 'package:mediroo/screens.dart' show LoginPage, PillList, SignupPage, ForgottenPasswordPage;
 import 'package:mediroo/util.dart' show buildTestableWidget;
 
 void main() {
@@ -154,7 +154,7 @@ void main() {
     await tester.pumpWidget(buildTestableWidget(widget));
 
     expect(find.byKey(Key("forgot_password")), findsOneWidget);
-    expect(find.byType(DebugPage), findsNothing);
+    expect(find.byType(ForgottenPasswordPage), findsNothing);
 
     await tester.tap(find.byKey(Key('forgot_password')));
     await tester.pumpAndSettle();

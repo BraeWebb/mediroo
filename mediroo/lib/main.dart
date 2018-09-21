@@ -24,7 +24,6 @@ class MediRooApp extends StatelessWidget {
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
     PillList.tag: (context) => PillList(auth: new FireAuth()),
-    DebugPage.tag: (context) => DebugPage(),
     ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(auth: new FireAuth()),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
 
