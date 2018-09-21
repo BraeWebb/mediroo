@@ -3,7 +3,6 @@
 
 MediRoo is a digital pillbox and medication reminder application designed to simplify the process of remembering when and how to take medication for patients. Team tilde has found that around 50% of the time, medication is not being taken as prescribed. They aim to combat this by creating a platform where users receive notifications and information specifically tailored to their situation and medical needs, without disrupting their daily routines.
 
-### Tilde ~
 
 ## Getting Started
 
@@ -36,6 +35,7 @@ The same steps can be followed for **Android Studio**.
 ### Creating project from existing source code
 
 Once IntelliJ is downloaded and installed, the project can be cloned using this command:
+
 `git clone https://source.eait.uq.edu.au/git/deco3801-tilde`
 
 To create a new Flutter project which existing Flutter source code files:
@@ -51,7 +51,7 @@ To create a new Flutter project which existing Flutter source code files:
 
 To run the tests the following command can be used:
 
-`flutter test`,
+`flutter test`
 
 Run the command inside the project direction
 
@@ -60,22 +60,18 @@ Run the command inside the project direction
 
 To deploy to Android, the following command can be used in the project directory
 
-`flutter build apk`
-
-The resulting `.apk` can then be deployed to the Google Play Store.
+`flutter build apk`, the resulting `.apk` can then be deployed to the Google Play Store.
 
 
 To deploy to iOS, the following command can be used 
 
-`flutter build ios`
+`flutter build ios`, the result `.app` can then be deployed to the Apple Store.
 
-The result `.app` can then be deployed to the Apple Store.
-
-## Built With
+## Built with
 
 * [Flutter](https://flutter.io/) - Mobile development SDK
 * [Jenkins](https://jenkins.io/) - Continous Integration
- 
+* [React]()(https://reactjs.org/) - JS library for building user interfaces
 
 ## Authors
 
