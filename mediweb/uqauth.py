@@ -17,7 +17,7 @@ def unauthorized_handler():
     """
     flash('You must be logged in to view that page')
     session['next_url'] = request.path
-    return redirect('/login/')
+    return redirect('/admin/login/')
 
 
 def global_user():
@@ -83,7 +83,11 @@ def login():
         else:
             return redirect('/')
     else:
-        return redirect('https://api.uqcloud.net/login/https://tilde.uqcloud.net/login')
+        return redirect('https://api.uqcloud.net/login/https://tilde.uqcloud.net/admin/login')
+
+
+def logout():
+    return redirect('https://api.uqcloud.net/logout')
 
 
 def payload_view():

@@ -14,7 +14,7 @@ app.add_url_rule('/admin/login', 'login', login)
 
 @app.route('/landing')
 def index():
-    return 'Hello World!'
+    return 'Hello World! It be me!'
 
 
 @app.route('/admin')
