@@ -382,11 +382,15 @@ class CardState extends State<PillCard> {
   ///The colour of this card
   Color colour;
 
+  ///Original colour of this card
+  Color originalColour;
+
   CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour);
 
   ///Sets the card's colour to [newColour]
   void updateColour(Color newColour) {
     setState(() {
+      originalColour = colour;
       colour = newColour;
       notes = "";
     });
@@ -421,7 +425,7 @@ class CardState extends State<PillCard> {
     } else if(colour == ListState.TAKEN_COLOUR) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context); updateColour(ListState.STD_COLOUR);}, //TODO sync with db
+          onPressed: () {Navigator.pop(context); updateColour(originalColour);}, //TODO sync with db
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
