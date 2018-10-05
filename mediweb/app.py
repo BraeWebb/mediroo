@@ -8,11 +8,11 @@ app.secret_key = 'placeholder secret'
 app.context_processor(global_user)
 app.url_map.strict_slashes = False
 
-app.add_url_rule('/payload', 'payload', payload_view)
-app.add_url_rule('/login', 'login', login)
+app.add_url_rule('/admin/payload', 'payload', payload_view)
+app.add_url_rule('/admin/login', 'login', login)
 
 
-@app.route('/')
+@app.route('/landing')
 def index():
     return 'Hello World!'
 
