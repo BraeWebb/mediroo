@@ -13,7 +13,7 @@ def _find_user(users, user_id):
     return user['name'], user['email'], user['authorized']
 
 
-find_user = partial(_find_user, set(load_users('userdb.json')))
+find_user = partial(_find_user, load_users('userdb.json'))
 
 
 def add_user(payload):
