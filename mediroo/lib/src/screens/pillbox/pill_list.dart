@@ -385,15 +385,19 @@ class CardState extends State<PillCard> {
   ///Original colour of this card
   Color originalColour;
 
+  ///Original notes of this card
+  String originalNotes;
+
   CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour) {
     originalColour = colour;
+    originalNotes = notes;
   }
 
   ///Sets the card's colour to [newColour]
-  void updateColour(Color newColour) {
+  void updateColour(Color newColour, String note) {
     setState(() {
       colour = newColour;
-      notes = "";
+      notes = note;
     });
   }
 
@@ -405,28 +409,28 @@ class CardState extends State<PillCard> {
     if(colour == ListState.STD_COLOUR) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR, "");}, //TODO sync with db
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.ALERT_COLOUR) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR, "");}, //TODO sync with db
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
     } else if(colour == ListState.MISSED_COLOUR) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+          onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR, "");}, //TODO sync with db
           child: new Text("Take late"),
           color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.TAKEN_COLOUR) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context); updateColour(originalColour);}, //TODO sync with db
+          onPressed: () {Navigator.pop(context); updateColour(originalColour, originalNotes);}, //TODO sync with db
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
