@@ -385,12 +385,13 @@ class CardState extends State<PillCard> {
   ///Original colour of this card
   Color originalColour;
 
-  CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour);
+  CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour) {
+    originalColour = colour;
+  }
 
   ///Sets the card's colour to [newColour]
   void updateColour(Color newColour) {
     setState(() {
-      originalColour = colour;
       colour = newColour;
       notes = "";
     });
