@@ -53,13 +53,13 @@ class _AddPillsState extends State<AddPills> {
     }
 
     // Pull all the interval classes from the interval entry widgets
-    prescription.intervals = {};
+    prescription.intervals = [];
     for (IntervalEntry interval in intervals) {
       PrescriptionInterval preInterval = interval.interval;
       if (preInterval == null) {
         continue;
       }
-      prescription.intervals[preInterval.time] = preInterval;
+      prescription.intervals.add(preInterval);
     }
 
     // Log add_pills event

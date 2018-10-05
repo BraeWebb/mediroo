@@ -26,14 +26,10 @@ class Prescription {
   DateTime addTime;
 
   /// the intervals at which the pills should be taken
-  Map<Time, PrescriptionInterval> intervals; // TODO: make this a mapping from time to list of interval
-
-  /// a log of the times pills need to be taken and whether or not they've been taken
-  Map<Date, Map<Time, bool>> pillLog; //this is a nested map so that the app
-  // can look things up by date alone
+  List<PrescriptionInterval> intervals; // TODO: make this a mapping from time to list of interval
 
   /// Constructs a new Prescription
-  Prescription(this._id, this.medNotes, {this.docNotes, this.pillsLeft, this.addTime, this.intervals, this.pillLog});
+  Prescription(this._id, this.medNotes, {this.docNotes, this.pillsLeft, this.addTime, this.intervals});
 
   /// returns the user's [id]
   String get id => _id;
@@ -56,6 +52,10 @@ class PrescriptionInterval {
 
   /// the number of pills to take at each interval
   int dosage;
+
+  /// a log of the times pills need to be taken and whether or not they've been taken
+  Map<Date, Map<Time, bool>> pillLog; //this is a nested map so that the app
+  // can look things up by date alone
 
   /// Constructs a new interval
   PrescriptionInterval(this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {

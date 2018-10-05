@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:mediroo/model.dart';
+import 'package:mediroo/util.dart' show TimeUtil;
 import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 
 
@@ -43,9 +44,8 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
 
       Prescription prescription = new Prescription(document.documentID, name,
         pillsLeft: remaining,
-        pillLog: {}
       );
-      prescription.intervals = new Map();
+      prescription.intervals = new List();
 
       QuerySnapshot intervalSnapshots = await Firestore.instance
           .collection(prescriptionCollection + document.documentID + '/intervals').getDocuments();
@@ -62,7 +62,20 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
           dateDelta: intervalDoc.data['days'],
           dosage: intervalDoc.data['dosage']
         );
-        prescription.intervals[time] = interval;
+        prescription.intervals.add(interval);
+
+        QuerySnapshot logSnapshots = await Firestore.instance
+            .collection(prescriptionCollection + document.documentID + "/intervals" + intervalDoc.documentID + '/log').getDocuments();
+
+        for (DocumentSnapshot logDoc in logSnapshots.documents) {
+          DateTime dateTime = logDoc.data['time'];
+          if(dateTime != null) {
+            Date date = TimeUtil.toDate(dateTime);
+            Time time = TimeUtil.toTime(dateTime);
+            bool taken = logDoc.data['taken'];
+            interval.pillLog[date][time] = taken;
+          }
+        }
       }
 
       prescriptions.add(prescription);
@@ -72,16 +85,44 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
   }
 }
 
-
 /// Add a new [Prescription] to the database
-void addPrescription(Prescription prescription) async {
+void addPrescription(Prescription prescription, {bool merge: false}) async {
   String uuid = await currentUUID();
 
-  CollectionReference collection = Firestore.instance.collection('prescriptions/' + uuid + '/prescription');
+  String prescriptionCollection = 'prescriptions/' + uuid + '/prescription/';
+  DocumentReference doc = Firestore.instance.collection(prescriptionCollection)
+      .document();
 
-  collection.add({
+  doc.setData({
     'description': prescription.medNotes,
     'notes': prescription.docNotes,
-    'remaining': prescription.pillsLeft
-  });
+    'remaining': prescription.pillsLeft,
+  }, merge: merge);
+
+  for (PrescriptionInterval interval in prescription.intervals) {
+    DocumentReference intDoc = Firestore.instance.collection(
+        prescriptionCollection + doc.documentID + "/intervals/").document();
+
+    intDoc.setData({
+      'days': interval.dateDelta,
+      'dosage': interval.dosage,
+      'end': TimeUtil.toDateTime(interval.endDate, interval.time),
+      'start': TimeUtil.toDateTime(interval.startDate, interval.time),
+      'time': TimeUtil.toDateTime(interval.startDate, interval.time)
+    });
+
+    for (MapEntry dateEntry in interval.pillLog.entries) {
+      for (MapEntry timeEntry in dateEntry.value.entries) {
+        DocumentReference logDoc = Firestore.instance.collection(
+            prescriptionCollection +
+                doc.documentID + "/intervals/" + intDoc.documentID + "/log/")
+            .document();
+
+        logDoc.setData({
+          'time': TimeUtil.toDateTime(dateEntry.key, timeEntry.key),
+          'taken': timeEntry.value
+        });
+      }
+    }
+  }
 }

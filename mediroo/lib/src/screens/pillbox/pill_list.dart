@@ -7,7 +7,7 @@ import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-/// Represents a visal list of pills
+/// Represents a viusal list of pills
 class PillList extends StatefulWidget {
 
   /// Identifier for this page
@@ -157,21 +157,18 @@ class ListState extends State<PillList> {
     List<PillCard> taken = new List();
 
     for(Prescription pre in prescriptions) {
-      for(MapEntry<Time, PrescriptionInterval> entry in pre.intervals.entries) {
-        Time time = entry.key;
-        PrescriptionInterval interval = entry.value;
+      for(PrescriptionInterval interval in pre.intervals) {
+        Time time = interval.time;
         if(TimeUtil.isDay(date, interval)) {
-          pre.pillLog[date] = pre.pillLog[date] ?? {time: false};
-          pre.pillLog[date][time] = pre.pillLog[date][time] ?? false;
+          interval.pillLog[date] = interval.pillLog[date] ?? {time: false};
+          interval.pillLog[date][time] = interval.pillLog[date][time] ?? false;
+
           if(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY) ||
-              TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
-
-            upcoming.add(genCard(pre, time, date, pre.pillLog[date][time], interval.dosage));
-          } else if(pre.pillLog[date][time]) {
-
+            TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
+            upcoming.add(genCard(pre, time, date, interval.pillLog[date][time], interval.dosage));
+          } else if(interval.pillLog[date][time]) {
             taken.add(genCard(pre, time, date, true, interval.dosage));
           } else {
-
             missed.add(genCard(pre, time, date, false, interval.dosage));
           }
         }

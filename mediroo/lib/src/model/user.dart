@@ -22,4 +22,6 @@ class User {
 
   /// returns the user's [id]
   String get id => _id;
+
+  bool hasLoaded;
 }
