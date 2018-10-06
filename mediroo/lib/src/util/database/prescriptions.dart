@@ -65,7 +65,8 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
         prescription.intervals.add(interval);
 
         QuerySnapshot logSnapshots = await Firestore.instance
-            .collection(prescriptionCollection + document.documentID + "/intervals" + intervalDoc.documentID + '/log').getDocuments();
+            .collection(prescriptionCollection + document.documentID + "/intervals/" + intervalDoc.documentID + '/log').getDocuments();
+        interval.pillLog = {};
 
         for (DocumentSnapshot logDoc in logSnapshots.documents) {
           DateTime dateTime = logDoc.data['time'];
@@ -73,6 +74,7 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
             Date date = TimeUtil.toDate(dateTime);
             Time time = TimeUtil.toTime(dateTime);
             bool taken = logDoc.data['taken'];
+            interval.pillLog[date] = interval.pillLog[date] ?? {};
             interval.pillLog[date][time] = taken;
           }
         }
