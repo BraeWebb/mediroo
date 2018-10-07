@@ -9,7 +9,7 @@ MediRoo is a digital pillbox and medication reminder application designed to sim
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-####**Install Intellij IDEA**
+#### **Install Intellij IDEA**
 
 - [Intellij IDEA Community](https://www.jetbrains.com/idea/download), 2017 version or later
 - [Intellij IDEA Ultimate](https://www.jetbrains.com/idea/download), 2017 version or later
@@ -19,7 +19,7 @@ Alternatively, you can use Android Studio:
 - [Android Studio](https://developer.android.com/studio/), version 3.0+
 
 
-####**Install the Flutter and Dart Plugins**
+#### **Install the Flutter and Dart Plugins**
 - The `Flutter` plugin powers the Flutter developer workflow (running, debugging, hot reload, etc.)
 - The `Dart` plugin is for code analysis (code compilation, validation) 
 
@@ -84,13 +84,13 @@ Inside the **gp-portal** directory
 
 ## Authors
 
-###tilde ~
+### tilde ~
 
-* **Brae Webb**
-* **Henry O'Brien**
-* **Emily Bennet**
 * **Abhishek Jagtap**
+* **Andrew Chan**
+* **Brae Webb**
+* **Emily Bennett**
+* **Henry O'Brien**
 * **Lius Woodrow**
 * **Nick Garner**
-* **Andrew Chan**
 
