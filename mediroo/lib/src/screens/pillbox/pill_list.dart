@@ -17,18 +17,20 @@ class PillList extends StatefulWidget {
   final FireAuth auth;
 
   /// The current date
-  Date date;
+  final Date date;
 
   /// Constructs a new PillList with a [date] and [auth] for user authenticaiton
-  PillList({this.date, this.auth}) {
-    if (date == null) {
-      DateTime now = DateTime.now();
-      date = new Date(now.year, now.month, now.day);
-    }
-  }
+  PillList({this.date, this.auth});
 
   @override
   State<StatefulWidget> createState() {
+    Date date;
+    if(this.date == null) {
+      DateTime now = DateTime.now();
+      date = new Date(now.year, now.month, now.day);
+    } else {
+      date = this.date;
+    }
     return new ListState(date, auth: auth);
   }
 }
@@ -52,10 +54,15 @@ class ListState extends State<PillList> {
   StreamSubscription<List<Prescription>> databaseConnection;
 
   /// Colours used to colour the cards
-  static const Color STD_COLOUR = const Color(0xFF333366);
-  static const Color TAKEN_COLOUR = const Color(0xFF3aa53f);
-  static const Color MISSED_COLOUR = const Color(0xFFBC2222);
-  static const Color ALERT_COLOUR = const Color(0xFFa1a1ed);
+  static const Color STD_COLOUR = const Color(0xFF10395e);
+  static const Color ALERT_COLOUR = const Color(0xFFa7cff2);
+  static const Color PAST_COLOUR = const Color(0xFFdbdbdb);
+  static const Color MISSED_COLOUR = const Color(0xFFe8e8e8);
+
+  static const Color STD_HL = const Color(0xFFd9eaf9);
+  static const Color ALERT_HL = const Color(0xFF2f96f3);
+  static const Color PAST_HL = const Color(0xFFa5a4a4);
+  static const Color MISSED_HL = const Color(0xFFff446a);
 
   /// The amount of time in minutes before a pill is marked as missed
   static const int LEEWAY = 15;
@@ -221,15 +228,21 @@ class ListState extends State<PillList> {
         break;
     }
 
-    Color chosenColour;
+    Color chosenPriColour;
+    Color chosenSecColour;
+    Color chosenHLColour;
     String note;
 
     if(date.compareTo(TimeUtil.currentDate()) > 0) {
-      chosenColour = STD_COLOUR;
+      chosenPriColour = STD_COLOUR;
+      chosenSecColour = STD_HL;
+      chosenHLColour = STD_COLOUR;
       note = "";
     } else if(date == TimeUtil.currentDate()) {
       if(TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
-        chosenColour = STD_COLOUR;
+        chosenPriColour = STD_COLOUR;
+        chosenSecColour = STD_HL;
+        chosenHLColour = STD_COLOUR;
         int minutes = time.difference(TimeUtil.currentTime()).inMinutes;
         int hours = minutes ~/ 60 + 1;
         int hoursSub1 = hours - 1;
@@ -239,25 +252,34 @@ class ListState extends State<PillList> {
           note = "Take in " + (hours - 1).toString() + "-" + hours.toString() + " hours";
         }
       } else if(TimeUtil.hasHappened(TimeUtil.currentTime(), time, LEEWAY)) {
-        chosenColour = MISSED_COLOUR;
+        chosenPriColour = MISSED_COLOUR;
+        chosenSecColour = MISSED_HL;
+        chosenHLColour = MISSED_HL;
         note = "Medication missed!";
       } else {
-        chosenColour = ALERT_COLOUR;
+        chosenPriColour = ALERT_COLOUR;
+        chosenSecColour = ALERT_HL;
+        chosenHLColour = ALERT_HL;
         note = "Take now!";
       }
     } else {
-      chosenColour = MISSED_COLOUR;
+      chosenPriColour = MISSED_COLOUR;
+      chosenSecColour = MISSED_HL;
+      chosenHLColour = MISSED_HL;
       note = "Medication missed!";
     }
     if(taken != null && taken) {
-      chosenColour = TAKEN_COLOUR;
+      chosenPriColour = PAST_COLOUR;
+      chosenSecColour = PAST_HL;
+      chosenHLColour = PAST_HL;
       note = "Already taken";
     }
 
     return new PillCard(pre.medNotes, image, note, date, time,
         TimeUtil.getDateFormatted(date.year, date.month, date.day),
         TimeUtil.getFormatted(time.hour, time.minute),
-        dosage.toString() + " pills", chosenColour, pre, interval, this);
+        dosage.toString() + " pills", chosenPriColour, chosenSecColour,
+        chosenHLColour, pre, interval, this);
   }
 
   @override
@@ -339,7 +361,9 @@ class PillCard extends StatelessWidget {
   final String count;
 
   ///The colour of this card
-  final Color colour;
+  final Color primaryColour;
+  final Color secondaryColour;
+  final Color highlightColour;
 
   final Date date;
 
@@ -351,7 +375,33 @@ class PillCard extends StatelessWidget {
 
   final PrescriptionInterval interval;
 
-  PillCard(this.title, this.icon, this.notes, this.date, this.time, this.dateRep, this.timeRep, this.count, this.colour, this.pre, this.interval, this.parent);
+  TextStyle headerFont;
+  TextStyle subHeaderFont;
+  TextStyle normalFont;
+
+  PillCard(this.title, this.icon, this.notes, this.date, this.time,
+      this.dateRep, this.timeRep, this.count,
+      this.primaryColour, this.secondaryColour, this.highlightColour,
+      this.pre, this.interval, this.parent) {
+    headerFont = TextStyle(
+        color: secondaryColour,
+        fontSize: 18.0,
+        fontWeight: FontWeight.w600
+    );
+
+    subHeaderFont = TextStyle(
+        color: secondaryColour,
+        fontSize: 14.0,
+        fontWeight: FontWeight.w600,
+        fontStyle: FontStyle.italic
+    );
+
+    normalFont = TextStyle(
+        color: secondaryColour,
+        fontSize: 12.0,
+        fontWeight: FontWeight.w400
+    );
+  }
 
   /// Decrements the number of pills left
   void take(){
@@ -371,31 +421,31 @@ class PillCard extends StatelessWidget {
 
     String descText;
     RaisedButton btn;
-    if(colour == ListState.STD_COLOUR) {
+    if(primaryColour == ListState.STD_COLOUR) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
         onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
-    } else if(colour == ListState.ALERT_COLOUR) {
+    } else if(primaryColour == ListState.ALERT_COLOUR) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
         onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
-    } else if(colour == ListState.MISSED_COLOUR) {
+    } else if(primaryColour == ListState.PAST_COLOUR && secondaryColour == ListState.MISSED_HL) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
           onPressed: () {take(); Navigator.pop(context);},
           child: new Text("Take late"),
           color: Colors.redAccent.shade100
       );
-    } else if(colour == ListState.TAKEN_COLOUR) {
+    } else if(primaryColour == ListState.PAST_COLOUR && secondaryColour == ListState.PAST_HL) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {undo(); Navigator.pop(context);}, //TODO sync with db
+          onPressed: () {undo(); Navigator.pop(context);},
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
@@ -467,33 +517,11 @@ class PillCard extends StatelessWidget {
     );
   }
 
-  ///The font of the card header
-  final headerFont = const TextStyle(
-      color: Colors.white,
-      fontSize: 18.0,
-      fontWeight: FontWeight.w600
-  );
-
-  ///The font of the card notes
-  final subHeaderFont = const TextStyle(
-      color: const Color(0xd0ffffff),
-      fontSize: 14.0,
-      fontWeight: FontWeight.w600,
-      fontStyle: FontStyle.italic
-  );
-
-  ///The card's default font
-  final normalFont = const TextStyle(
-      color: const Color(0xb0ffffff),
-      fontSize: 12.0,
-      fontWeight: FontWeight.w400
-  );
-
   ///Returns a row of card information, with [icon] and [text]
   Widget getRow(String text, IconData icon) {
     return new Row(
         children: <Widget>[
-          new Icon(icon, color: Color(0xffffffff)),
+          new Icon(icon, color: secondaryColour),
           new Container(width: 8.0),
           new Text(text, style: normalFont),
         ]
@@ -521,9 +549,10 @@ class PillCard extends StatelessWidget {
         height: 124.0,
         margin: new EdgeInsets.only(left: 46.0),
         decoration: new BoxDecoration(
-            color: colour,
+            color: primaryColour,
             shape: BoxShape.rectangle,
             borderRadius: new BorderRadius.circular(8.0),
+            border: new Border.all(color: highlightColour),
             boxShadow: <BoxShadow>[
               new BoxShadow(
                   color: Colors.black12,
@@ -548,12 +577,12 @@ class PillCard extends StatelessWidget {
           new Text(notes,
               style: subHeaderFont
           ),
-          new Container(
+          /*new Container(
               margin: new EdgeInsets.symmetric(vertical: 8.0),
               height: 2.0,
               width: 18.0,
               color: new Color(0xff00c6ff)
-          ),
+          ),*/
           new Row(
             children: <Widget>[
               new Expanded(
