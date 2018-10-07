@@ -57,9 +57,13 @@ class PrescriptionInterval {
   Map<Date, Map<Time, bool>> pillLog; //this is a nested map so that the app
   // can look things up by date alone
 
+  String _id;
+
   /// Constructs a new interval
-  PrescriptionInterval(this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {
+  PrescriptionInterval(this._id, this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {
     this.dosage = dosage ?? 1;
     this.dateDelta = dateDelta ?? 1;
   }
+
+  String get id => _id;
 }

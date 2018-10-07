@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
-import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions;
+import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -114,6 +114,13 @@ class ListState extends State<PillList> {
     return null;
   }
 
+  Future<Null> writeDB(Prescription prescription) async {
+    await addPrescription(prescription, merge: true);
+    _handleRefresh();
+
+    return null;
+  }
+
   /// Generates the cards for each day, using the given [prescriptions]
   ///  and [start] date
   List<List<Widget>> genDays(List<Prescription> prescriptions, Date start) {
@@ -165,11 +172,11 @@ class ListState extends State<PillList> {
 
           if(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY) ||
             TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
-            upcoming.add(genCard(pre, time, date, interval.pillLog[date][time], interval.dosage));
+            upcoming.add(genCard(pre, interval, time, date, interval.pillLog[date][time], interval.dosage));
           } else if(interval.pillLog[date][time]) {
-            taken.add(genCard(pre, time, date, true, interval.dosage));
+            taken.add(genCard(pre, interval, time, date, true, interval.dosage));
           } else {
-            missed.add(genCard(pre, time, date, false, interval.dosage));
+            missed.add(genCard(pre, interval, time, date, false, interval.dosage));
           }
         }
       }
@@ -197,7 +204,7 @@ class ListState extends State<PillList> {
 
   /// Generates a single card, with prescription [pre], [time], [date],
   ///   the pill's [taken] status, and the pill's [dosage]
-  Widget genCard(Prescription pre, Time time, Date date, bool taken, int dosage) {
+  Widget genCard(Prescription pre, PrescriptionInterval interval, Time time, Date date, bool taken, int dosage) {
     String image;
     switch(TimeUtil.getToD(time.hour)) {
       case ToD.MORNING:
@@ -247,10 +254,10 @@ class ListState extends State<PillList> {
       note = "Already taken";
     }
 
-    return new PillCard(pre, pre.medNotes, image, notes: note,
-        time: TimeUtil.getFormatted(time.hour, time.minute),
-        date: date.getWeekdayFull() + " " + TimeUtil.getDateFormatted(date.year, date.month, date.day),
-        count: dosage.toString() + " pills", colour: chosenColour);
+    return new PillCard(pre.medNotes, image, note, date, time,
+        TimeUtil.getDateFormatted(date.year, date.month, date.day),
+        TimeUtil.getFormatted(time.hour, time.minute),
+        dosage.toString() + " pills", chosenColour, pre, interval, this);
   }
 
   @override
@@ -310,83 +317,53 @@ class ListState extends State<PillList> {
   }
 }
 
-/// Represents a single card in the list of pill cards
-class PillCard extends StatefulWidget {
+///The state of a specific card
+class PillCard extends StatelessWidget {
 
   ///The pill's name
   final String title;
 
-  ///Any notes to display on the card
+  ///Any notes to display
   final String notes;
 
-  ///The time of day icon to display
+  ///The card's icon
   final String icon;
 
   ///The current time, in hh:mm format
-  final String time;
+  final String timeRep;
 
   ///The current date, in dd/mm/yyyy format
-  final String date;
+  final String dateRep;
 
   ///The number of pills to take, in string format
   final String count;
 
-  ///The colour of the card
+  ///The colour of this card
   final Color colour;
 
-  ///The prescription this card is representing
+  final Date date;
+
+  final Time time;
+
+  final ListState parent;
+
   final Prescription pre;
 
-  ///Constructs a new pill card, with prescription [pre], [title], [icon],
-  /// [notes], [time], [date], [count], and [colour]
-  PillCard(this.pre, this.title, this.icon, {this.notes, this.time, this.date, this.count, this.colour});
+  final PrescriptionInterval interval;
+
+  PillCard(this.title, this.icon, this.notes, this.date, this.time, this.dateRep, this.timeRep, this.count, this.colour, this.pre, this.interval, this.parent);
 
   /// Decrements the number of pills left
-  void take(bool take){
-    take ? pre.pillsLeft-- : pre.pillsLeft++;
-    //TODO update DB
-
-
-
+  void take(){
+    pre.pillsLeft--;
+    interval.pillLog[date][time] = true;
+    parent.writeDB(pre);
   }
 
-  @override
-  State<StatefulWidget> createState() => new CardState(title, icon, notes, time, date, count, colour);
-
-}
-
-///The state of a specific card
-class CardState extends State<PillCard> {
-
-  ///The pill's name
-  String title;
-
-  ///Any notes to display
-  String notes;
-
-  ///The card's icon
-  String icon;
-
-  ///The current time, in hh:mm format
-  String time;
-
-  ///The current date, in dd/mm/yyyy format
-  String date;
-
-  ///The number of pills to take, in string format
-  String count;
-
-  ///The colour of this card
-  Color colour;
-
-  CardState(this.title, this.icon, this.notes, this.time, this.date, this.count, this.colour);
-
-  ///Sets the card's colour to [newColour]
-  void updateColour(Color newColour) {
-    setState(() {
-      colour = newColour;
-      notes = "";
-    });
+  void undo() {
+    pre.pillsLeft++;
+    interval.pillLog[date][time] = false;
+    parent.writeDB(pre);
   }
 
   ///Creates a dialog in [context] with the card's info
@@ -397,28 +374,28 @@ class CardState extends State<PillCard> {
     if(colour == ListState.STD_COLOUR) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+        onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.ALERT_COLOUR) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
-        onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+        onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
     } else if(colour == ListState.MISSED_COLOUR) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context); updateColour(ListState.TAKEN_COLOUR);}, //TODO sync with db
+          onPressed: () {take(); Navigator.pop(context);},
           child: new Text("Take late"),
           color: Colors.redAccent.shade100
       );
     } else if(colour == ListState.TAKEN_COLOUR) {
       descText = "You have already taken this medication!";
       btn = new RaisedButton(
-          onPressed: () {Navigator.pop(context); updateColour(ListState.STD_COLOUR);}, //TODO sync with db
+          onPressed: () {undo(); Navigator.pop(context);}, //TODO sync with db
           child: new Text("Undo"),
           color: Colors.blue.shade50
       );
@@ -433,7 +410,7 @@ class CardState extends State<PillCard> {
                 new Padding(child: new Row(
                   children: <Widget>[
                     new Icon(FontAwesomeIcons.calendar),
-                    new Padding(child: new Text(date),
+                    new Padding(child: new Text(dateRep),
                       padding: new EdgeInsets.symmetric(horizontal: 5.0),
                     )
                   ]
@@ -445,7 +422,7 @@ class CardState extends State<PillCard> {
                         child: new Row(
                           children: <Widget>[
                             new Icon(FontAwesomeIcons.clock),
-                            new Padding(child: new Text(time),
+                            new Padding(child: new Text(timeRep),
                               padding: new EdgeInsets.symmetric(horizontal: 5.0),
                             )
                           ]
@@ -580,7 +557,7 @@ class CardState extends State<PillCard> {
           new Row(
             children: <Widget>[
               new Expanded(
-                  child: getRow(time, FontAwesomeIcons.clock)
+                  child: getRow(timeRep, FontAwesomeIcons.clock)
               ),
               new Expanded(
                   child: getRow(count, FontAwesomeIcons.capsules)

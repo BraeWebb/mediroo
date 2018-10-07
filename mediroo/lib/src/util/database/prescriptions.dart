@@ -57,6 +57,7 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
         Time time = new Time(dateTime.hour, dateTime.minute);
 
         PrescriptionInterval interval = new PrescriptionInterval(
+          intervalDoc.documentID,
           time, new Date(start.year, start.month, start.day),
           endDate: new Date(end.year, end.month, end.day),
           dateDelta: intervalDoc.data['days'],
@@ -75,7 +76,8 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
             Time time = TimeUtil.toTime(dateTime);
             bool taken = logDoc.data['taken'];
             interval.pillLog[date] = interval.pillLog[date] ?? {};
-            interval.pillLog[date][time] = taken;
+            interval.pillLog[date][time] = interval.pillLog[date][time] == null ?
+              taken : interval.pillLog[date][time] || taken;
           }
         }
       }
@@ -88,12 +90,16 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
 }
 
 /// Add a new [Prescription] to the database
-void addPrescription(Prescription prescription, {bool merge: false}) async {
+Future<Null> addPrescription(Prescription prescription, {bool merge: false}) async {
   String uuid = await currentUUID();
 
+
+  print("a");
+
   String prescriptionCollection = 'prescriptions/' + uuid + '/prescription/';
-  DocumentReference doc = Firestore.instance.collection(prescriptionCollection)
-      .document();
+  CollectionReference collection = Firestore.instance.collection('prescriptions/' + uuid + "/prescription");
+  DocumentReference doc = merge ? collection.document(prescription.id) : collection.document();
+  print(doc);
 
   doc.setData({
     'description': prescription.medNotes,
@@ -101,9 +107,11 @@ void addPrescription(Prescription prescription, {bool merge: false}) async {
     'remaining': prescription.pillsLeft,
   }, merge: merge);
 
+  print("b");
+
   for (PrescriptionInterval interval in prescription.intervals) {
-    DocumentReference intDoc = Firestore.instance.collection(
-        prescriptionCollection + doc.documentID + "/intervals/").document();
+    CollectionReference intColl = Firestore.instance.collection(prescriptionCollection + doc.documentID + "/intervals");
+    DocumentReference intDoc = merge ? intColl.document(interval.id) : intColl.document();
 
     intDoc.setData({
       'days': interval.dateDelta,
@@ -113,18 +121,23 @@ void addPrescription(Prescription prescription, {bool merge: false}) async {
       'time': TimeUtil.toDateTime(interval.startDate, interval.time)
     });
 
+    print("c");
+
     for (MapEntry dateEntry in interval.pillLog.entries) {
       for (MapEntry timeEntry in dateEntry.value.entries) {
+        DateTime dateTime = TimeUtil.toDateTime(dateEntry.key, timeEntry.key);
+
         DocumentReference logDoc = Firestore.instance.collection(
             prescriptionCollection +
-                doc.documentID + "/intervals/" + intDoc.documentID + "/log/")
-            .document();
+                doc.documentID + "/intervals/" + intDoc.documentID + "/log")
+                .document(dateTime.millisecondsSinceEpoch.toString());
 
         logDoc.setData({
-          'time': TimeUtil.toDateTime(dateEntry.key, timeEntry.key),
+          'time': dateTime,
           'taken': timeEntry.value
         });
       }
     }
   }
+  return null;
 }
