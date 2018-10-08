@@ -255,6 +255,7 @@ class ListState extends State<PillList> {
         chosenPriColour = MISSED_COLOUR;
         chosenSecColour = MISSED_HL;
         chosenHLColour = MISSED_HL;
+        image = "assets/cross.png";
         note = "Medication missed!";
       } else {
         chosenPriColour = ALERT_COLOUR;
@@ -266,12 +267,14 @@ class ListState extends State<PillList> {
       chosenPriColour = MISSED_COLOUR;
       chosenSecColour = MISSED_HL;
       chosenHLColour = MISSED_HL;
+      image = "assets/cross.png";
       note = "Medication missed!";
     }
     if(taken != null && taken) {
       chosenPriColour = PAST_COLOUR;
       chosenSecColour = PAST_HL;
       chosenHLColour = PAST_HL;
+      image = "assets/check.png";
       note = "Already taken";
     }
 
