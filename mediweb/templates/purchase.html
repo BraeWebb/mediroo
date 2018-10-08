@@ -19,86 +19,35 @@
 </head>
 
 <body>
-  <div class="ui large top fixed hidden menu">
+  <div class="ui large top fixed menu">
     <div class="ui container">
       <a href="/landing" class="active item">Home</a><a class="item">Admin</a>
-      <div class="right menu">
-        <div class="item">
-          <a href="/purchase" class="ui primary button">Purchase</a>
-        </div>
-      </div>
     </div>
-  </div>
-  <!--Sidebar Menu-->
-  <div class="ui vertical inverted sidebar menu">
-    <a href="/landing" class="active item">Home</a><a class="item">Admin</a><a href="/purchase" class="item">Purchase</a>
   </div>
   <!--Page Contents-->
   <div class="pusher">
-    <div class="ui inverted vertical masthead center aligned segment">
-      <div class="ui container">
-        <div class="ui large secondary inverted pointing menu">
-          <a class="toc item"><i class="sidebar icon"></i></a><a href="/landing" class="active item">Home</a><a class="item">Admin</a>
-          <div class="right item">
-            <a href="/purchase" class="ui inverted button">Purchase</a>
-          </div>
-        </div>
-      </div>
-      <div class="ui text container">
-        <h1 class="ui inverted header">
-          MediRoo.
-        </h1>
-        <h2>
-          It's the digital pillbox for you.
-        </h2>
-        <a href="/purchase">
-          <div class="ui huge primary button">
-            Purchase now<i class="right arrow icon"></i>
-          </div>
-        </a>
-      </div>
-    </div>
     <div class="ui vertical stripe segment">
       <div class="ui text container">
-        <h3 class="ui header">
-          Who are we?
-        </h3>
-        <p>
-          Mediroo stuff here
-        </p>
+        <h2 class="ui header">
+          Purchase
+          </h3>
       </div>
-    </div>
-    <div class="ui vertical stripe segment">
       <div class="ui text container">
-        <h3 class="ui header">
-          Check out our product!
-        </h3>
-        <div class="vidc">
-          <iframe class="video" src="https://youtube.com/embed/pS_XXFNZj04" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-      </div>
-    </div>
-    <div class="ui vertical stripe quote segment">
-      <div class="ui equal width stackable internally celled grid">
-        <div class="center aligned row">
-          <div class="column">
-            <h3>
-              "tilde is the best DECO3801 team"
-            </h3>
-            <p>
-              - Alex
-            </p>
+        <form class="ui form">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="Name">
           </div>
-          <div class="column">
-            <h3>
-              "All the teams should bow to tilde"
-            </h3>
-            <p>
-              - The DECO3801 tutors
-            </p>
+          <div class="field">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Email">
           </div>
-        </div>
+          <div class="field">
+            <label>Comments</label>
+            <textarea></textarea>
+          </div>
+          <button class="ui button" type="submit">Submit</button>
+        </form>
       </div>
     </div>
     <div class="ui inverted vertical footer center aligned segment">

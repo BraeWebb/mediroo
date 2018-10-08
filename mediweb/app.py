@@ -14,9 +14,12 @@ app.add_url_rule('/admin/logout', 'logout', logout)
 
 
 @app.route('/landing')
-def index():
+def landing():
     return render('landing.html')
 
+@app.route('/purchase')
+def purchase():
+    return render('purchase.html')
 
 @app.route('/admin')
 @authorized_access
