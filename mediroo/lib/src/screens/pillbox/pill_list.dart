@@ -224,7 +224,7 @@ class ListState extends State<PillList> {
         image = "assets/sunset.png";
         break;
       case ToD.NIGHT:
-        image = "assets/wi-night.png"; //TODO: replace this
+        image = "assets/moon.png"; //TODO: check that this looks ok
         break;
     }
 
