@@ -53,23 +53,27 @@
           </div>
         </div>
       </div>
-      <div class="ui vertical stripe segment">
-        <div class="ui middle aligned stackable grid container">
-          <div class="row">
-            <div class="eight wide column">
-              <h3 class="ui header">
-                Who are we?
-              </h3>
-              <p>
-                MediRoo stuff here :)
-              </p>
-            </div>
-            <div class="six wide right floated column">
-              <img class="ui large bordered rounded image" src="../../static/images/templates/semantic-ui/wireframe/white-image.png" />
-            </div>
-          </div>
+        <div class="ui vertical stripe segment">
+        <div class="ui text container">
+          <h3 class="ui header">
+            Who are we?
+          </h3>
+          <p>
+              Mediroo stuff here
+          </p>
         </div>
-      </div>
+        </div>
+        <div class="ui vertical stripe segment">
+        <div class="ui text container">
+          <h3 class="ui header">
+            Check out our product!
+          </h3>
+            <div class="vidc">
+                <iframe class="video" src="https://youtube.com/embed/pS_XXFNZj04" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+        </div>
+        </div>
       <div class="ui vertical stripe quote segment">
         <div class="ui equal width stackable internally celled grid">
           <div class="center aligned row">
@@ -239,6 +243,20 @@
         background: #cc5947;
         color: white;
     }
+
+    .vidc {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+    }
+    .video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
     </style>
     <script>
       $(document)
@@ -262,6 +280,7 @@
           ;
         })
       ;
+
     </script>
   </body>
 </html>
