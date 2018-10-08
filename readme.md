@@ -80,7 +80,7 @@ Inside the **gp-portal** directory
 
 * [Flutter](https://flutter.io/) - Mobile development SDK
 * [Jenkins](https://jenkins.io/) - Continous Integration
-* [React]()(https://reactjs.org/) - JS library for building user interfaces
+* [React](https://reactjs.org/) - JS library for building user interfaces
 
 ## Authors
 
