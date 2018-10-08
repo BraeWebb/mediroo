@@ -276,7 +276,7 @@ class _IntervalState extends State<IntervalEntry> {
     return new Column(
       children: <Widget>[
         new Divider(),
-        picker(timeValue ?? "Time of Day", Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
+        picker(timeValue ?? "Time of Day", Colors.black87, Icon(FontAwesomeIcons.clock, color: Colors.black45), () {
           _pickTime(context);
           buildInterval();
         }),
