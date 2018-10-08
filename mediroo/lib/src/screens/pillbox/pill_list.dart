@@ -421,21 +421,21 @@ class PillCard extends StatelessWidget {
 
     String descText;
     RaisedButton btn;
-    if(primaryColour == ListState.STD_COLOUR) {
+    if(primaryColour == ListState.STD_COLOUR && secondaryColour == ListState.STD_HL) {
       descText = "It is not yet time to take this medication.\nTaking your medication now is not recommended.";
       btn = new RaisedButton(
         onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take early"),
         color: Colors.redAccent.shade100
       );
-    } else if(primaryColour == ListState.ALERT_COLOUR) {
+    } else if(primaryColour == ListState.ALERT_COLOUR && secondaryColour == ListState.ALERT_HL) {
       descText = "Tap below to take this medication now";
       btn = new RaisedButton(
         onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take now"),
         color: Colors.green.shade100
       );
-    } else if(primaryColour == ListState.PAST_COLOUR && secondaryColour == ListState.MISSED_HL) {
+    } else if(primaryColour == ListState.MISSED_COLOUR && secondaryColour == ListState.MISSED_HL) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
       btn = new RaisedButton(
           onPressed: () {take(); Navigator.pop(context);},
@@ -577,12 +577,12 @@ class PillCard extends StatelessWidget {
           new Text(notes,
               style: subHeaderFont
           ),
-          /*new Container(
+          new Container(
               margin: new EdgeInsets.symmetric(vertical: 8.0),
               height: 2.0,
               width: 18.0,
-              color: new Color(0xff00c6ff)
-          ),*/
+              color: highlightColour
+          ),
           new Row(
             children: <Widget>[
               new Expanded(

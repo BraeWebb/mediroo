@@ -5,11 +5,11 @@ class TimeUtil {
 
   /// Returns the [ToD] time of day associated with a specific [hour]
   static ToD getToD(int hour) {
-    if(0 <= hour && hour < 10) {
+    if(4 <= hour && hour < 10) {
       return ToD.MORNING;
-    } else if(10 <= hour && hour < 15) {
+    } else if(10 <= hour && hour < 16) {
       return ToD.MIDDAY;
-    } else if(15 <= hour && hour < 19) {
+    } else if(16 <= hour && hour < 19) {
       return ToD.EVENING;
     } else {
       return ToD.NIGHT;
