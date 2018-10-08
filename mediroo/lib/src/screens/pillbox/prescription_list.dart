@@ -28,61 +28,19 @@ class PrescriptionList extends StatelessWidget {
 
     );
   }
-
-//
-//  @override
-//  Widget build(BuildContext context){
-//    // creates the prescription list page to be returned
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: new Text("Prescription List"),
-//      ),
-//      body: ListView.builder(
-//        itemCount: pills.length,
-//        itemBuilder: (context, index) {
-//          final pill = pills[index];
-//
-//          String sub = "some description here lol\n"; //TODO: sync with docNotes
-//
-//          // Set style of text depending on pill count
-//          TextStyle style = new TextStyle(color: Colors.black54);
-//          if(pill.pillsLeft < lowPillCount) {
-//            style = new TextStyle(color: Colors.red);
-//          }
-//
-//          // displays a low pill count indicator when there are fewer pills
-//          // remaining than indicated by pillsLeft
-//          return ListTile(
-//            leading: new Icon(FontAwesomeIcons.pills),
-//            title: Text(pill.medNotes),
-//            subtitle: RichText(
-//                text: new TextSpan(
-//                    text: sub,
-//                    style: new TextStyle(
-//                      color: Colors.black54,
-//                      fontSize: 11.9,
-//                    ),
-//                    children: <TextSpan> [
-//                      new TextSpan(
-//                        text: "Remaining pills: " + pill.pillsLeft.toString(),
-//                        style: style,
-//                      )
-//                    ]
-//                )
-//            ),
-//            //subtitle: Text(sub + "Remaining pills: " + pill.pillsLeft.toString(), style: new TextStyle(color : Colors.red)),
-//            contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 20.0),
-//          );
-//        },
-//      ),
-//    );
-//  }
 }
 
+/// Expansion tiles item to store the prescription info
 class EntryItem extends StatelessWidget {
 
+  /// the prescription for which this entry in the expansion tile is for
   final Prescription entry;
+
+  /// the pill count at which a notification will be sent to remind the user
+  /// to refill their prescription
   final int lowPillCount = 5;
+
+  /// Creates a new Entry item for the given prescription as a Expansion Tile
   const EntryItem(this.entry);
 
   @override
