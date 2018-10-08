@@ -12,6 +12,7 @@
     <link href="../../static/dist/semantic-ui/semantic.min.css" rel="stylesheet" type="text/css" />
     <link href="../../static/stylesheets/default.css" rel="stylesheet" type="text/css" />
     <link href="../../static/stylesheets/pandoc-code-highlight.css" rel="stylesheet" type="text/css" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="../../static/dist/jquery/jquery.min.js"></script>
   </head>
   <body>
@@ -91,15 +92,14 @@
           </div>
         </div>
       </div>
-      <div class="ui inverted vertical footer segment">
+      <div class="ui inverted vertical footer center aligned segment">
         <div class="ui text container">
           <h1>
             Share on social media
           </h1>
-            <p>
-                 (replace these buttons with proper social media ones)
-            </p>
-          <a class="ui large button">Facebook</a><a class="ui large button">Twitter</a><a class="ui large button">Google</a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=tilde.uqcloud.net" class="fa fa-facebook"></a>
+            <a href="https://twitter.com/home?status=Tired%20of%20remembering%20to%20take%20your%20medication?%20Check%20out%20MediRoo%20at%20tilde.uqcloud.net" class="fa fa-twitter"></a>
+            <a href="https://plus.google.com/share?url=tilde.uqcloud.net" class="fa fa-google"></a>
         </div>
       </div>
     </div>
@@ -207,6 +207,38 @@
           font-size: 1.5em;
         }
       }
+
+    .fa {
+     margin: 10px;
+     padding: 10px;
+     font-size: 30px;
+     width: 50px;
+     height: 50px;
+     text-align: center;
+     text-decoration: none;
+    }
+
+    .fa:hover {
+        opacity: 0.7;
+    }
+
+    /* Facebook */
+    .fa-facebook {
+        background: #3B5998;
+        color: white;
+    }
+
+    /* Twitter */
+    .fa-twitter {
+        background: #55ACEE;
+        color: white;
+    }
+
+    /* Google */
+    .fa-google {
+        background: #cc5947;
+        color: white;
+    }
     </style>
     <script>
       $(document)
