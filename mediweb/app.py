@@ -15,7 +15,7 @@ app.add_url_rule('/admin/logout', 'logout', logout)
 
 @app.route('/landing')
 def index():
-    return render('semantic-ui/index.html')
+    return render('landing.html')
 
 
 @app.route('/admin')
