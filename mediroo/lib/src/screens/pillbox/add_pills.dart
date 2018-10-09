@@ -9,8 +9,6 @@ import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, 
 import 'package:mediroo/util.dart' show TimeUtil;
 import 'package:mediroo/screens.dart' show ListState;
 
-import 'package:mediroo/util.dart' show addPrescrption;
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
