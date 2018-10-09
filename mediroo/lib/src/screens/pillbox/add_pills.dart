@@ -7,6 +7,9 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/widgets.dart' show bubbleInputDecoration, bubbleButton, picker;
 import 'package:mediroo/util.dart' show TimeUtil;
+import 'package:mediroo/screens.dart' show ListState;
+
+import 'package:mediroo/util.dart' show addPrescrption;
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -15,11 +18,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class AddPills extends StatefulWidget {
   /// Tag of this screen
   static final String tag = "AddPills";
+  final ListState parent;
 
-  AddPills({Key key}) : super(key: key);
+  AddPills(this.parent, {Key key}) : super(key: key);
 
   @override
-  _AddPillsState createState() => new _AddPillsState();
+  _AddPillsState createState() => new _AddPillsState(parent);
 }
 
 class _AddPillsState extends State<AddPills> {
@@ -33,6 +37,10 @@ class _AddPillsState extends State<AddPills> {
   final PrescriptionEntry prescriptionEntry = new PrescriptionEntry();
   /// List of interval information entry forms
   final List<IntervalEntry> intervals = new List();
+
+  final ListState parent;
+
+  _AddPillsState(this.parent);
 
   /// Log that a [Prescription] has been added to the analytics system
   Future<Null> _sendAnalyticsEvent(Prescription prescription) async {
@@ -64,6 +72,8 @@ class _AddPillsState extends State<AddPills> {
 
     // Log add_pills event
     _sendAnalyticsEvent(prescription);
+    // Write the info to the DB
+    parent.writeDB(prescription);
     // Close the add pills screen
     Navigator.pop(context);
   }
