@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    show FlutterLocalNotificationsPlugin,
+    AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings,
+    AndroidNotificationDetails, IOSNotificationDetails, NotificationDetails;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Represents a viusal list of pills
@@ -37,6 +42,9 @@ class PillList extends StatefulWidget {
 
 /// The current state of a PillList widget
 class ListState extends State<PillList> {
+
+  /// used for notifications
+  FlutterLocalNotificationsPlugin flutterLocalNotifications;
 
   /// Used to connect to the database
   final FireAuth auth;
@@ -281,10 +289,100 @@ class ListState extends State<PillList> {
         dosage.toString() + " pills", chosenPriColour, chosenSecColour,
         chosenHLColour, pre, interval, this);
   }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////inprogress
+  void scheduleNotifications() async {
+
+
+
+
+    var scheduledNotificationDateTime =
+    new DateTime.now().add(new Duration(seconds: 5));
+    var androidPlatformChannelSpecifics =
+    new AndroidNotificationDetails('your other channel id',
+        'your other channel name', 'your other channel description');
+    var iOSPlatformChannelSpecifics =
+    new IOSNotificationDetails();
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotifications.schedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+
+    /*
+
+    //await flutterLocalNotifications.cancelAll();
+
+    DateTime time = findNextTime();
+
+    var androidPlatformChannelSpecifics =
+        new AndroidNotificationDetails('id', // TODO
+        'channel name', 'channel description');
+
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+
+    NotificationDetails platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotifications.schedule(
+        0,
+        'Time to take your pills',
+        'Its time to take your pills!',
+        time.add(new Duration(seconds: 8)), // TODO change to neg 5 min
+
+        platformChannelSpecifics);
+    await flutterLocalNotifications.schedule(
+        1,
+        'You missed your pills',
+        'you need to take  your pills!!!!!',
+        time.add(new Duration(seconds: 15)), // TODO change to minutes
+        platformChannelSpecifics);
+        */
+  }
+
+  DateTime findNextTime(){
+    Time currentMin = TimeUtil.currentTime();
+
+    for (Prescription pre in this.prescriptions){
+      for (PrescriptionInterval preInterval in pre.intervals) {
+        if (TimeUtil.isUpcoming(currentMin, preInterval.time, 0)) {
+          //new soonest TODO
+
+        }
+      }
+    }
+    return new DateTime.now(); // change this
+  }
+
+
+  @override
+  void initState(){
+    super.initState();
+
+    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('logo.png');
+    var iOS = new IOSInitializationSettings();
+    var initSettings = new InitializationSettings(android, iOS);
+    flutterLocalNotifications.initialize(initSettings);
+  }
+
+  showNotification() async {
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION'
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+    await flutterLocalNotifications.show(
+        0, 'New Video is out', 'Flutter Local Notification', platform);
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////////////inprogress
 
   @override
   Widget build(BuildContext context) {
     checkVerified(context, auth);
+
     return new DefaultTabController(
         initialIndex: 1,
         length: 7,
@@ -327,10 +425,12 @@ class ListState extends State<PillList> {
               }).toList()
             ),
             floatingActionButton: new FloatingActionButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddPills()));
-                },
+              onPressed:scheduleNotifications, //TODO originally show notification
+                //() {
+                //(); //TODO fix?/ remove this and put the notifications back in
+                //Navigator.push(context,
+                //    MaterialPageRoute(builder: (context) => AddPills()));
+                //},
               tooltip: "Add Pills",
               child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
             )

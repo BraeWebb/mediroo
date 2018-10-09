@@ -10,6 +10,7 @@ buildscript {
     }
 }
 
+
 allprojects {
     repositories {
         google()
@@ -23,7 +24,16 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(':app')
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex') ) {
+                details.useVersion "27.1.0"
+            }
+        }
+    }
 }
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir
@@ -31,3 +41,4 @@ task clean(type: Delete) {
 
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true
+

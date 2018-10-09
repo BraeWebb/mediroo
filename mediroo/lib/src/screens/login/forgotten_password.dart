@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mediroo/util.dart' show BaseAuth;
 import 'package:mediroo/widgets.dart' show bubbleButton, bubbleInputDecoration;
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:async';
+
 /// Page for users to enter their email and receive a password reset
 class ForgottenPasswordPage extends StatefulWidget {
 
@@ -23,6 +26,92 @@ class ForgottenPasswordPage extends StatefulWidget {
 
 /// State of the forgotten password page
 class _ForgottenPasswordState extends State<ForgottenPasswordPage> {
+  FlutterLocalNotificationsPlugin flutterLocalNotifications;
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  @override
+  void initState() {
+    super.initState();
+    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = new IOSInitializationSettings();
+    var initSetttings = new InitializationSettings(android, iOS);
+    flutterLocalNotifications.initialize(initSetttings,
+        selectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) {
+    debugPrint("payload : $payload");
+    showDialog(
+      context: context,
+      builder: (_) => new AlertDialog(
+        title: new Text('Notification'),
+        content: new Text('$payload'),
+      ),
+    );
+  }
+
+  /// Schedules a notification that specifies a different icon, sound and vibration pattern
+  Future _scheduleNotification() async {
+    var scheduledNotificationDateTime =
+    new DateTime.now().add(new Duration(seconds: 5));
+
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your other channel id',
+        'your other channel name',
+        'your other channel description',
+        priority: Priority.High,importance: Importance.Max
+    );
+    var iOSPlatformChannelSpecifics =
+    new IOSNotificationDetails(sound: "slow_spring_board.aiff");
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotifications.schedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+    print(DateTime.now().toString() + "   =>   " + scheduledNotificationDateTime.toString());
+  }
+
+  showNotification() async {
+
+    var scheduledNotificationDateTime =
+    new DateTime.now().add(new Duration(seconds: 6));
+
+    var android = new AndroidNotificationDetails(
+        'channel id', 'channel NAME', 'CHANNEL DESCRIPTION',
+        priority: Priority.High,importance: Importance.Max
+    );
+    var iOS = new IOSNotificationDetails();
+    var platform = new NotificationDetails(android, iOS);
+
+
+    await flutterLocalNotifications.schedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        scheduledNotificationDateTime,
+        platform);
+  }
+
+  ///Code from:
+  ///https://github.com/nitishk72/flutter_app_local_notification/blob/master/lib/main.dart
+  ///and
+  ///https://pub.dartlang.org/packages/flutter_local_notifications#-example-tab-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
   /// Title to display for this screen
   final String title = "Forgot Password?";
 
@@ -111,7 +200,7 @@ class _ForgottenPasswordState extends State<ForgottenPasswordPage> {
                     decoration: bubbleInputDecoration("Email", _emailError, null)
                   )
                 ),
-                bubbleButton("reset", "Send Password Reset", _submitReset)
+                bubbleButton("reset", "Send Passworddd Reset", _scheduleNotification) //_submitReset
               ]
             ),
             new Offstage(
