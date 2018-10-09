@@ -21,7 +21,7 @@
 <body>
   <div class="ui large top fixed menu">
     <div class="ui container">
-      <a href="/landing" class="active item">Home</a><a class="item">Admin</a>
+      <a href="/landing" class="item">Home</a><a class="item">Admin</a>
     </div>
   </div>
   <!--Page Contents-->
@@ -33,18 +33,25 @@
           </h3>
       </div>
       <div class="ui text container">
-        <form class="ui form">
+        <form class="ui form" action="/purchase/submit" method="post">
           <div class="field">
             <label>Name</label>
-            <input type="text" name="name" placeholder="Name">
+            <input id="name" type="text" name="name" placeholder="Name">
           </div>
           <div class="field">
             <label>Email</label>
-            <input type="email" name="email" placeholder="Email">
+            <input id="email" type="email" name="email" placeholder="Email">
           </div>
           <div class="field">
             <label>Comments</label>
-            <textarea></textarea>
+            <textarea id="comments"></textarea>
+          </div>
+          <div class="ui success message">
+            <div class="header">Form Submitted</div>
+            <p>Thank you for your interest!</p>
+          </div>
+          <div class="ui error message">
+            <p id="errorMessage"></p>
           </div>
           <button class="ui button" type="submit">Submit</button>
         </form>
@@ -81,8 +88,77 @@
 
         // create sidebar and attach to menu open
         $('.ui.sidebar')
-          .sidebar('attach events', '.toc.item')
-          ;
+          .sidebar('attach events', '.toc.item');
+
+        var formData = {
+          name: '',
+          email: '',
+          comments: ''
+        };
+
+        $('#name')
+          .on('change textInput input', function (e) {
+            var name = e.target.value;
+            formData.name = name;
+          });
+
+        $('#email')
+          .on('change textInput input', function (e) {
+            var email = e.target.value;
+            formData.email = email;
+          });
+
+
+        $('#comments')
+          .on('change textInput input', function (e) {
+            var comments = e.target.value;
+            formData.comments = comments;
+          });
+
+        $('form')
+          .submit(function (e) {
+            e.preventDefault();
+            // Validate inputs
+            if (validateInputs(formData)) return;
+
+            // Submit form
+            submitForm(formData);
+
+          });
+
+        function submitForm(formData) {
+          $.post("/purchase/submit", formData)
+            .done(function (data, status) {
+              var form = $('form');
+              form.addClass('success');
+            })
+            .fail(function () {
+              var form = $('form');
+              var errorMessage = $('#errorMessage');
+              form.addClass('error');
+              errorMessage.text('Submission failed, please try again');
+            })
+        }
+
+        function formError(errorMessage) {
+          var errorMessageParagraph = $('#errorMessage');
+          var form = $('form');
+          form.addClass('error');
+          errorMessageParagraph.text(errorMessage);
+        }
+
+        function validateInputs(formData) {
+          var form = $('form');
+          form.removeClass('error');
+          if (!formData.name.length) {
+            formError('Please enter your name');
+            return true;
+          }
+          if (!formData.email.length) {
+            formError('Please enter your email');
+            return true;
+          }
+        }
       })
       ;
   </script>
