@@ -163,6 +163,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
     setState(() {
       _dates[valueIndex] = picked;
       _dateValues[valueIndex] = date;
+      buildPrescription();
     });
   }
 
@@ -175,6 +176,12 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
 
     }
     prescription.docNotes = doctorNotesController.text;
+    if (_dates[0] != null) {
+      prescription.startDate = Date.from(_dates[0]);
+    }
+    if (_dates[1] != null) {
+      prescription.endDate = Date.from(_dates[1]);
+    }
   }
 
   @override
@@ -209,12 +216,10 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
         whitespace,
         picker(_dateValues[0] ?? "Start Date", Colors.black87, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45), () {
           _pickDate(context, 0);
-          buildPrescription();
         }),
         whitespace,
         picker(_dateValues[1] ?? "End Date", Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
           _pickDate(context, 1);
-          buildPrescription();
         })
       ]
     );
@@ -266,6 +271,7 @@ class _IntervalState extends State<IntervalEntry> {
     setState(() {
       timeToTake = picked;
       timeValue = TimeUtil.getFormatted(picked.hour, picked.minute);
+      buildInterval();
     });
   }
 
@@ -286,7 +292,6 @@ class _IntervalState extends State<IntervalEntry> {
         new Divider(),
         picker(timeValue ?? "Time of Day", Colors.black87, Icon(FontAwesomeIcons.clock, color: Colors.black45), () {
           _pickTime(context);
-          buildInterval();
         }),
         new SizedBox(height: 8.0),
         new TextFormField(

@@ -95,26 +95,43 @@ Future<Null> addPrescription(Prescription prescription, {bool merge: false}) asy
 
   String prescriptionCollection = 'prescriptions/' + uuid + '/prescription/';
   CollectionReference collection = Firestore.instance.collection('prescriptions/' + uuid + "/prescription");
-  DocumentReference doc = merge ? collection.document(prescription.id) : collection.document();
-  print(doc);
 
-  doc.setData({
+  Map<String, dynamic> data = {
     'description': prescription.medNotes,
     'notes': prescription.docNotes,
     'remaining': prescription.pillsLeft,
-  }, merge: merge);
+  };
+
+  DocumentReference doc;
+  if (merge && prescription.id.isNotEmpty) {
+    doc = collection.document(prescription.id)
+      ..setData(data, merge: true);
+  } else {
+    doc = await collection.add(data);
+  }
 
   for (PrescriptionInterval interval in prescription.intervals) {
     CollectionReference intColl = Firestore.instance.collection(prescriptionCollection + doc.documentID + "/intervals");
-    DocumentReference intDoc = merge ? intColl.document(interval.id) : intColl.document();
 
-    intDoc.setData({
+    Map<String, dynamic> data = {
       'days': interval.dateDelta,
       'dosage': interval.dosage,
-      'end': TimeUtil.toDateTime(interval.endDate, interval.time),
-      'start': TimeUtil.toDateTime(interval.startDate, interval.time),
-      'time': TimeUtil.toDateTime(interval.startDate, interval.time)
-    });
+      'end': TimeUtil.toDateTime(prescription.endDate ?? interval.endDate, interval.time),
+      'start': TimeUtil.toDateTime(prescription.startDate ?? interval.startDate, interval.time),
+      'time': TimeUtil.toDateTime(prescription.startDate ?? interval.startDate, interval.time)
+    };
+
+    DocumentReference intDoc;
+    if (merge && interval.id != null && interval.id.isNotEmpty) {
+      intDoc = intColl.document(interval.id)
+        ..setData(data);
+    } else {
+      intDoc = await intColl.add(data);
+    }
+
+    if (interval.pillLog == null) {
+      return null;
+    }
 
     for (MapEntry dateEntry in interval.pillLog.entries) {
       for (MapEntry timeEntry in dateEntry.value.entries) {

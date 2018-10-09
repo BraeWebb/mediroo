@@ -28,8 +28,15 @@ class Prescription {
   /// the intervals at which the pills should be taken
   List<PrescriptionInterval> intervals; // TODO: make this a mapping from time to list of interval
 
+  /// the start date of this prescription
+  Date startDate;
+
+  /// the end date of this prescription
+  Date endDate;
+
   /// Constructs a new Prescription
-  Prescription(this._id, this.medNotes, {this.docNotes, this.pillsLeft, this.addTime, this.intervals});
+  Prescription(this._id, this.medNotes, {this.docNotes, this.pillsLeft, this.addTime,
+    this.intervals, this.startDate, this.endDate});
 
   /// returns the user's [id]
   String get id => _id;

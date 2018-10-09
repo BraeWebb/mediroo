@@ -20,6 +20,13 @@ class Date implements Comparable<Date> {
   /// Constructs a new Date with the given [year], [month], and [day]
   Date(this.year, this.month, this.day);
 
+  /// Constructs a new Date based on a [DateTime]
+  Date.from(DateTime datetime) {
+    this.year = datetime.year;
+    this.month = datetime.month;
+    this.day = datetime.day;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
