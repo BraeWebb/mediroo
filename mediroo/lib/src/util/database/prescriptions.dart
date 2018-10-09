@@ -93,9 +93,6 @@ Stream<List<Prescription>> getUserPrescriptions() async* {
 Future<Null> addPrescription(Prescription prescription, {bool merge: false}) async {
   String uuid = await currentUUID();
 
-
-  print("a");
-
   String prescriptionCollection = 'prescriptions/' + uuid + '/prescription/';
   CollectionReference collection = Firestore.instance.collection('prescriptions/' + uuid + "/prescription");
   DocumentReference doc = merge ? collection.document(prescription.id) : collection.document();
@@ -106,8 +103,6 @@ Future<Null> addPrescription(Prescription prescription, {bool merge: false}) asy
     'notes': prescription.docNotes,
     'remaining': prescription.pillsLeft,
   }, merge: merge);
-
-  print("b");
 
   for (PrescriptionInterval interval in prescription.intervals) {
     CollectionReference intColl = Firestore.instance.collection(prescriptionCollection + doc.documentID + "/intervals");
@@ -120,8 +115,6 @@ Future<Null> addPrescription(Prescription prescription, {bool merge: false}) asy
       'start': TimeUtil.toDateTime(interval.startDate, interval.time),
       'time': TimeUtil.toDateTime(interval.startDate, interval.time)
     });
-
-    print("c");
 
     for (MapEntry dateEntry in interval.pillLog.entries) {
       for (MapEntry timeEntry in dateEntry.value.entries) {
