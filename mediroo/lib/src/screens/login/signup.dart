@@ -42,11 +42,14 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController emailController = new TextEditingController();
   /// Retrieves the text in the password entry field
   final TextEditingController passwordController = new TextEditingController();
+  /// Retrieves the text in the confirmation password entry field
+  final TextEditingController passwordConfirmationController = new TextEditingController();
 
   // Stores the error information associated with the various entry fields
   String _nameError;
   String _emailError;
   String _passwordError;
+  String _confirmError;
 
   // Creates a new state for a Signup Page
   _SignupPageState({this.analytics, this.auth}): super();
@@ -73,7 +76,7 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
-  // Checks that a given password is valid when submitting the form
+  /// Checks that a given password is valid when submitting the form
   String _validatePassword(String password) {
     if (password.isEmpty) {
       return 'Please enter a password';
@@ -82,8 +85,21 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
-  // Handles the validation and database communication which occurs on pressing
-  // the signup button
+  /// Checks that the confirming password is not empty and mathces
+  String _validateConfirmPassword(String password, String confirmPassword) {
+    if (confirmPassword.isEmpty) {
+      return 'Please confirm your password';
+    }
+
+    if (password != confirmPassword) {
+      return 'Passwords do not match';
+    }
+
+    return null;
+  }
+
+  /// Handles the validation and database communication which occurs on pressing
+  /// the signup button
   void _pressSignup() {
     // logs the action for analytics
     analytics?.logSignUp(signUpMethod: "default");
@@ -93,10 +109,11 @@ class _SignupPageState extends State<SignupPage> {
       _nameError = _validateName(nameController.text);
       _emailError = _validateEmail(emailController.text);
       _passwordError = _validatePassword(passwordController.text);
+      _confirmError = _validateConfirmPassword(passwordController.text, passwordConfirmationController.text);
     });
 
     // exits in the event of an error
-    if (_nameError != null || _emailError != null || _passwordError != null) {
+    if (_nameError != null || _emailError != null || _passwordError != null || _confirmError != null) {
       return;
     }
 
@@ -107,8 +124,9 @@ class _SignupPageState extends State<SignupPage> {
         // information validation and error checking
         emailController.clear();
         passwordController.clear();
+        passwordConfirmationController.clear();
         setState(() {
-          _passwordError = 'Email already in use or password is less than 6 characters';
+          _confirmError = 'Email already in use or password is less than 6 characters';
         });
         return;
       }
@@ -158,8 +176,15 @@ class _SignupPageState extends State<SignupPage> {
       key: Key('password_field'),
       obscureText: true,
       controller: passwordController,
-      validator: _validatePassword,
       decoration: bubbleInputDecoration("Password", _passwordError, null),
+    );
+
+    // confirm password entry field
+    final confirmPassword = TextFormField(
+      key: Key('confirm_password_field'),
+      obscureText: true,
+      controller: passwordConfirmationController,
+      decoration: bubbleInputDecoration("Confirm Password", _confirmError, null),
     );
 
     final signupButton = bubbleButton("signup", "Sign Up", _pressSignup);
@@ -183,6 +208,8 @@ class _SignupPageState extends State<SignupPage> {
             email,
             SizedBox(height: 8.0),
             password,
+            SizedBox(height: 8.0),
+            confirmPassword,
             SizedBox(height: 24.0),
             signupButton,
           ],

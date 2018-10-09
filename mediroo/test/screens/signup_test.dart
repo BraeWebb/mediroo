@@ -140,6 +140,7 @@ void main() {
     await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
     await tester.enterText(find.byKey(Key("password_field")), "failurepassword");
+    await tester.enterText(find.byKey(Key("confirm_password_field")), "failurepassword");
 
     await tester.tap(find.byKey(Key('signup_button')));
     await tester.pumpAndSettle();
@@ -159,6 +160,7 @@ void main() {
     await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
     await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
     await tester.enterText(find.byKey(Key("password_field")), "mediroo");
+    await tester.enterText(find.byKey(Key("confirm_password_field")), "mediroo");
 
     await tester.tap(find.byKey(Key('signup_button')));
     await tester.pumpAndSettle();
