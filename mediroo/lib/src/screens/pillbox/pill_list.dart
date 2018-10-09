@@ -70,6 +70,9 @@ class ListState extends State<PillList> {
   /// The current prescriptions
   List<Prescription> prescriptions;
 
+  /// Whether the list is currently in a state of loading
+  bool _loading = false;
+
   /// Constructs a new ListState with [date] and [auth]
   ListState(this.date, {this.auth}) {
     cards = genMessage("Loading Pills...");
@@ -106,6 +109,7 @@ class ListState extends State<PillList> {
       } else {
         cards = genDays(prescriptions, date);
       }
+      _loading = false;
     });
   }
 
@@ -122,6 +126,9 @@ class ListState extends State<PillList> {
   }
 
   Future<Null> writeDB(Prescription prescription) async {
+    setState(() {
+      _loading = true;
+    });
     await addPrescription(prescription, merge: true);
     _handleRefresh();
 
@@ -321,13 +328,27 @@ class ListState extends State<PillList> {
                       Tab(text: "")]
               ),
             ),
-            body: TabBarView(
-              children: cards.map((widgets) {
-                return new RefreshIndicator(
-                  child: new ListView(children: widgets),
-                  onRefresh: _handleRefresh
-                );
-              }).toList()
+            body: new Stack(
+              children: [
+                TabBarView(
+                  children: cards.map((widgets) {
+                    return new RefreshIndicator(
+                      child: new ListView(children: widgets),
+                      onRefresh: _handleRefresh
+                    );
+                  }).toList()
+                ),
+                new Offstage(
+                  // displays the loading icon while the user is logging in
+                    offstage: !_loading,
+                    child: new Center(
+                        child: _loading ? new CircularProgressIndicator(
+                          value: null,
+                          strokeWidth: 7.0,
+                        ) : null
+                    )
+                )
+              ]
             ),
             floatingActionButton: new FloatingActionButton(
               onPressed: () {
