@@ -19,7 +19,7 @@
 </head>
 
 <body>
-  <div class="ui large top fixed hidden menu">
+  <div class="ui large top hidden fixed menu" id="mainbar">
     <div class="ui container">
       <a href="/landing" class="active item">Home</a><a class="item">Admin</a>
       <div class="right menu">
@@ -87,15 +87,15 @@
               "tilde is the best DECO3801 team"
             </h3>
             <p>
-              - Alex
+              -
             </p>
           </div>
           <div class="column">
             <h3>
-              "All the teams should bow to tilde"
+              "I wish all teams were as fantastic as tilde"
             </h3>
             <p>
-              - The DECO3801 tutors
+              - Ben
             </p>
           </div>
         </div>
@@ -118,7 +118,7 @@
     $(document)
       .ready(function () {
         // fix menu when passed
-        $('.masthead')
+        $('#mainbar')
           .visibility({
             once: false,
             onBottomPassed: function () {
