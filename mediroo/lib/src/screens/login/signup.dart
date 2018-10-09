@@ -166,6 +166,9 @@ class _SignupPageState extends State<SignupPage> {
 
     // builds the screen using the above components
     return Scaffold(
+      appBar: new AppBar(
+        title: new Text("Sign Up"),
+      ),
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
