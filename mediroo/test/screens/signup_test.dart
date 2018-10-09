@@ -145,7 +145,7 @@ void main() {
     await tester.tap(find.byKey(Key('signup_button')));
     await tester.pumpAndSettle();
 
-    expect(find.text("Email already in use or password is less than 6 characters"), findsOneWidget);
+    expect(find.text("Email already in use"), findsOneWidget);
     expect(find.byType(PillList), findsNothing);
   });
 
