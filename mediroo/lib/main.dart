@@ -5,7 +5,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:mediroo/util.dart' show FireAuth;
-import 'screens.dart';
+import 'package:mediroo/screens.dart';
 
 /// Runs the application widget [MediRooApp].
 void main() => runApp(new MediRooApp());

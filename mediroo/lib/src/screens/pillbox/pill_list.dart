@@ -332,7 +332,7 @@ class ListState extends State<PillList> {
             floatingActionButton: new FloatingActionButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => AddPills()));
+                    MaterialPageRoute(builder: (context) => AddPills(this)));
                 },
               tooltip: "Add Pills",
               child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
