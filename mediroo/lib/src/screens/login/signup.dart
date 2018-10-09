@@ -105,11 +105,18 @@ class _SignupPageState extends State<SignupPage> {
         .then((String uid) {
       if (uid == null) {
         // information validation and error checking
-        emailController.clear();
-        passwordController.clear();
-        setState(() {
-          _passwordError = 'Email already in use or password is less than 6 characters';
-        });
+        if (passwordController.text.length >= 6) {
+          setState(() {
+            _emailError = 'Email already in use';
+            emailController.clear();
+          });
+        } else {
+          setState(() {
+            _passwordError = 'Password is less than six characters long';
+            passwordController.clear();
+          });
+        }
+
         return;
       }
 
