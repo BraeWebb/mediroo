@@ -302,7 +302,8 @@ class ListState extends State<PillList> {
     super.initState();
 
     flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
-    var android = new AndroidInitializationSettings('assets/logo.png');
+    Image.asset('assets/logo.png');
+    var android = new AndroidInitializationSettings("logo.png");
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
