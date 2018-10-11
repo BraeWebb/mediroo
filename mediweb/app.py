@@ -24,7 +24,7 @@ def purchase():
     return render('purchase.html')
 
 
-@app.route('/purchase/submit', methods=["POST"])
+@app.route('/api/purchase', methods=["POST"])
 def submit_purchase():
     send_purchase(request.form.get('name'), request.form.get('email'), request.form.get('comments'))
     return jsonify({"message": "Submitted Data"})

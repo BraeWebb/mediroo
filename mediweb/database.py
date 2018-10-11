@@ -1,18 +1,18 @@
 from json import loads
 
 from functools import partial
-#from google.cloud import firestore
 
 
 def send_purchase(name, email, comments):
-    pass
-    #db = firestore.Client.from_service_account_json('mediroo.json')
-    #collection = db.collection(u'signup')
-    #collection.add({
-    #    u'name': name,
-    #    u'email': email,
-    #    u'comments': comments
-    #})
+    # please forgive me, I swear it's UQClouds fault
+    from google.cloud import firestore
+    db = firestore.Client.from_service_account_json('mediroo.json')
+    collection = db.collection(u'signup')
+    collection.add({
+       u'name': name,
+       u'email': email,
+       u'comments': comments
+    })
 
 
 def load_users(user_db='userdb.json'):
