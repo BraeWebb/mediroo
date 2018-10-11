@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart' show ;
 
 /// Represents a viusal list of pills
 class PillList extends StatefulWidget {
@@ -37,6 +38,8 @@ class PillList extends StatefulWidget {
 
 /// The current state of a PillList widget
 class ListState extends State<PillList> {
+
+  FlutterLocalNotificationsPlugin flutterLocalNotifications;
 
   /// Used to connect to the database
   final FireAuth auth;
@@ -291,6 +294,21 @@ class ListState extends State<PillList> {
         dosage.toString() + " pills", chosenPriColour, chosenSecColour,
         chosenHLColour, pre, interval, this);
   }
+  ///Notifications
+  @override
+  void initState(){
+    super.initState();
+
+    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('logo.png');
+    var iOS = new IOSInitializationSettings();
+    var initSettings = new InitializationSettings(android, iOS);
+    flutterLocalNotifications.initialize(initSettings);
+  }
+
+
+
+  ///Notifications
 
   @override
   Widget build(BuildContext context) {
