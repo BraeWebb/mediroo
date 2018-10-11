@@ -302,17 +302,18 @@ class ListState extends State<PillList> {
     super.initState();
 
     flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
-    var android = new AndroidInitializationSettings('logo.png');
+    var android = new AndroidInitializationSettings('assets/logo.png');
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
 
-    flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
     scheduleNotifications();
   }
 
 
   void scheduleNotifications() async {
+
+    flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
 
     var scheduleDateTime = new DateTime.now().add(new Duration(seconds: 5)); //TODO change to findNextTime()
 
