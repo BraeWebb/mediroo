@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 
 from uqauth import global_user, login_required, authorized_access
 from uqauth import payload_view, login, logout
-from database import send_purchase
+from database import send_purchase, get_purchases
 
 app = Flask(__name__)
 app.secret_key = 'placeholder secret'
@@ -35,34 +35,16 @@ def submit_purchase():
 
 
 @app.route('/api/users')
+@cross_origin(origin='*', headers=['Content- Type', 'Authorization'])
 def get_users():
     return jsonify({
-        "users": [{
-                "name": "james",
-                "email": "james@mediroo.com",
-                "registered": 1539129600,
-                "comments": "I love Mediroo"
-            },
-            {
-                "name": "Abhi",
-                "email": "Abhi@gmail.com",
-                "registered": 1538956800,
-                "comments": "Best scrum master 2018"
-            },
-            {
-                "name": "nick",
-                "email": "nick@gmail.com",
-                "registered": 1539275005,
-                "comments": "I make websites"
-            }
-        ]
+        "users": get_purchases()
     })
 
 @app.route('/admin')
 #@authorized_access
 def admin():
     return render('admin.html')
-    #return 'Successfully authenticated!'
 
 
 if __name__ == '__main__':

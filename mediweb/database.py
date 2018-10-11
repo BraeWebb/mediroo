@@ -1,6 +1,6 @@
-from json import loads
-
 from functools import partial
+from json import loads
+from time import time
 
 
 def send_purchase(name, email, comments):
@@ -11,8 +11,23 @@ def send_purchase(name, email, comments):
     collection.add({
        u'name': name,
        u'email': email,
-       u'comments': comments
+       u'comments': comments,
+       u'registered': time()
     })
+
+
+def get_purchases():
+    # please forgive me, I swear it's UQClouds fault
+    from google.cloud import firestore
+    db = firestore.Client.from_service_account_json('mediroo.json')
+    collection = db.collection(u'signup')
+    docs = collection.get()
+
+    result = []
+    for doc in docs:
+        result.append(doc.to_dict())
+
+    return result
 
 
 def load_users(user_db='userdb.json'):
