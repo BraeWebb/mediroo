@@ -29,6 +29,29 @@ def submit_purchase():
     send_purchase(request.form.get('name'), request.form.get('email'), request.form.get('comments'))
     return jsonify({"message": "Submitted Data"})
 
+@app.route('/api/users')
+def get_users():
+    return jsonify({
+        "users": [{
+                "name": "james",
+                "email": "james@mediroo.com",
+                "registered": 1539129600,
+                "comments": "I love Mediroo"
+            },
+            {
+                "name": "Abhi",
+                "email": "Abhi@gmail.com",
+                "registered": 1538956800,
+                "comments": "Best scrum master 2018"
+            },
+            {
+                "name": "nick",
+                "email": "nick@gmail.com",
+                "registered": 1539275005,
+                "comments": "I make websites"
+            }
+        ]
+    })
 
 @app.route('/admin')
 #@authorized_access
