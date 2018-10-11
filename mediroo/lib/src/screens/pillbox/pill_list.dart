@@ -303,7 +303,7 @@ class ListState extends State<PillList> {
 
     flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
     Image.asset('assets/logo.png'); // hoping that this loads the
-    var android = new AndroidInitializationSettings("logo.png");
+    var android = new AndroidInitializationSettings("@assets/logo.png"); //'@mipmap/ic_launcher'
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
