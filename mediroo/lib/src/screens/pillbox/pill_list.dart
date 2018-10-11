@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart' show ;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
+    AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings,
+    AndroidNotificationDetails, IOSNotificationDetails, NotificationDetails;
 
 /// Represents a viusal list of pills
 class PillList extends StatefulWidget {
@@ -304,9 +306,43 @@ class ListState extends State<PillList> {
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
+
+    flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
+    scheduleNotifications();
   }
 
 
+  void scheduleNotifications() async {
+
+    var scheduleDateTime = new DateTime.now().add(new Duration(seconds: 5)); //TODO change to findNextTime()
+
+    var android = new AndroidNotificationDetails('channel id', 'channel name',
+        'channel description');
+
+    var iOS = new IOSNotificationDetails();
+    NotificationDetails platform = new NotificationDetails(android, iOS);
+
+    await flutterLocalNotifications.schedule(
+        0,
+        'scheduled title',
+        'scheduled body',
+        scheduleDateTime,
+        platform);
+  }
+
+  DateTime findNextTime(){
+    Time currentMin = TimeUtil.currentTime();
+
+    for (Prescription pre in this.prescriptions){
+      for (PrescriptionInterval preInterval in pre.intervals) {
+        if (TimeUtil.isUpcoming(currentMin, preInterval.time, 0)) {
+          //new soonest TODO
+
+        }
+      }
+    }
+    return new DateTime.now(); // change this
+  }
 
   ///Notifications
 
