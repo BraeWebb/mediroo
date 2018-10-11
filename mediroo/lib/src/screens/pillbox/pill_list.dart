@@ -318,6 +318,8 @@ class ListState extends State<PillList> {
 
     var scheduleDateTime = new DateTime.now().add(new Duration(seconds: 5)); //TODO change to findNextTime()
 
+    var scheduleDateTimeLate = scheduleDateTime.add(new Duration(seconds: 15)); // TODO change these to minutes
+
     var android = new AndroidNotificationDetails('channel id', 'channel name',
         'channel description');
 
@@ -326,9 +328,16 @@ class ListState extends State<PillList> {
 
     await flutterLocalNotifications.schedule(
         0,
-        'scheduled title',
-        'scheduled body',
+        'Mediroo',
+        'Time to take pills',
         scheduleDateTime,
+        platform);
+
+    await flutterLocalNotifications.schedule(
+        1,
+        'Mediroo: Urgent!',
+        'You Recently Missed Pills!!',
+        scheduleDateTimeLate,
         platform);
   }
 
