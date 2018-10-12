@@ -42,7 +42,7 @@ def get_users():
     })
 
 @app.route('/admin')
-@authorized_access
+@login_required
 def admin():
     return render('admin.html')
 
