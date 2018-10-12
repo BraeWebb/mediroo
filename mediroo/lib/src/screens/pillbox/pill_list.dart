@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
+    AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings,
+    AndroidNotificationDetails, IOSNotificationDetails, NotificationDetails;
 
 /// Represents a viusal list of pills
 class PillList extends StatefulWidget {
@@ -37,6 +40,8 @@ class PillList extends StatefulWidget {
 
 /// The current state of a PillList widget
 class ListState extends State<PillList> {
+
+  FlutterLocalNotificationsPlugin flutterLocalNotifications;
 
   /// Used to connect to the database
   final FireAuth auth;
@@ -291,6 +296,66 @@ class ListState extends State<PillList> {
         dosage.toString() + " pills", chosenPriColour, chosenSecColour,
         chosenHLColour, pre, interval, this);
   }
+  ///Notifications
+  @override
+  void initState(){
+    super.initState();
+
+    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
+    Image.asset('assets/logo.png'); // hoping that this loads the
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher'); //"@assets/logo.png"); //
+    var iOS = new IOSInitializationSettings();
+    var initSettings = new InitializationSettings(android, iOS);
+    flutterLocalNotifications.initialize(initSettings);
+
+    scheduleNotifications();
+  }
+
+
+  void scheduleNotifications() async {
+
+    flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
+
+    var scheduleDateTime = new DateTime.now().add(new Duration(seconds: 5)); //TODO change to findNextTime()
+
+    var scheduleDateTimeLate = scheduleDateTime.add(new Duration(seconds: 15)); // TODO change these to minutes
+
+    var android = new AndroidNotificationDetails('channel id', 'channel name',
+        'channel description');
+
+    var iOS = new IOSNotificationDetails();
+    NotificationDetails platform = new NotificationDetails(android, iOS);
+
+    await flutterLocalNotifications.schedule(
+        0,
+        'Mediroo',
+        'Time to take pills',
+        scheduleDateTime,
+        platform);
+
+    await flutterLocalNotifications.schedule(
+        1,
+        'Mediroo: Urgent!',
+        'You Recently Missed Pills!!',
+        scheduleDateTimeLate,
+        platform);
+  }
+
+  DateTime findNextTime(){
+    Time currentMin = TimeUtil.currentTime();
+
+    for (Prescription pre in this.prescriptions){
+      for (PrescriptionInterval preInterval in pre.intervals) {
+        if (TimeUtil.isUpcoming(currentMin, preInterval.time, 0)) {
+          //new soonest TODO
+
+        }
+      }
+    }
+    return new DateTime.now(); // change this
+  }
+
+  ///Notifications
 
   @override
   Widget build(BuildContext context) {
