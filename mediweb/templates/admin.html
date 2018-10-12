@@ -214,7 +214,18 @@
                                 data: formatData(users)
                             }]
                         },
+                        responsive: true,
                         options: {
+                            tooltips: {
+                                callbacks: {
+                                    label: function (tooltipItem, data) {
+                                        return "Number of clicks: " + tooltipItem.yLabel;
+                                    },
+                                    title: function (tooltipItem, data) {
+                                        return moment(tooltipItem[0].xLabel).format('MMMM Do YYYY');
+                                    }
+                                }
+                            },
                             scales: {
                                 yAxes: [{
                                     scaleLabel: {
@@ -241,9 +252,7 @@
                     };
                     new Chart(ctx, config);
                 }
-
                 getUsers();
-                formatChart([]);
             })
             ;
 
