@@ -36,6 +36,7 @@
       </div>
       <div class="ui text container">
         <form class="ui form" action="/api/register" method="post">
+          <input id="user" type="hidden" name="user" value="{{ user.name }}">
           <div class="field">
             <label>Name</label>
             <input id="name" type="text" name="name" placeholder="Name">

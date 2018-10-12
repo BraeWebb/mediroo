@@ -30,7 +30,8 @@ def purchase():
 @app.route('/api/register', methods=["POST"])
 @cross_origin(origin='*', headers=['Content- Type', 'Authorization'])
 def submit_purchase():
-    send_purchase(request.form.get('name'), request.form.get('email'), request.form.get('comments'))
+    send_purchase(request.form.get('name'), request.form.get('email'),
+                  request.form.get('comments'), user=request.form.get('user'))
     return jsonify({"message": "Submitted Data"})
 
 
