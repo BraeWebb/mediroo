@@ -26,6 +26,9 @@
                 <div class="item">
                     <a href="/register" class="ui primary button">Register Interest</a>
                 </div>
+                <div class="item">
+                    <a href="/admin/logout" class="ui button">Logout</a>
+                </div>
             </div>
         </div>
     </div>
@@ -40,7 +43,6 @@
                 <!--Total clicks here -->
                 <p><strong>Avg clicks per day</strong> = <span id="average-clicks">loading...</span></p>
                 <!--Avg here -->
-                <p>Logged in as {{ user.name }}</p>
             </div>
         </div>
         <div class="ui vertical stripe segment">
@@ -97,6 +99,7 @@
                 <a href="https://twitter.com/home?status=Tired%20of%20remembering%20to%20take%20your%20medication?%20Check%20out%20MediRoo%20at%20tilde.uqcloud.net"
                     class="fa fa-twitter"></a>
                 <a href="https://plus.google.com/share?url=tilde.uqcloud.net" class="fa fa-google"></a>
+                <p>Logged in as {{ user.name }}</p>
             </div>
         </div>
     </div>
