@@ -31,10 +31,9 @@ def submit_purchase():
 
 
 @app.route('/admin')
-#@authorized_access
+@authorized_access
 def admin():
     return render('admin.html')
-    #return 'Successfully authenticated!'
 
 
 if __name__ == '__main__':
