@@ -21,7 +21,7 @@
 <body>
   <div class="ui large top fixed menu">
     <div class="ui container">
-      <a href="/landing" class="item">Home</a><a class="item">Admin</a>
+      <a href="/landing" class="item">Home</a><a href="/admin" class="item">Admin</a>
     </div>
   </div>
   <!--Page Contents-->
@@ -33,7 +33,7 @@
           </h3>
       </div>
       <div class="ui text container">
-        <form class="ui form" action="/purchase/submit" method="post">
+        <form class="ui form" action="/api/purchase" method="post">
           <div class="field">
             <label>Name</label>
             <input id="name" type="text" name="name" placeholder="Name">
@@ -129,7 +129,7 @@
         function submitForm(formData) {
           var form = $('form');
           form.addClass('loading');
-          $.post("/purchase/submit", formData)
+          $.post("/api/purchase", formData)
             .done(function (data, status) {
               var form = $('form');
               form.removeClass('loading');

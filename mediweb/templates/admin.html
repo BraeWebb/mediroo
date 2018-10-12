@@ -2,139 +2,232 @@
 <html>
 
 <head>
-    <meta charset="utf-8"/>
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no" name="viewport"/>
-    <meta content="Semantic-UI-Forest, collection of design, themes and templates for Semantic-UI." name="description"/>
-    <meta content="Semantic-UI, Theme, Design, Template" name="keywords"/>
-    <meta content="PPType" name="author"/>
-    <meta content="#ffffff" name="theme-color"/>
+    <meta charset="utf-8" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no" name="viewport" />
+    <meta content="Semantic-UI-Forest, collection of design, themes and templates for Semantic-UI." name="description" />
+    <meta content="Semantic-UI, Theme, Design, Template" name="keywords" />
+    <meta content="PPType" name="author" />
+    <meta content="#ffffff" name="theme-color" />
     <title>MediRoo MediWeb</title>
-    <link href="/static/dist/semantic-ui/semantic.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/stylesheets/styles.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/stylesheets/default.css" rel="stylesheet" type="text/css"/>
-    <link href="/static/stylesheets/pandoc-code-highlight.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/dist/semantic-ui/semantic.min.css" rel="stylesheet" type="text/css" />
+    <link href="/static/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+    <link href="/static/stylesheets/default.css" rel="stylesheet" type="text/css" />
+    <link href="/static/stylesheets/pandoc-code-highlight.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="/static/dist/jquery/jquery.min.js"></script>
 </head>
 
 <body>
-<div class="ui large top fixed menu">
-    <div class="ui container">
-        <a href="/landing" class="item">Home</a><a class="active item">Admin</a>
-        <div class="right menu">
-            <div class="item">
-                <a href="/purchase" class="ui primary button">Purchase</a>
+    <div class="ui large top fixed menu">
+        <div class="ui container">
+            <a href="/landing" class="item">Home</a><a class="active item">Admin</a>
+            <div class="right menu">
+                <div class="item">
+                    <a href="/purchase" class="ui primary button">Purchase</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!--Page Contents-->
-<div class="pusher">
-    <div class="ui vertical stripe segment">
-        <div class="ui text container">
-            <h2 class="ui header">
-                Admin
-            </h2>
+    <!--Page Contents-->
+    <div class="pusher">
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h1 class="ui header">
+                    Admin
+                </h1>
+            </div>
+        </div>
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h3 class="ui header">
+                    Basic Statistics
+                </h3>
+                <p><strong>Total clicks</strong> = <span id="total-clicks">loading...</span></p>
+                <!--Total clicks here -->
+                <p><strong>Avg clicks per day</strong> = <span id="average-clicks">loading...</span></p>
+                <!--Avg here -->
+            </div>
+        </div>
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h3 class="ui header">
+                    Registrees
+                </h3>
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Date registered</th>
+                        </tr>
+                    </thead>
+                    <tbody id='registrees-table-body'>
+                    </tbody>
+                </table>
+                <!-- User comments here -->
+            </div>
+        </div>
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h3 class="ui header">
+                    User comments
+                </h3>
+                <table class="ui celled table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comments-table-body">
+                    </tbody>
+                </table>
+                <!-- User comments here -->
+            </div>
+        </div>
+        <div class="ui vertical stripe segment">
+            <div class="ui text container">
+                <h3 class="ui header">
+                    Clicks per day
+                </h3>
+                <canvas id="myChart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="ui inverted vertical footer center aligned segment">
+            <div class="ui text container">
+                <h1>
+                    Share on social media
+                </h1>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=tilde.uqcloud.net" class="fa fa-facebook"></a>
+                <a href="https://twitter.com/home?status=Tired%20of%20remembering%20to%20take%20your%20medication?%20Check%20out%20MediRoo%20at%20tilde.uqcloud.net"
+                    class="fa fa-twitter"></a>
+                <a href="https://plus.google.com/share?url=tilde.uqcloud.net" class="fa fa-google"></a>
+            </div>
         </div>
     </div>
-    <div class="ui vertical stripe segment">
-        <div class="ui text container">
-            <h3 class="ui header">
-                Basic Statistics
-            </h3>
-            <p><strong>Total clicks</strong> = 43</p> <!--Total clicks here -->
-            <p><strong>Avg clicks per day</strong> = 3</p> <!--Avg here -->
-        </div>
-    </div>
-    <div class="ui vertical stripe segment">
-        <div class="ui text container">
-            <h3 class="ui header">
-                Registrees
-            </h3>
-            <table class="ui celled table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Date registered</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td data-label="Name">James</td>
-                    <td data-label="Email">james@mediroo.com</td>
-                    <td data-label="Date">21/01/2018</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Abhi</td>
-                    <td data-label="Email">abhi@mediroo.com</td>
-                    <td data-label="Date">22/01/2018</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Nick</td>
-                    <td data-label="Email">nick@mediroo.com</td>
-                    <td data-label="Date">22/01/2018</td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- User comments here -->
-        </div>
-    </div>
-    <div class="ui vertical stripe segment">
-        <div class="ui text container">
-            <h3 class="ui header">
-                User comments
-            </h3>
-            <table class="ui celled table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Comments</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td data-label="Name">James</td>
-                    <td data-label="Comments">I love Mediroo</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Abhi</td>
-                    <td data-label="Comments">Best scrum master 2018</td>
-                </tr>
-                <tr>
-                    <td data-label="Name">Nick</td>
-                    <td data-label="Comments">I make websites</td>
-                </tr>
-                </tbody>
-            </table>
-            <!-- User comments here -->
-        </div>
-    </div>
-    <div class="ui vertical stripe segment">
-        <div class="ui text container">
-            <h3 class="ui header">
-                Clicks per day
-            </h3>
-            <!-- Graph of clicks per day here -->
-        </div>
-    </div>
-    <div class="ui inverted vertical footer center aligned segment">
-        <div class="ui text container">
-            <h1>
-                Share on social media
-            </h1>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=tilde.uqcloud.net" class="fa fa-facebook"></a>
-            <a href="https://twitter.com/home?status=Tired%20of%20remembering%20to%20take%20your%20medication?%20Check%20out%20MediRoo%20at%20tilde.uqcloud.net"
-               class="fa fa-twitter"></a>
-            <a href="https://plus.google.com/share?url=tilde.uqcloud.net" class="fa fa-google"></a>
-        </div>
-    </div>
-</div>
-<script src="/static/dist/semantic-ui/semantic.min.js"></script>
-<script>
+    <script src="/static/dist/semantic-ui/semantic.min.js"></script>
+    <script src="/static/dist/moment/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script>
+        $(document)
+            .ready(function () {
+                function formatStatistics(users) {
+                    let totalClicks = $('#total-clicks');
+                    let averageClicks = $('#average-clicks');
 
-</script>
+                    let seenDays = [];
+                    let uniqueDays = 0;
+
+                    for (let u in users) {
+                        let day = moment.unix(users[u].registered).day();
+                        if (seenDays.indexOf(day) == -1) {
+                            seenDays.push(day);
+                            uniqueDays++;
+                        }
+                    }
+
+                    totalClicks.text(users.length);
+                    averageClicks.text(users.length/uniqueDays);
+                }
+
+                function formatRegistrees(users) {
+                    var registreesTableBody = $('#registrees-table-body');
+                    var tableRows = '';
+
+                    users.forEach(user => {
+                        let registered = moment.unix(user.registered).format("dddd, MMMM Do YYYY, h:mm:ss a");
+                        tableRows += `
+                    <tr>
+                            <td data-label="Name">${user.name}</td>
+                            <td data-label="Email">${user.email}</td>
+                            <td data-label="Date">${registered}</td>
+                    </tr>
+                    `
+                    });
+                    registreesTableBody.html(tableRows);
+                }
+
+                function formatUserComments(users) {
+                    var commentsTableBody = $('#comments-table-body');
+                    var tableRows = '';
+                    users.forEach(user => {
+                        if (user.comments == "") return;
+                        tableRows += `
+                    <tr>
+                            <td data-label="Name">${user.name}</td>
+                            <td data-label="Comments">${user.comments}</td>
+                    </tr>
+                    `
+                    });
+                    commentsTableBody.html(tableRows);
+                }
+
+                function getUsers() {
+                    $.get("/api/users")
+                        .done(function (data, status) {
+                            if (data.users) {
+                                formatStatistics(data.users);
+                                formatRegistrees(data.users);
+                                formatUserComments(data.users);
+                                formatChart(data.users);
+                            }
+                        });
+                }
+
+                function formatChart(users) {
+                    // http://www.chartjs.org/docs/latest/charts/line.html
+                    var ctx = $("#myChart");
+                    function newDate(days) {
+                        return moment().add(days, 'd').startOf('day')
+                    }
+                    function countDate(day, users) {
+                      let total = 0;
+                      for (let u in users) {
+                        let user = users[u];
+                        if (day.day() == moment.unix(user['registered']).day()) {
+                          total++;
+                        }
+                      }
+                      return total;
+                    }
+                    var config = {
+                        type: 'line',
+                        data: {
+                            labels: [newDate(-6), newDate(-5), newDate(-4), newDate(-3), newDate(-2), newDate(-1), newDate(0)],
+                            datasets: [{
+                                label: "Total purchases per day",
+                                data: [countDate(newDate(-6), users), countDate(newDate(-5), users), countDate(newDate(-4), users), countDate(newDate(-3), users), countDate(newDate(-2), users), countDate(newDate(-1), users), countDate(newDate(0), users)]
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        callback: function (value) { if (Number.isInteger(value)) { return value; } },
+                                        beginAtZero: true
+                                    }
+                                }],
+                                xAxes: [{
+                                    type: 'time',
+                                    time: {
+                                        displayFormats: {
+                                            'day': 'MMM DD'
+                                        }
+                                    }
+                                }],
+                            },
+                        }
+                    };
+                    new Chart(ctx, config);
+                }
+
+                getUsers();
+                formatChart([]);
+            })
+            ;
+
+    </script>
 </body>
 
 </html>
