@@ -196,24 +196,30 @@
                         data: {
                             labels: [newDate(-6), newDate(-5), newDate(-4), newDate(-3), newDate(-2), newDate(-1), newDate(0)],
                             datasets: [{
-                                label: "Total clicks per day",
+                                label: "Total purchases per day",
                                 data: [countDate(newDate(-6), users), countDate(newDate(-5), users), countDate(newDate(-4), users), countDate(newDate(-3), users), countDate(newDate(-2), users), countDate(newDate(-1), users), countDate(newDate(0), users)]
                             }]
                         },
                         options: {
                             scales: {
                                 yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Number of clicks'
+                                    },
                                     ticks: {
                                         callback: function (value) { if (Number.isInteger(value)) { return value; } },
                                         beginAtZero: true
                                     }
                                 }],
                                 xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Day'
+                                    },
                                     type: 'time',
                                     time: {
-                                        displayFormats: {
-                                            'day': 'MMM DD'
-                                        }
+                                        unit: "day",
                                     }
                                 }],
                             },
