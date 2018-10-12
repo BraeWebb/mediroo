@@ -29,11 +29,11 @@
     <div class="ui vertical stripe segment">
       <div class="ui text container">
         <h2 class="ui header">
-          Purchase
+          Register Interest
           </h3>
       </div>
       <div class="ui text container">
-        <form class="ui form" action="/api/purchase" method="post">
+        <form class="ui form" action="/api/register" method="post">
           <div class="field">
             <label>Name</label>
             <input id="name" type="text" name="name" placeholder="Name">
@@ -129,7 +129,7 @@
         function submitForm(formData) {
           var form = $('form');
           form.addClass('loading');
-          $.post("/api/purchase", formData)
+          $.post("/api/register", formData)
             .done(function (data, status) {
               var form = $('form');
               form.removeClass('loading');
