@@ -9,7 +9,7 @@
   <meta content="Semantic-UI, Theme, Design, Template" name="keywords" />
   <meta content="PPType" name="author" />
   <meta content="#ffffff" name="theme-color" />
-  <title>MediRoo MediWeb</title>
+  <title>Register</title>
   <link href="/static/dist/semantic-ui/semantic.min.css" rel="stylesheet" type="text/css" />
   <link href="/static/stylesheets/styles.css" rel="stylesheet" type="text/css" />
   <link href="/static/stylesheets/default.css" rel="stylesheet" type="text/css" />
@@ -32,9 +32,11 @@
         <h3 class="ui header">
           Register Interest
           </h3>
+        <br>
       </div>
       <div class="ui text container">
         <form class="ui form" action="/api/register" method="post">
+          <input id="user" type="hidden" name="user" value="{{ user.name }}">
           <div class="field">
             <label>Name</label>
             <input id="name" type="text" name="name" placeholder="Name">
@@ -94,7 +96,8 @@
         var formData = {
           name: '',
           email: '',
-          comments: ''
+          comments: '',
+          user: '{{ user.name }}'
         };
 
         $('#name')
