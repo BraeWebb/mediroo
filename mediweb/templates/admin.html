@@ -128,7 +128,7 @@
                     }
 
                     totalClicks.text(users.length);
-                    averageClicks.text(users.length/uniqueDays);
+                    averageClicks.text(users.length / uniqueDays);
                 }
 
                 function formatRegistrees(users) {
@@ -181,23 +181,37 @@
                     function newDate(days) {
                         return moment().add(days, 'd').startOf('day')
                     }
-                    function countDate(day, users) {
-                      let total = 0;
-                      for (let u in users) {
-                        let user = users[u];
-                        if (day.day() == moment.unix(user['registered']).day()) {
-                          total++;
+                    function formatData(users) {
+                        let total = 0;
+                        let days = {};
+                        for (let i = 0; i < users.length; i++) {
+                            const user = users[i];
+                            const date = moment.unix(user.registered).startOf('day');
+                            if (days[date]) {
+                                days[date]
+                                days[date] += 1;
+                            } else {
+                                days[date] = 1;
+                            }
                         }
-                      }
-                      return total;
+                        const sortedDates = Object.entries(days);
+                        sortedDates.sort((a, b) => {
+                            return moment.utc(a[0]).diff(moment.utc(b[0]))
+                        });
+                        return sortedDates.map(day => {
+                            return {
+                                t: day[0],
+                                y: day[1]
+                            }
+                        });
                     }
+
                     var config = {
                         type: 'line',
                         data: {
-                            labels: [newDate(-6), newDate(-5), newDate(-4), newDate(-3), newDate(-2), newDate(-1), newDate(0)],
                             datasets: [{
                                 label: "Total purchases per day",
-                                data: [countDate(newDate(-6), users), countDate(newDate(-5), users), countDate(newDate(-4), users), countDate(newDate(-3), users), countDate(newDate(-2), users), countDate(newDate(-1), users), countDate(newDate(0), users)]
+                                data: formatData(users)
                             }]
                         },
                         options: {
