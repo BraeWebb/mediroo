@@ -43,9 +43,9 @@
                 <h3 class="ui header">
                     Basic Statistics
                 </h3>
-                <p><strong>Total clicks</strong> = 43</p>
+                <p><strong>Total clicks</strong> = <span id="total-clicks">loading...</span></p>
                 <!--Total clicks here -->
-                <p><strong>Avg clicks per day</strong> = 3</p>
+                <p><strong>Avg clicks per day</strong> = <span id="average-clicks">loading...</span></p>
                 <!--Avg here -->
             </div>
         </div>
@@ -112,15 +112,36 @@
     <script>
         $(document)
             .ready(function () {
+                function formatStatistics(users) {
+                    let totalClicks = $('#total-clicks');
+                    let averageClicks = $('#average-clicks');
+
+                    let seenDays = [];
+                    let uniqueDays = 0;
+
+                    for (let u in users) {
+                        let day = moment.unix(users[u].registered).day();
+                        if (seenDays.indexOf(day) == -1) {
+                            seenDays.push(day);
+                            uniqueDays++;
+                        }
+                    }
+
+                    totalClicks.text(users.length);
+                    averageClicks.text(users.length/uniqueDays);
+                }
+
                 function formatRegistrees(users) {
                     var registreesTableBody = $('#registrees-table-body');
                     var tableRows = '';
+
                     users.forEach(user => {
+                        let registered = moment.unix(user.registered).format("dddd, MMMM Do YYYY, h:mm:ss a");
                         tableRows += `
                     <tr>
                             <td data-label="Name">${user.name}</td>
                             <td data-label="Email">${user.email}</td>
-                            <td data-label="Date">${user.registered}</td>
+                            <td data-label="Date">${registered}</td>
                     </tr>
                     `
                     });
@@ -131,6 +152,7 @@
                     var commentsTableBody = $('#comments-table-body');
                     var tableRows = '';
                     users.forEach(user => {
+                        if (user.comments == "") return;
                         tableRows += `
                     <tr>
                             <td data-label="Name">${user.name}</td>
@@ -145,6 +167,7 @@
                     $.get("/api/users")
                         .done(function (data, status) {
                             if (data.users) {
+                                formatStatistics(data.users);
                                 formatRegistrees(data.users);
                                 formatUserComments(data.users);
                                 formatChart(data.users);
