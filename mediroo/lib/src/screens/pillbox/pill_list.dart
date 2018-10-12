@@ -127,6 +127,8 @@ class ListState extends State<PillList> {
       refreshState(prescriptions);
     });
 
+
+    scheduleNotifications();
     return null;
   }
 
@@ -308,7 +310,7 @@ class ListState extends State<PillList> {
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
 
-    scheduleNotifications();
+    scheduleNotifications(); // TODO remove? now in refresh so that it has the pills in the db
   }
 
 
@@ -392,8 +394,6 @@ class ListState extends State<PillList> {
       return null;
     }
 
-
-    //find Next
 
     DateTime now = DateTime.now();
     DateTime currentMin;
