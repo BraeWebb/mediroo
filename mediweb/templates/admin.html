@@ -147,23 +147,34 @@
                             if (data.users) {
                                 formatRegistrees(data.users);
                                 formatUserComments(data.users);
+                                formatChart(data.users);
                             }
                         });
                 }
 
-                function formatChart() {
+                function formatChart(users) {
                     // http://www.chartjs.org/docs/latest/charts/line.html
                     var ctx = $("#myChart");
                     function newDate(days) {
                         return moment().add(days, 'd').startOf('day')
                     }
+                    function countDate(day, users) {
+                      let total = 0;
+                      for (let u in users) {
+                        let user = users[u];
+                        if (day.day() == moment.unix(user['registered']).day()) {
+                          total++;
+                        }
+                      }
+                      return total;
+                    }
                     var config = {
                         type: 'line',
                         data: {
-                            labels: [newDate(-4), newDate(-3), newDate(2), newDate(3), newDate(4), newDate(5), newDate(6)],
+                            labels: [newDate(-6), newDate(-5), newDate(-4), newDate(-3), newDate(-2), newDate(-1), newDate(0)],
                             datasets: [{
-                                label: "Total clicks per day",
-                                data: [1, 3, 4, 2, 1, 21, 2]
+                                label: "Total purchases per day",
+                                data: [countDate(newDate(-6), users), countDate(newDate(-5), users), countDate(newDate(-4), users), countDate(newDate(-3), users), countDate(newDate(-2), users), countDate(newDate(-1), users), countDate(newDate(0), users)]
                             }]
                         },
                         options: {
@@ -189,7 +200,7 @@
                 }
 
                 getUsers();
-                formatChart();
+                formatChart([]);
             })
             ;
 
