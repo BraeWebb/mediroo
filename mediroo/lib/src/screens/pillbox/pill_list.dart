@@ -86,6 +86,7 @@ class ListState extends State<PillList> {
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
         this.prescriptions = prescriptions;
+        scheduleNotifications();
       });
   }
 
@@ -105,8 +106,8 @@ class ListState extends State<PillList> {
             content: new Text("You only have $lowAmount ${prescriptions[i].medNotes} pill$plural left."),
           )
         );
-
       }
+
     }
     setState(() {
       if (prescriptions.length == 0) {
@@ -126,6 +127,7 @@ class ListState extends State<PillList> {
         .listen((List<Prescription> prescriptions) {
       refreshState(prescriptions);
     });
+
 
     return null;
   }
@@ -307,8 +309,6 @@ class ListState extends State<PillList> {
     var iOS = new IOSInitializationSettings();
     var initSettings = new InitializationSettings(android, iOS);
     flutterLocalNotifications.initialize(initSettings);
-
-    scheduleNotifications();
   }
 
 
@@ -316,9 +316,19 @@ class ListState extends State<PillList> {
 
     flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
 
-    var scheduleDateTime = new DateTime.now().add(new Duration(seconds: 5)); //TODO change to findNextTime()
+    DateTime nextPill = findNextTime();
+    print(nextPill);
+    if (nextPill == null){
+      return;
+    }
 
-    var scheduleDateTimeLate = scheduleDateTime.add(new Duration(seconds: 15)); // TODO change these to minutes
+    if (nextPill.compareTo(DateTime.now().add(new Duration(minutes: -6))) < 0){
+      return;
+    }
+
+    var scheduleDateTime = nextPill.add(new Duration(minutes: -5));
+
+    var scheduleDateTimeLate = nextPill.add(new Duration(minutes: 15));
 
     var android = new AndroidNotificationDetails('channel id', 'channel name',
         'channel description');
@@ -336,26 +346,126 @@ class ListState extends State<PillList> {
     await flutterLocalNotifications.schedule(
         1,
         'Mediroo: Urgent!',
-        'You Recently Missed Pills!!',
+        'You Recently Missed a Pill!!',
         scheduleDateTimeLate,
         platform);
   }
 
-  DateTime findNextTime(){
-    Time currentMin = TimeUtil.currentTime();
+  bool isNextPill(){
+    /// returns true if there is a pill in the future
 
-    for (Prescription pre in this.prescriptions){
-      for (PrescriptionInterval preInterval in pre.intervals) {
-        if (TimeUtil.isUpcoming(currentMin, preInterval.time, 0)) {
-          //new soonest TODO
+    DateTime now = DateTime.now();
 
+    for (Prescription pre in this.prescriptions) {
+      for (PrescriptionInterval interval in pre.intervals) {
+
+        for (Date date in interval.pillLog.keys) {
+
+          if (date.compareTo(new Date(now.year, now.month, now.day)) > 0) {
+            return true;
+
+          } else if (
+          date.compareTo(new Date(now.year, now.month, now.day)) == 0) {
+
+            for (Time time in interval.pillLog[date].keys){
+
+              if (now.compareTo(new DateTime(date.year, date.month, date.day, time.hour, time.minute)) < 0){
+                return true;
+              }
+            }
+          }
         }
       }
     }
-    return new DateTime.now(); // change this
+    return false;
   }
 
-  ///Notifications
+
+  DateTime findNextTime(){
+    ///returns next pill time or null if there is none
+    ///TODO rewrite, horrid code but only has small input
+    ///
+
+    if (this.prescriptions == null || this.prescriptions.isEmpty){
+      return null;
+    }
+
+
+    if (!isNextPill()){
+      return null;
+    }
+
+
+    DateTime now = DateTime.now();
+    DateTime currentMin;
+
+    for (Prescription pre in this.prescriptions) {
+      for (PrescriptionInterval preInterval in pre.intervals) {
+        for (Date date in preInterval.pillLog.keys){
+
+          for (Time i in preInterval.pillLog[date].keys){
+            print("           ${i.hour}-${i.minute}");
+          }
+
+          if (currentMin == null && // should short circuit
+              date.compareTo(new Date(now.year, now.month, now.day)) >= 0){
+
+            Time minTime = preInterval.pillLog[date].keys.first; // a random time for the date
+
+            for (Time time in preInterval.pillLog[date].keys){
+              if (time.compareTo(minTime) < 0 &&
+                  time.compareTo(new Time(now.hour, now.minute)) > 0){
+                minTime = time;
+              }
+            }
+            //we have the min time and Date
+            currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
+
+
+          } else if (date.compareTo(new Date(now.year, now.month, now.day)) > 0 &&
+          date.compareTo(new Date(currentMin.year, currentMin.month, currentMin.day)) <= 0){
+            //date is less than equal to current min date
+            Time minTime = preInterval.pillLog[date].keys.first; // a random time for the date
+
+            for (Time time in preInterval.pillLog[date].keys){
+              if (time.compareTo(minTime) < 0){
+                minTime = time;
+              }
+            }
+            //we have the min time for the date that is less than 0
+
+            if (currentMin.compareTo(new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute)) > 0){
+              // date and minTime combined are less than currentMin
+              currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
+            }
+          } else if (date.compareTo(new Date(now.year, now.month, now.day)) == 0){
+            Time minTime;
+
+            for (Time time in preInterval.pillLog[date].keys){
+
+              if(time.compareTo(new Time(now.hour, now.minute)) > 0) {
+                if (minTime == null){
+                  minTime = time;
+                }
+                else if (time.compareTo(minTime) < 0) {
+                  minTime = time;
+                }
+              }
+            }
+
+            if (minTime != null && currentMin.compareTo(new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute)) > 0){
+              // date and minTime combined are less than currentMin
+              currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
+            }
+          }
+        }
+      }
+    }
+
+    return currentMin;
+  }
+
+  ///End Notifications
 
   @override
   Widget build(BuildContext context) {
@@ -685,6 +795,8 @@ class PillCard extends StatelessWidget {
         ],
       ),
     );
+
+
 
     return new Container(
         margin: const EdgeInsets.symmetric(
