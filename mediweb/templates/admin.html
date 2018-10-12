@@ -24,7 +24,7 @@
             <a href="/landing" class="item">Home</a><a class="active item">Admin</a>
             <div class="right menu">
                 <div class="item">
-                    <a href="/purchase" class="ui primary button">Purchase</a>
+                    <a href="/register" class="ui primary button">Register Interest</a>
                 </div>
             </div>
         </div>
@@ -203,17 +203,23 @@
                         options: {
                             scales: {
                                 yAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Number of clicks'
+                                    },
                                     ticks: {
                                         callback: function (value) { if (Number.isInteger(value)) { return value; } },
                                         beginAtZero: true
                                     }
                                 }],
                                 xAxes: [{
+                                    scaleLabel: {
+                                        display: true,
+                                        labelString: 'Day'
+                                    },
                                     type: 'time',
                                     time: {
-                                        displayFormats: {
-                                            'day': 'MMM DD'
-                                        }
+                                        unit: "day",
                                     }
                                 }],
                             },

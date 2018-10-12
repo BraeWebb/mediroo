@@ -22,12 +22,12 @@ def landing():
     return render('landing.html')
 
 
-@app.route('/purchase')
+@app.route('/register')
 def purchase():
-    return render('purchase.html')
+    return render('register.html')
 
 
-@app.route('/api/purchase', methods=["POST"])
+@app.route('/api/register', methods=["POST"])
 @cross_origin(origin='*', headers=['Content- Type', 'Authorization'])
 def submit_purchase():
     send_purchase(request.form.get('name'), request.form.get('email'), request.form.get('comments'))
