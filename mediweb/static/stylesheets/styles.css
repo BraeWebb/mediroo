@@ -8,7 +8,14 @@
     background-repeat: no-repeat;
     background-position: center;
   }
-  
+
+  .mediroo {
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   .masthead.segment {
     min-height: 600px;
     padding: 1em 0em;
@@ -40,7 +47,7 @@
   .ui.large.secondary.inverted.pointing.menu {
     border: none;
   }
-  
+
   .ui.vertical.stripe {
     padding: 8em 0em;
   }
@@ -60,7 +67,7 @@
   .ui.vertical.stripe .horizontal.divider {
     margin: 3em 0em;
   }
-  
+
   .quote.stripe.segment {
     padding: 0em;
   }
@@ -68,15 +75,15 @@
     padding-top: 5em;
     padding-bottom: 5em;
   }
-  
+
   .footer.segment {
     padding: 5em 0em;
   }
-  
+
   .secondary.pointing.menu .toc.item {
     display: none;
   }
-  
+
   @media only screen and (max-width: 700px) {
     .ui.fixed.menu {
       display: none !important;
