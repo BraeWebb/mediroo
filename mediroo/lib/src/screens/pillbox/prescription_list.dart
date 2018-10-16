@@ -17,7 +17,7 @@ class PrescriptionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return new DefaultTabController(
         length: 2,
         child: new Scaffold(
             appBar: new AppBar(
@@ -74,7 +74,7 @@ class EntryItem extends StatelessWidget {
           children: <Widget> [
             RichText(
               text: new TextSpan(
-                text: "some description here",
+                text: entry.docNotes,
                 style: new TextStyle(
                   color: Colors.black54,
                   fontSize: 11.9,
