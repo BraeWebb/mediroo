@@ -46,7 +46,7 @@ class Prescription {
 /// The interval a user takes prescription medication over
 class PrescriptionInterval {
   /// the time of the day the pills should be taken
-  Time time; // TODO: make this a list?
+  Time time;
 
   /// the date the prescription started
   Date startDate;
