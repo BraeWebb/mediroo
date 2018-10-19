@@ -93,4 +93,20 @@ void main() {
     expect(find.text('Take now!'), findsOneWidget);
   });
 
+  testWidgets('Test PillLog', (WidgetTester tester) async {
+    MockDB db = new MockDB();
+    Time prevHour = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -1)));
+  });
+
+  testWidgets('Tapping on widget shows popup', (WidgetTester tester) async {
+    MockDB db = new MockDB();
+
+    PrescriptionInterval preInt = new PrescriptionInterval("I0", new Time(10, 30),
+        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
+    preInt.pillLog = {};
+    Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt],
+        startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 15));
+    db.prescriptions = [pre];
+  });
+
 }

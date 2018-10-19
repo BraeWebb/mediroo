@@ -54,15 +54,16 @@ void main() {
 
   test('Date falls in interval', () {
     Date date = new Date(2018, 10, 15);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0), new Date(2018, 10, 14))), isTrue);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0), new Date(2018, 10, 15))), isTrue);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0), new Date(2018, 10, 16))), isFalse);
     expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
         new Date(2018, 10, 14), endDate: new Date(2018, 10, 16))), isTrue);
     expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
         new Date(2018, 10, 14), endDate: new Date(2018, 10, 15))), isTrue);
     expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
+        new Date(2018, 10, 15), endDate: new Date(2018, 10, 16))), isTrue);
+    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
         new Date(2018, 10, 13), endDate: new Date(2018, 10, 14))), isFalse);
+    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
+        new Date(2018, 10, 16), endDate: new Date(2018, 10, 17))), isFalse);
   });
 
   test('Conversion', () {
