@@ -43,14 +43,14 @@ void main() {
     PrescriptionInterval preInt = new PrescriptionInterval("I0", new Time(10, 30),
         new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
     PrescriptionInterval preInt1 = new PrescriptionInterval("I1", new Time(11, 00),
-        new Date(2018, 10, 16), endDate: new Date(2018, 10, 16), dateDelta: 1, dosage: 1);
+        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     preInt1.pillLog = {};
 
     Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt],
         startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 15));
     Prescription pre1 = new Prescription("P1", "Medication", pillsLeft: 100, intervals: [preInt1],
-        startDate: new Date(2018, 10, 16), endDate: new Date(2018, 10, 16));
+        startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 15));
     db.prescriptions = [pre, pre1];
 
     PillList widget = new PillList(date: new Date(2018, 10, 15), auth: MockAuth(userId: "userid"), conn: db);
@@ -67,11 +67,11 @@ void main() {
     Time nextHour = TimeUtil.toTime(DateTime.now().add(new Duration(hours: 1)));
     Time prevHour = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -1)));
 
-    PrescriptionInterval preInt = new PrescriptionInterval("I2", nextHour,
+    PrescriptionInterval preInt = new PrescriptionInterval("I0", nextHour,
         TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
-    PrescriptionInterval preInt1 = new PrescriptionInterval("I3", prevHour,
+    PrescriptionInterval preInt1 = new PrescriptionInterval("I1", prevHour,
         TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
-    PrescriptionInterval preInt2 = new PrescriptionInterval("I4", TimeUtil.currentTime(),
+    PrescriptionInterval preInt2 = new PrescriptionInterval("I2", TimeUtil.currentTime(),
         TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     preInt1.pillLog = {};
@@ -96,6 +96,28 @@ void main() {
   testWidgets('Test PillLog', (WidgetTester tester) async {
     MockDB db = new MockDB();
     Time prevHour = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -1)));
+    Time twoHoursAgo = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -2)));
+
+    PrescriptionInterval preInt = new PrescriptionInterval("I0", prevHour,
+        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+    PrescriptionInterval preInt1 = new PrescriptionInterval("I1", twoHoursAgo,
+        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+    preInt.pillLog = {TimeUtil.currentDate(): {prevHour: false, twoHoursAgo: true}};
+    preInt1.pillLog = {TimeUtil.currentDate(): {prevHour: false, twoHoursAgo: true}};
+
+    Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt, preInt1],
+        startDate: TimeUtil.currentDate(), endDate: TimeUtil.currentDate());
+    db.prescriptions = [pre];
+
+    PillList widget = new PillList(auth: MockAuth(userId: "userid"), conn: db);
+    await tester.pumpWidget(buildTestableWidget(widget));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Loading Pills..."), findsNothing);
+    expect(find.text("No Pills Yet!"), findsNothing);
+    expect(find.byType(PillCard), findsNWidgets(2));
+    expect(find.text('Medication missed!'), findsOneWidget);
+    expect(find.text('Already taken'), findsOneWidget);
   });
 
   testWidgets('Tapping on widget shows popup', (WidgetTester tester) async {
