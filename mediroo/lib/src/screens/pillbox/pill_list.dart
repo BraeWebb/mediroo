@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show FireAuth, TimeUtil;
-import 'package:mediroo/util.dart' show checkVerified, getUserPrescriptions, addPrescription;
+import 'package:mediroo/util.dart' show BaseAuth, TimeUtil;
+import 'package:mediroo/util.dart' show checkVerified, BaseDB;
 import 'package:mediroo/screens.dart' show AddPills;
 import 'prescription_list.dart' show PrescriptionList;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
@@ -17,13 +17,16 @@ class PillList extends StatefulWidget {
   static final tag = "PillList";
 
   /// Used to connect to the database
-  final FireAuth auth;
+  final BaseAuth auth;
+
+  /// Database connection
+  final BaseDB conn;
 
   /// The current date
   final Date date;
 
   /// Constructs a new PillList with a [date] and [auth] for user authenticaiton
-  PillList({this.date, this.auth});
+  PillList({this.date, this.auth, this.conn});
 
   @override
   State<StatefulWidget> createState() {
@@ -34,7 +37,9 @@ class PillList extends StatefulWidget {
     } else {
       date = this.date;
     }
-    return new ListState(date, auth: auth);
+    assert(auth != null);
+    assert(conn != null);
+    return new ListState(date, auth: auth, conn: conn);
   }
 }
 
@@ -44,7 +49,10 @@ class ListState extends State<PillList> {
   FlutterLocalNotificationsPlugin flutterLocalNotifications;
 
   /// Used to connect to the database
-  final FireAuth auth;
+  final BaseAuth auth;
+
+  /// Database connection
+  final BaseDB conn;
 
   /// The current date
   Date date;
@@ -79,10 +87,10 @@ class ListState extends State<PillList> {
   bool _loading = false;
 
   /// Constructs a new ListState with [date] and [auth]
-  ListState(this.date, {this.auth}) {
+  ListState(this.date, {this.auth, this.conn}) {
     cards = genMessage("Loading Pills...");
 
-    databaseConnection = getUserPrescriptions()
+    databaseConnection = conn.getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
         this.prescriptions = prescriptions;
@@ -109,6 +117,7 @@ class ListState extends State<PillList> {
       }
 
     }
+
     setState(() {
       if (prescriptions.length == 0) {
         cards = genMessage("No Pills Yet!");
@@ -123,7 +132,7 @@ class ListState extends State<PillList> {
   Future<Null> _handleRefresh() async {
     databaseConnection.cancel();
 
-    databaseConnection = getUserPrescriptions()
+    databaseConnection = conn.getUserPrescriptions()
         .listen((List<Prescription> prescriptions) {
       refreshState(prescriptions);
     });
@@ -136,7 +145,7 @@ class ListState extends State<PillList> {
     setState(() {
       _loading = true;
     });
-    await addPrescription(prescription, merge: true);
+    await conn.addPrescription(prescription, merge: true);
     _handleRefresh();
 
     return null;
@@ -220,6 +229,8 @@ class ListState extends State<PillList> {
       )];
     }
 
+    print("cards created");
+
     return cards;
   }
 
@@ -238,7 +249,7 @@ class ListState extends State<PillList> {
         image = "assets/sunset.png";
         break;
       case ToD.NIGHT:
-        image = "assets/moon.png"; //TODO: check that this looks ok
+        image = "assets/moon.png";
         break;
     }
 
@@ -818,7 +829,6 @@ class PillCard extends StatelessWidget {
           ],
         )),
       height: 130.0
-
     );
   }
 

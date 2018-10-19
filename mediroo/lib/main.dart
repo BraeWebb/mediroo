@@ -4,7 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:mediroo/util.dart' show FireAuth;
+import 'package:mediroo/util.dart' show FireAuth, DBConn;
 import 'package:mediroo/screens.dart';
 
 /// Runs the application widget [MediRooApp].
@@ -23,7 +23,7 @@ class MediRooApp extends StatelessWidget {
   /// TODO: This is a bit of a mess, think of a better solution (Brae)
   static final routes = <String, WidgetBuilder>{
     LoginPage.tag: (context) => LoginPage(analytics: analytics, auth: new FireAuth()),
-    PillList.tag: (context) => PillList(auth: new FireAuth()),
+    PillList.tag: (context) => PillList(auth: new FireAuth(), conn: new DBConn()),
     ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(auth: new FireAuth()),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
 
