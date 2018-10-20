@@ -58,6 +58,24 @@ class RegisterForm extends Component {
             autoComplete="current-password"
           />
         </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="name">Name</InputLabel>
+          <Input
+            name="name"
+            type="text"
+            id="name"
+            onChange={this.onChange}
+            />
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="practice">Practice</InputLabel>
+          <Input
+            name="practice"
+            type="text"
+            id="practice"
+            onChange={this.onChange}
+          />
+        </FormControl>
         <Button
           type="submit"
           fullWidth

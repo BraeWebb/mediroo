@@ -12,12 +12,12 @@ export const userLogin = (email, password) => (dispatch) => {
 }
 
 // Register a new user
-export const userRegister = (email, password) => (dispatch) => {
+export const userRegister = (email, password, name, practice) => (dispatch) => {
   return registerWithEmailAndPassword(email, password)
     .then(user => {
       console.log(user);
       const { email, uid } = user.user;
-      registerPractioner(uid, email)
+      registerPractioner(uid, email, name, practice)
         .then(() => {
           dispatch({
             type: 'REGISTER_SUCCESS',

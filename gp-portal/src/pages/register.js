@@ -30,8 +30,8 @@ const styles = theme => ({
 class Register extends Component {
   // Handle form submission from child
   onSubmit = state => {
-    const { email, password } = state;
-    this.props.userRegister(email, password)
+    const { email, password, name, practice } = state;
+    this.props.userRegister(email, password, name, practice)
       .then(() => this.props.history.push('/patients'));
   }
 

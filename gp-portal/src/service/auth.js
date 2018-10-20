@@ -1,12 +1,14 @@
 import { auth, firestore } from 'config/firebase';
 
 // Sign up practioner
-export const registerWithEmailAndPassword = (email, password) => auth.createUserWithEmailAndPassword(email, password);
+export const registerWithEmailAndPassword = (email, password, name, practice) => auth.createUserWithEmailAndPassword(email, password);
 
 // Create practioner document
-export const registerPractioner = (uid, email) => firestore.collection('doctors').doc(uid).set({
+export const registerPractioner = (uid, email, name, practice) => firestore.collection('doctors').doc(uid).set({
   email,
-  patients: []
+  patients: [],
+  name,
+  practice
 });
 
 // Login practioner
