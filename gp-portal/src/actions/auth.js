@@ -1,4 +1,4 @@
-import { registerWithEmailAndPassword, loginWithEmailAndPassword } from 'service/auth';
+import { registerWithEmailAndPassword, loginWithEmailAndPassword, registerPractioner } from 'service/auth';
 
 // Log in user
 export const userLogin = (email, password) => (dispatch) => {
@@ -15,10 +15,15 @@ export const userLogin = (email, password) => (dispatch) => {
 export const userRegister = (email, password) => (dispatch) => {
   return registerWithEmailAndPassword(email, password)
     .then(user => {
-      dispatch({
-        type: 'REGISTER_SUCCESS',
-        payload: {user: user.user.uid}
-      });
+      console.log(user);
+      const { email, uid } = user.user;
+      registerPractioner(uid, email)
+        .then(() => {
+          dispatch({
+            type: 'REGISTER_SUCCESS',
+            payload: {user: uid}
+          });
+        })
     })
 }
 
