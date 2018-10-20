@@ -9,15 +9,16 @@ export default function reducer(state = defaultState, action) {
       const { uid } = prescription;
       const newState = {};
       // If user existing in state, append otherwise add user
-      if (state[uid] && state[uid].prescriptions) {
-        const { prescriptions } = state[uid];
+      if (state[uid]) {
+        const prescriptions = state[uid];
+        console.log(prescriptions, prescription);
         newState[uid] = [...prescriptions, prescription];
         return {
           ...state,
           ...newState
         };
       } else {
-        newState[uid] = [prescription];
+        newState[uid] =[prescription];
         return {
           ...state,
           ...newState

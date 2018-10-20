@@ -4,6 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 import { Redirect } from 'react-router-dom'
 import compose from 'recompose/compose';
 import { TableCell, TableHead, TableRow } from '@material-ui/core';
@@ -20,6 +22,11 @@ const styles = theme => ({
       width: 800,
       margin: 'auto',
     },
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2,
   },
   root: {
     width: '100%',
@@ -44,6 +51,11 @@ class PatientDetail extends Component {
   componentDidMount() {
     const { uid} = this.props.match.params;
     this.props.fetchPatientPrescriptions(uid);
+  }
+
+  addPrescription = () => {
+    const { uid} = this.props.match.params;
+    this.props.history.push(`/patient/${uid}/new`);
   }
 
   render() {
@@ -72,6 +84,9 @@ class PatientDetail extends Component {
             </TableBody>
           </Table>
         </Paper>
+        <Button onClick={this.addPrescription} variant="fab" color="primary" aria-label="Add" className={classes.fab}>
+          <AddIcon />
+        </Button>
       </div>
     );
   }

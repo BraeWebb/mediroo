@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { userLogin } from '../actions/auth';
-import compose from 'recompose/compose';
-import LoginForm from '../components/forms/login-form';
-import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Paper from '@material-ui/core/Paper';
+import { connect } from 'react-redux';
+import PrescriptionForm from 'components/forms/prescription-form';
 import { Redirect } from 'react-router-dom'
+import compose from 'recompose/compose';
+import { fetchPatientPrescriptions } from 'actions/prescriptions';
 
-// Material UI styling override
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -28,24 +27,21 @@ const styles = theme => ({
   }
 });
 
-class Login extends Component {
-
-  // Handle form submission from child
-  onSubmit = state => {
-    const { email, password } = state;
-    this.props.userLogin(email, password);
+class CreatePrescription extends Component {
+  onSubmit = () => {
+    console.log('test');
   }
 
   render() {
-    const { classes, loggedIn } = this.props;
-    if (loggedIn) {
-      return <Redirect to="/" />
+    const { loggedIn, classes } = this.props;
+    if (!loggedIn) {
+      return <Redirect to="/login" />
     }
     return (
       <div>
         <div className={classes.layout}>
           <Paper className={classes.paper}>
-            <LoginForm onSubmit={this.onSubmit} />
+            <PrescriptionForm onSubmit={this.onSubmit} />
           </Paper>
         </div>
       </div>
@@ -59,7 +55,7 @@ const mapStateToProps = (state) => {
   }
 };
 const mapDispatchToProps = {
-  userLogin
+  fetchPatientPrescriptions
 };
 
-export default compose(connect(mapStateToProps, mapDispatchToProps), connect(), withStyles(styles))(Login);
+export default compose(connect(mapStateToProps, mapDispatchToProps), connect(), withStyles(styles))(CreatePrescription);
