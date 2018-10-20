@@ -5,6 +5,7 @@ import compose from 'recompose/compose';
 import LoginForm from '../components/forms/login-form';
 import Paper from '@material-ui/core/Paper';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { Redirect } from 'react-router-dom'
 
 // Material UI styling override
 const styles = theme => ({
@@ -28,17 +29,18 @@ const styles = theme => ({
 })
 
 class Login extends Component {
+
   // Handle form submission from child
   onSubmit = state => {
     const { email, password } = state;
-    this.props.userLogin(email, password)
-      .then(user => {
-        this.props.history.push('/patients');
-      });
+    this.props.userLogin(email, password);
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, loggedIn } = this.props;
+    if (loggedIn) {
+      return <Redirect to="/" />
+    }
     return (
       <div>
         <div className={classes.layout}>

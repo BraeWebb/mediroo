@@ -1,4 +1,4 @@
-import { registerWithEmailAndPassword, loginWithEmailAndPassword, registerPractioner } from 'service/auth';
+import { registerWithEmailAndPassword, loginWithEmailAndPassword, registerPractioner, logoutUser } from 'service/auth';
 
 // Log in user
 export const userLogin = (email, password) => (dispatch) => {
@@ -9,6 +9,13 @@ export const userLogin = (email, password) => (dispatch) => {
         payload: { user: user.user.uid }
       });
     });
+}
+
+export const persistLogin = (uid) => (dispatch) => {
+  dispatch({
+    type: 'PERSIST_LOGIN',
+    payload: { user: uid}
+  })
 }
 
 // Register a new user
@@ -29,7 +36,10 @@ export const userRegister = (email, password, name, practice) => (dispatch) => {
 
 // Logs out a user
 export const userLogout = () => (dispatch) => {
-  dispatch({
-    type: 'USER_LOGOUT'
-  });
+  logoutUser()
+    .then(() => {
+      dispatch({
+        type: 'USER_LOGOUT'
+      });
+    });
 }

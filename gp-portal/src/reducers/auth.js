@@ -5,14 +5,19 @@ const defaultState = {
 
 export default function reducer(state = defaultState, action) {
     const { type, payload } = action;
+    let user = '';
     switch (type) {
         case 'LOGIN_SUCCESS':
-            return { loggedIn: true };
+            user  = payload.user;
+            return { ...state, user, loggedIn: true };
         case 'REGISTER_SUCCESS':
-            const { user}  = payload;
-            return {...state, user, loggedIn : true};
+            user  = payload.user;
+            return { ...state, user, loggedIn: true };
+        case 'PERSIST_LOGIN':
+            user  = payload.user;
+            return { ...state, user, loggedIn: true };
         case 'USER_LOGOUT':
-            return {...state, loggedIn: false, user : ''};
+            return { ...state, loggedIn: false, user: '' };
         default:
             return state;
     }

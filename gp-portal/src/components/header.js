@@ -30,7 +30,7 @@ class Header extends Component {
                 </div>
                 :
                 <div>
-                  <Button component={Link} to="/patients" color="inherit">Patients</Button>
+                  <Button component={Link} to="/" color="inherit">Patients</Button>
                   <Button onClick={() => userLogout()} color="inherit">Logout</Button>
                 </div>
             }

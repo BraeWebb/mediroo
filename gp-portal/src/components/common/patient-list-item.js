@@ -4,7 +4,7 @@ import { TableCell, TableRow } from '@material-ui/core';
 // Table row item for patient list
 class PatientTableRow extends Component {
   handleClick = () => {
-    this.props.history.push(`/patients/${this.props.uid}`);
+    this.props.history.push(`/patient/${this.props.patientId}`);
   }
 
   render() {

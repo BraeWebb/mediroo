@@ -13,3 +13,5 @@ export const registerPractioner = (uid, email, name, practice) => firestore.coll
 
 // Login practioner
 export const loginWithEmailAndPassword = (email, password) => auth.signInWithEmailAndPassword(email, password);
+
+export const logoutUser = () => auth.signOut();
