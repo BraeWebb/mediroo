@@ -60,6 +60,26 @@ class EntryItem extends StatelessWidget {
   /// Creates a new Entry item for the given prescription as a Expansion Tile
   const EntryItem(this.entry);
 
+  Widget buildRow(String text, IconData icon, {style}) {
+    style = style ?? new TextStyle(
+        color: Colors.black54
+    );
+    return new Row(
+      children: <Widget>[
+        new Padding(
+            padding: EdgeInsets.only(left: 10.0),
+            child: new Icon(icon, color: Colors.black54)
+        ),
+        new Expanded(
+          child: new Text(text,
+              textAlign: TextAlign.center,
+              style: style
+          ),
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     TextStyle style = new TextStyle(color: Colors.black54);
@@ -72,22 +92,11 @@ class EntryItem extends StatelessWidget {
           leading: new Icon(FontAwesomeIcons.pills),
           title: Text(entry.medNotes),
           children: <Widget> [
-            RichText(
-              text: new TextSpan(
-                text: entry.docNotes,
-                style: new TextStyle(
-                  color: Colors.black54,
-                  fontSize: 11.9,
-                ),
-              )
-            ),
+            buildRow(entry.docNotes ?? "No Description", FontAwesomeIcons.alignLeft),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-            RichText(
-              text: new TextSpan(
-                text: "Remaining pills: " + entry.pillsLeft.toString(),
-                style: style,
-              )
-            ),
+            buildRow("Remaining Pills: " + entry.pillsLeft.toString(), FontAwesomeIcons.prescriptionBottleAlt, style: style),
+            new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
+            buildRow(entry.startDate.displayDate() + " - " + entry.endDate.displayDate(), FontAwesomeIcons.clock),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
           ]
         ),

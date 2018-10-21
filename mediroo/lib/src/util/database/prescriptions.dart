@@ -76,7 +76,10 @@ class DBConn extends BaseDB {
           DateTime end = intervalDoc.data['end'];
           Time time = new Time(dateTime.hour, dateTime.minute);
 
-          PrescriptionInterval interval = new PrescriptionInterval(
+          prescription.startDate = Date.from(intervalDoc.data['start']);
+          prescription.endDate = Date.from(intervalDoc.data['end']);
+
+              PrescriptionInterval interval = new PrescriptionInterval(
               intervalDoc.documentID,
               time, new Date(start.year, start.month, start.day),
               endDate: new Date(end.year, end.month, end.day),
