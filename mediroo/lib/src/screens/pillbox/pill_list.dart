@@ -145,6 +145,7 @@ class ListState extends State<PillList> {
     setState(() {
       _loading = true;
     });
+    print("a :" + prescription.pillsLeft.toString());
     await conn.addPrescription(prescription, merge: true);
     _handleRefresh();
 
@@ -543,6 +544,7 @@ class ListState extends State<PillList> {
                 },
               tooltip: "Add Pills",
               child: new Icon(FontAwesomeIcons.prescriptionBottleAlt),
+              key: Key("add_pills")
             )
         )
     );
@@ -643,7 +645,8 @@ class PillCard extends StatelessWidget {
       btn = new RaisedButton(
         onPressed: () {take(); Navigator.pop(context);},
         child: new Text("Take now"),
-        color: Colors.green.shade100
+        color: Colors.green.shade100,
+        key: Key('take_meds')
       );
     } else if(primaryColour == ListState.MISSED_COLOUR && secondaryColour == ListState.MISSED_HL) {
       descText = "This medication has been missed!\nConsult with your GP before taking medication late.";
@@ -657,7 +660,8 @@ class PillCard extends StatelessWidget {
       btn = new RaisedButton(
           onPressed: () {undo(); Navigator.pop(context);},
           child: new Text("Undo"),
-          color: Colors.blue.shade50
+          color: Colors.blue.shade50,
+          key: Key('undo_meds')
       );
     }
     return new SimpleDialog(
@@ -827,7 +831,8 @@ class PillCard extends StatelessWidget {
             content,
             thumbnail,
           ],
-        )),
+          ),
+          key: Key('tap_here')),
       height: 130.0
     );
   }

@@ -120,15 +120,35 @@ void main() {
     expect(find.text('Already taken'), findsOneWidget);
   });
 
-  testWidgets('Tapping on widget shows popup', (WidgetTester tester) async {
+  testWidgets('Test taking medication', (WidgetTester tester) async {
     MockDB db = new MockDB();
+    Date date = TimeUtil.currentDate();
+    Time time = TimeUtil.currentTime();
 
-    PrescriptionInterval preInt = new PrescriptionInterval("I0", new Time(10, 30),
-        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
+    PrescriptionInterval preInt = new PrescriptionInterval("I0", time,
+        date, endDate: date, dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt],
-        startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 15));
+        startDate: date, endDate: date);
     db.prescriptions = [pre];
+
+    PillList widget = new PillList(date: date, auth: MockAuth(userId: "userid"), conn: db);
+    await tester.pumpWidget(buildTestableWidget(widget));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(PillCard), findsOneWidget);
+
+    await tester.tap(find.byKey(Key('tap_here')));
+    await tester.pump();
+
+    expect(find.byType(SimpleDialog), findsOneWidget);
+
+    await tester.tap(find.byKey(Key('take_meds')));
+    await tester.pump();
+
+    expect(preInt.pillLog, contains(date));
+    expect(preInt.pillLog[date], contains(time));
+    expect(preInt.pillLog[date][time], isTrue);
   });
 
 }

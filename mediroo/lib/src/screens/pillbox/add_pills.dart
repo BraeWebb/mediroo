@@ -115,12 +115,12 @@ class PrescriptionEntry extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-      return new _PrescriptionEntryState(prescription);
+      return new PrescriptionEntryState(prescription);
   }
 }
 
 /// State for [PrescriptionEntry]
-class _PrescriptionEntryState extends State<PrescriptionEntry> {
+class PrescriptionEntryState extends State<PrescriptionEntry> {
   /// The current prescription state, this is updated when data is entered
   final Prescription prescription;
 
@@ -138,7 +138,7 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
   List<String> _dateValues = [null, null];
 
   /// Construct a new [_PrescriptionEntryState] with a given [Prescription]
-  _PrescriptionEntryState(this.prescription);
+  PrescriptionEntryState(this.prescription);
 
   /// Prompt user to enter a date, updates the date value at the given [valueIndex]
   Future<Null> _pickDate(BuildContext context, int valueIndex) async {
@@ -169,6 +169,8 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
 
   /// Update the stored [Prescription] based on the form input values
   void buildPrescription([String input]) {
+    print("building pre");
+
     prescription.medNotes = pillNameController.text;
     try {
       prescription.pillsLeft = int.parse(pillCountController.text ?? null);
@@ -214,11 +216,13 @@ class _PrescriptionEntryState extends State<PrescriptionEntry> {
           onFieldSubmitted: buildPrescription
         ),
         whitespace,
-        picker(_dateValues[0] ?? "Start Date", Colors.black87, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45), () {
+        picker(Key("start_date_picker"), _dateValues[0] ?? "Start Date",
+            Colors.black87, Icon(FontAwesomeIcons.calendarCheck, color: Colors.black45), () {
           _pickDate(context, 0);
         }),
         whitespace,
-        picker(_dateValues[1] ?? "End Date", Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
+        picker(Key("end_date_picker"), _dateValues[1] ?? "End Date",
+            Colors.black87, Icon(FontAwesomeIcons.calendarTimes, color: Colors.black45), () {
           _pickDate(context, 1);
         })
       ]
@@ -290,12 +294,13 @@ class _IntervalState extends State<IntervalEntry> {
     return new Column(
       children: <Widget>[
         new Divider(),
-        picker(timeValue ?? "Time of Day", Colors.black87, Icon(FontAwesomeIcons.clock, color: Colors.black45), () {
+        picker(Key("interval_time_picker"), timeValue ?? "Time of Day",
+            Colors.black87, Icon(FontAwesomeIcons.clock, color: Colors.black45), () {
           _pickTime(context);
         }),
         new SizedBox(height: 8.0),
         new TextFormField(
-          key: Key('pill_count_field'),
+          key: Key('interval_pill_count_field'),
           keyboardType: TextInputType.number,
           controller: dosageController,
           decoration: bubbleInputDecoration('Dosage', null, Icon(FontAwesomeIcons.capsules)),
