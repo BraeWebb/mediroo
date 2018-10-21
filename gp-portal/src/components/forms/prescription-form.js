@@ -22,8 +22,9 @@ const styles = theme => ({
 
 class PrescriptionForm extends Component {
   state = {
-    email: '',
-    password: ''
+    description: '',
+    notes: '',
+    remaining: 0
   }
 
   onChange = e => {
@@ -40,10 +41,10 @@ class PrescriptionForm extends Component {
     return (
       <form className={classes.form} onSubmit={this.onSubmit}>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="name">Medication Name</InputLabel>
+          <InputLabel htmlFor="description">Medication Name</InputLabel>
           <Input
-            id="name"
-            name="name"
+            id="description"
+            name="description"
             type="text"
             onChange={this.onChange}
             autoFocus />
@@ -57,10 +58,10 @@ class PrescriptionForm extends Component {
             onChange={this.onChange} />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="number">Number of pills</InputLabel>
+          <InputLabel htmlFor="remaining">Number of pills</InputLabel>
           <Input
-            id="number"
-            name="number"
+            id="remaining"
+            name="remaining"
             type="number"
             onChange={this.onChange} />
         </FormControl>
@@ -91,7 +92,7 @@ class PrescriptionForm extends Component {
           color="primary"
           className={classes.submit}
         >
-          Register new prescription
+          Submit new prescription
             </Button>
       </form>
     );

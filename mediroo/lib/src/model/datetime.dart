@@ -27,6 +27,10 @@ class Date implements Comparable<Date> {
     this.day = datetime.day;
   }
 
+  String displayDate() {
+    return "$day/$month/$year";
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
