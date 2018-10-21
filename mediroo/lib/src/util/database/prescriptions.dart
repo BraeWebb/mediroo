@@ -11,6 +11,7 @@ import 'package:mediroo/src/util/database/user.dart' show currentUUID;
 abstract class BaseDB {
    Stream<List<Prescription>> getUserPrescriptions();
    Future<Null> addPrescription(Prescription prescription, {bool merge: false});
+   Future<Null> removePrescription(Prescription prescription);
 }
 
 class MockDB extends BaseDB {
@@ -23,6 +24,11 @@ class MockDB extends BaseDB {
 
   Future<Null> addPrescription(Prescription prescription, {bool merge: false}) {
     prescriptions.add(prescription);
+    return null;
+  }
+
+  Future<Null> removePrescription(Prescription prescription) {
+    prescriptions.remove(prescription);
     return null;
   }
 }
@@ -172,6 +178,22 @@ class DBConn extends BaseDB {
         }
       }
     }
+    return null;
+  }
+
+  /// Remove a [Prescription] from the database
+  Future<Null> removePrescription(Prescription prescription) async {
+    String uuid = await currentUUID();
+
+    print(uuid);
+
+    String prescriptionCollection = 'prescriptions/' + uuid + '/prescription';
+    DocumentReference document = Firestore.instance.collection(prescriptionCollection).document(prescription.id);
+
+    print(document.documentID);
+
+    await document.delete();
+
     return null;
   }
 }

@@ -492,7 +492,7 @@ class ListState extends State<PillList> {
                     icon: Icon(Icons.info_outline),
                     onPressed: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions)));
+                        MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions, conn)));
                     }
                 )
               ],

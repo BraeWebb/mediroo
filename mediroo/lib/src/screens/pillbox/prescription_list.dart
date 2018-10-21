@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 
 import 'package:mediroo/model.dart' show Prescription;
+import 'package:mediroo/util.dart' show BaseDB;
+import 'package:mediroo/widgets.dart' show bubbleButton;
 
 /// Gives information about the pills in the current pillbox
 class PrescriptionList extends StatelessWidget {
@@ -12,8 +14,11 @@ class PrescriptionList extends StatelessWidget {
   /// to refill their prescription
   final int lowPillCount = 5;
 
+  /// Database connection object
+  final BaseDB db;
+
   /// Creates a new PrescriptionList containing various [pills]
-  PrescriptionList(this.pills, {Key key}) : super(key: key);
+  PrescriptionList(this.pills, this.db, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,7 @@ class PrescriptionList extends StatelessWidget {
                 children: <Widget>[
                   new ListView.builder(
                     itemCount: pills.length,
-                    itemBuilder: (BuildContext context, int index) => EntryItem(pills[index]),
+                    itemBuilder: (BuildContext context, int index) => EntryItem(pills[index], db),
                   ),
                   new Column(
                     children: <Widget>[
@@ -57,8 +62,11 @@ class EntryItem extends StatelessWidget {
   /// to refill their prescription
   final int lowPillCount = 5;
 
+  /// Database connection object
+  final BaseDB db;
+
   /// Creates a new Entry item for the given prescription as a Expansion Tile
-  const EntryItem(this.entry);
+  const EntryItem(this.entry, this.db);
 
   Widget buildRow(String text, IconData icon, {style}) {
     style = style ?? new TextStyle(
@@ -80,6 +88,10 @@ class EntryItem extends StatelessWidget {
     );
   }
 
+  _removePrescription() {
+    db.removePrescription(entry);
+  }
+
   @override
   Widget build(BuildContext context) {
     TextStyle style = new TextStyle(color: Colors.black54);
@@ -98,6 +110,7 @@ class EntryItem extends StatelessWidget {
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
             buildRow(entry.startDate.displayDate() + " - " + entry.endDate.displayDate(), FontAwesomeIcons.clock),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
+            bubbleButton("remove_button", "Remove", _removePrescription)
           ]
         ),
         new Container(
