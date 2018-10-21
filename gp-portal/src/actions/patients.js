@@ -9,65 +9,31 @@ export const fetchPatients = (uid) => (dispatch) => {
       firestore.collection(`doctors`).doc(uid).get().then(doc => {
         const doctorData = doc.data();
         const patients = doctorData.patients;
+        const promises = [];
         patients.forEach(patientId => {
-          firestore.collection('users').doc(patientId).get().then(user => {
-            const {name, email} = user.data();
+          const patientPromise = firestore.collection('users').doc(patientId).get();
+          promises.push(patientPromise);
+        });
+        Promise.all(promises)
+          .then(snapShots => {
+            const patients = [];
+            snapShots.forEach(patientSnapShot => {
+              const patientId = patientSnapShot.id;
+              const { name, email } = patientSnapShot.data();
+              console.log(patientSnapShot.data());
+              patients.push({
+                name, email, patientId
+              });
+            });
             dispatch({
               type: 'PATIENT_COMMIT',
               payload: {
-                patient: {
-                  name,
-                  email,
-                  patientId
-                }
+                patients
               }
             });
-          })
-        })
-        // console.log(querySnapshot);
-        // const patients = [];
-        // querySnapshot.forEach(patient => {
-        //   console.log(patient);
-        //   const data = patient.data();
-        //   console.log(data);
-        //   // const uid = patient.id;
-        //   // patients.push({ ...data, uid });
-        // });
-        // dispatch({
-        // type: 'PATIENTS_COMMIT',
-        // payload: {patients}
-        // });
-      });
+          });
+      })
     } else {
     }
   })
-  // get a list of doctors patients
-  // return firestore.collection(`doctors/${uid}/patients`).get().then(querySnapshot => {
-  //   const patients = [];
-  //   querySnapshot.forEach(patient => {
-  //     console.log(patient);
-  //     const data = patient.data();
-  //     console.log(data);
-  //     // const uid = patient.id;
-  //     // patients.push({ ...data, uid });
-  //   });
-  // dispatch({
-  // type: 'PATIENTS_COMMIT',
-  // payload: {patients}
-  // });
-  // });
-
-  // // for each patient, get their details and store in redux
-  // return firestore.collection('users/').get().then(querySnapshot => {
-  //   const patients = [];
-  //   querySnapshot.forEach(patient => {
-  //     const data = patient.data();
-  //     const uid = patient.id;
-  //     patients.push({ ...data, uid });
-  //   });
-  //   dispatch({
-  //     type: 'PATIENTS_COMMIT',
-  //     payload: {patients}
-  //   });
-  // })
 }

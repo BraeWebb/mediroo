@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PrescriptionForm from 'components/forms/prescription-form';
 import { Redirect } from 'react-router-dom'
 import compose from 'recompose/compose';
-import { fetchPatientPrescriptions } from 'actions/prescriptions';
+import { createPatientPrescription } from 'actions/prescriptions';
 
 const styles = theme => ({
   layout: {
@@ -28,8 +28,11 @@ const styles = theme => ({
 });
 
 class CreatePrescription extends Component {
-  onSubmit = () => {
-    console.log('test');
+  onSubmit = state => {
+    const { uid} = this.props.match.params;
+    const { description, notes, remaining } = state;
+    this.props.createPatientPrescription(uid, {description, notes, remaining})
+      .then(() => this.props.history.push(`/patient/${uid}`));
   }
 
   render() {
@@ -55,7 +58,7 @@ const mapStateToProps = (state) => {
   }
 };
 const mapDispatchToProps = {
-  fetchPatientPrescriptions
+  createPatientPrescription
 };
 
 export default compose(connect(mapStateToProps, mapDispatchToProps), connect(), withStyles(styles))(CreatePrescription);
