@@ -4,6 +4,9 @@ import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import { connect } from 'react-redux';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import { Redirect } from 'react-router-dom'
 import compose from 'recompose/compose';
 import { TableCell, TableHead, TableRow } from '@material-ui/core';
 import PrescriptionTableItem from 'components/common/prescription-list-item';
@@ -19,6 +22,11 @@ const styles = theme => ({
       width: 800,
       margin: 'auto',
     },
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing.unit * 2,
+    right: theme.spacing.unit * 2,
   },
   root: {
     width: '100%',
@@ -45,12 +53,20 @@ class PatientDetail extends Component {
     this.props.fetchPatientPrescriptions(uid);
   }
 
+  addPrescription = () => {
+    const { uid} = this.props.match.params;
+    this.props.history.push(`/patient/${uid}/new`);
+  }
+
   render() {
-    const { classes, prescriptions } = this.props;
+    const { loggedIn, classes, prescriptions } = this.props;
     const { uid} = this.props.match.params;
     let prescriptionTableItems = [];
     if (prescriptions && prescriptions[uid]) {
       prescriptionTableItems = prescriptions[uid].map((prescription, index) => <PrescriptionTableItem key={index} {...prescription} />);
+    }
+    if (!loggedIn) {
+      return <Redirect to="/login" />
     }
     return (
       <div className={classes.layout}>
@@ -68,6 +84,9 @@ class PatientDetail extends Component {
             </TableBody>
           </Table>
         </Paper>
+        <Button onClick={this.addPrescription} variant="fab" color="primary" aria-label="Add" className={classes.fab}>
+          <AddIcon />
+        </Button>
       </div>
     );
   }
@@ -75,7 +94,8 @@ class PatientDetail extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    prescriptions: state.prescriptions
+    prescriptions: state.prescriptions,
+    loggedIn: state.auth.loggedIn
   }
 };
 const mapDispatchToProps = {

@@ -1,10 +1,31 @@
 import React, { Component } from 'react';
 import { BrowserRouter } from 'react-router-dom'
-import { CssBaseline, createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { CssBaseline, createMuiTheme, MuiThemeProvider, Divider } from '@material-ui/core';
 import Main from 'main';
 import Header from 'components/header';
+import { userLogout, persistLogin } from 'actions/auth';
+import { connect } from 'react-redux';
+import { auth } from 'config/firebase';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class app extends Component {
+  state = {
+    loading: true
+  }
+  componentWillMount() {
+    auth.onAuthStateChanged(user => {
+      this.setState({
+        loading: false
+      });
+      if (user) {
+        this.props.persistLogin(user.uid);
+      } else {
+        this.props.userLogout();
+      }
+      console.log(user);
+    })
+  }
+
   render() {
     // Sets global material ui theme
     const theme = createMuiTheme({
@@ -17,6 +38,19 @@ class app extends Component {
         },
       },
     });
+    if (this.state.loading) {
+      const styling = {
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }
+      return (
+        <div style={styling}>
+          <CircularProgress/>
+        </div>
+      )
+    }
     // Initialise router
     return (
       <BrowserRouter>
@@ -30,4 +64,9 @@ class app extends Component {
   }
 }
 
-export default app;
+const mapDispatchToProps = {
+  userLogout,
+  persistLogin
+};
+
+export default connect(null, mapDispatchToProps)(app);

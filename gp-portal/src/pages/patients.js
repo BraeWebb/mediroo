@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Paper, Table, TableBody, TableCell, TableHead, TableRow} from '@material-ui/core';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { Redirect } from 'react-router-dom'
 import PatientTableItem from 'components/common/patient-list-item';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 import { fetchPatients } from 'actions/patients';
-
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -34,7 +34,8 @@ const styles = theme => ({
 
 class Patients extends Component {
   state = {
-    patients: []
+    patients: [],
+    loggedIn: true
   };
 
   constructor() {
@@ -42,12 +43,19 @@ class Patients extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchPatients();
+    if (!this.props.loggedIn){
+      this.props.history.push('/login');
+    } else {
+      this.props.fetchPatients();
+    }
   }
 
   render() {
-    const { classes, patients } = this.props;
+    const { classes, patients, loggedIn } = this.props;
     const patientTableItems = patients.map((patient, index) => <PatientTableItem key={index} {...this.props} {...patient} />);
+    if (!loggedIn) {
+      return <Redirect to="/login" />
+    }
     return (
       <div className={classes.layout}>
         <Paper className={classes.root}>
@@ -70,7 +78,8 @@ class Patients extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    patients: state.patients.patients
+    patients: state.patients.patients,
+    loggedIn: state.auth.loggedIn
   }
 };
 const mapDispatchToProps = {

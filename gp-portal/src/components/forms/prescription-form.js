@@ -4,6 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
+import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
   avatar: {
@@ -19,7 +20,7 @@ const styles = theme => ({
   },
 });
 
-class RegisterForm extends Component {
+class PrescriptionForm extends Component {
   state = {
     email: '',
     password: ''
@@ -39,43 +40,50 @@ class RegisterForm extends Component {
     return (
       <form className={classes.form} onSubmit={this.onSubmit}>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="email">Email Address</InputLabel>
+          <InputLabel htmlFor="name">Medication Name</InputLabel>
           <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
+            id="name"
+            name="name"
+            type="text"
             onChange={this.onChange}
             autoFocus />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="password">Password</InputLabel>
+          <InputLabel htmlFor="name">Medication Notes</InputLabel>
           <Input
-            name="password"
-            type="password"
-            id="password"
-            onChange={this.onChange}
-            autoComplete="current-password"
-          />
+            id="notes"
+            name="notes"
+            type="text"
+            onChange={this.onChange} />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="name">Name</InputLabel>
+          <InputLabel htmlFor="number">Number of pills</InputLabel>
           <Input
-            name="name"
-            type="text"
-            id="name"
-            onChange={this.onChange}
-            />
+            id="number"
+            name="number"
+            type="number"
+            onChange={this.onChange} />
         </FormControl>
-        <FormControl margin="normal" required fullWidth>
-          <InputLabel htmlFor="practice">Practice</InputLabel>
-          <Input
-            name="practice"
-            type="text"
-            id="practice"
-            onChange={this.onChange}
-          />
-        </FormControl>
+        <TextField
+          id="start"
+          label="Start Date"
+          name="start"
+          type="date"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={this.onChange} />
+        <TextField
+          id="end"
+          label="End Date"
+          name="end"
+          type="date"
+          className={classes.textField}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={this.onChange} />
         <Button
           type="submit"
           fullWidth
@@ -83,11 +91,11 @@ class RegisterForm extends Component {
           color="primary"
           className={classes.submit}
         >
-          Register
-        </Button>
+          Register new prescription
+            </Button>
       </form>
     );
   }
 }
 
-export default withStyles(styles)(RegisterForm);
+export default withStyles(styles)(PrescriptionForm);
