@@ -494,7 +494,8 @@ class ListState extends State<PillList> {
                     onPressed: () {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions)));
-                    }
+                    },
+                  key: Key("open_pre_list")
                 )
               ],
               bottom: TabBar(

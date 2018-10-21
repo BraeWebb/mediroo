@@ -58,7 +58,7 @@ class EntryItem extends StatelessWidget {
   final int lowPillCount = 5;
 
   /// Creates a new Entry item for the given prescription as a Expansion Tile
-  const EntryItem(this.entry);
+  const EntryItem(this.entry, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

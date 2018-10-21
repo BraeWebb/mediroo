@@ -130,7 +130,7 @@ void main() {
 
   /// Ensure that signup fails when details are invalid
   /// i.e. Email in use or password too weak
-  testWidgets('Signup Failure', (WidgetTester tester) async {
+  testWidgets('Email already in use', (WidgetTester tester) async {
     // Mock invalid details
     SignupPage widget = new SignupPage(auth: MockAuth(userId: null));
     await tester.pumpWidget(buildTestableWidget(widget));
@@ -146,6 +146,59 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Email already in use"), findsOneWidget);
+    expect(find.byType(PillList), findsNothing);
+  });
+
+  testWidgets('Password Too Short', (WidgetTester tester) async {
+    SignupPage widget = new SignupPage(auth: MockAuth(userId: 'userid'));
+    await tester.pumpWidget(buildTestableWidget(widget));
+
+    expect(find.byType(PillList), findsNothing);
+
+    await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
+    await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
+    await tester.enterText(find.byKey(Key("password_field")), "med");
+    await tester.enterText(find.byKey(Key("confirm_password_field")), "med");
+
+    await tester.tap(find.byKey(Key('signup_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Password is less than six characters"), findsOneWidget);
+    expect(find.byType(PillList), findsNothing);
+  });
+
+  testWidgets('Passwords dont match', (WidgetTester tester) async {
+    SignupPage widget = new SignupPage(auth: MockAuth(userId: 'userid'));
+    await tester.pumpWidget(buildTestableWidget(widget));
+
+    expect(find.byType(PillList), findsNothing);
+
+    await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
+    await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
+    await tester.enterText(find.byKey(Key("password_field")), "mediroo");
+    await tester.enterText(find.byKey(Key("confirm_password_field")), "medirooo");
+
+    await tester.tap(find.byKey(Key('signup_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Passwords do not match"), findsOneWidget);
+    expect(find.byType(PillList), findsNothing);
+  });
+
+  testWidgets('No password confirmation', (WidgetTester tester) async {
+    SignupPage widget = new SignupPage(auth: MockAuth(userId: 'userid'));
+    await tester.pumpWidget(buildTestableWidget(widget));
+
+    expect(find.byType(PillList), findsNothing);
+
+    await tester.enterText(find.byKey(Key("name_field")), "Brae Webb");
+    await tester.enterText(find.byKey(Key("email_field")), "email@braewebb.com");
+    await tester.enterText(find.byKey(Key("password_field")), "mediroo");
+
+    await tester.tap(find.byKey(Key('signup_button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Please confirm your password"), findsOneWidget);
     expect(find.byType(PillList), findsNothing);
   });
 
