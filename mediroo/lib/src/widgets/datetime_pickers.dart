@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 ///
 /// The picker has the given [label] and [textColor], and performs a set of
 /// actions defined in [onPressed]. It also has an [icon] displayed next to it.
-Widget picker(String label, Color textColor, Icon icon, Function onPressed) {
+Widget picker(Key key, String label, Color textColor, Icon icon, Function onPressed) {
   return new Row(
     children: [
       icon,
@@ -25,6 +25,7 @@ Widget picker(String label, Color textColor, Icon icon, Function onPressed) {
             onPressed: () {
               onPressed();
             },
+            key: key
           )
         )
     ]
