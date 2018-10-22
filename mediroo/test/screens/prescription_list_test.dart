@@ -25,11 +25,7 @@ void main() {
     expect(find.byType(EntryItem), findsNWidgets(2));
     expect(find.text("Medication"), findsOneWidget);
     expect(find.text("Meds"), findsOneWidget);
-    //expect(find.text("Remaining Pills: 10"), findsOneWidget);
-    //expect(find.text("Remaining Pills: 20"), findsOneWidget);
-    //expect(find.text("15/10/2018 - 18/10/2018"), findsOneWidget);
-    //expect(find.text("15/10/2018 - 16/10/2018"), findsOneWidget); TODO: uncomment these when they work
   });
 
-  //TODO: test missed pills list
+  //TODO: test missed pills list when it's done
 }

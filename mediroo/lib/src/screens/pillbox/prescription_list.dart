@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 
 import 'package:mediroo/model.dart' show Prescription;
-import 'package:mediroo/util.dart' show BaseDB;
+import 'package:mediroo/util.dart' show BaseDB, TimeUtil;
 import 'package:mediroo/widgets.dart' show bubbleButton;
 
 /// Gives information about the pills in the current pillbox
@@ -79,10 +79,14 @@ class EntryItem extends StatelessWidget {
             child: new Icon(icon, color: Colors.black54)
         ),
         new Expanded(
-          child: new Text(text,
+          child: new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: new Text(text,
               textAlign: TextAlign.center,
               style: style
+            )
           ),
+          key: Key('expanded')
         )
       ],
     );
@@ -94,6 +98,10 @@ class EntryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(entry.pillsLeft);
+    print(entry.intervals);
+    print(entry.startDate);
+    print(entry.medNotes);
     TextStyle style = new TextStyle(color: Colors.black54);
     if(entry.pillsLeft < lowPillCount) {
       style = new TextStyle(color: Colors.red);
@@ -108,9 +116,11 @@ class EntryItem extends StatelessWidget {
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
             buildRow("Remaining Pills: " + entry.pillsLeft.toString(), FontAwesomeIcons.prescriptionBottleAlt, style: style),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-            buildRow(entry.startDate.displayDate() + " - " + entry.endDate.displayDate(), FontAwesomeIcons.clock), //TODO: make this consistent with TimeUtil.getDateFormatted
+            buildRow(TimeUtil.getDateFormatted(entry.startDate.year, entry.startDate.month, entry.startDate.day) + " - " +
+              TimeUtil.getDateFormatted(entry.endDate.year, entry.endDate.month, entry.endDate.day), FontAwesomeIcons.calendar),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-            bubbleButton("remove_button", "Remove", _removePrescription)
+            bubbleButton("remove_button", "Remove", _removePrescription),
+            new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),
           ]
         ),
         new Container(
