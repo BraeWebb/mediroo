@@ -103,7 +103,7 @@ class ListState extends State<PillList> {
   /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
     for (int i = 0; i < prescriptions.length; i++){
-      int lowAmount = (prescriptions[i].pillsLeft * 0.1).round();
+      int lowAmount = 5; //TODO future work make dynamic 
 
       if (prescriptions[i].pillsLeft < lowAmount){
 
