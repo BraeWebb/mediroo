@@ -30,8 +30,8 @@ const styles = theme => ({
 class CreatePrescription extends Component {
   onSubmit = state => {
     const { uid} = this.props.match.params;
-    const { description, notes, remaining } = state;
-    this.props.createPatientPrescription(uid, {description, notes, remaining: parseInt(remaining)})
+    const { description, notes, remaining, intervals, start, end } = state;
+    this.props.createPatientPrescription(uid, {description, notes, remaining: parseInt(remaining)}, {intervals, start, end})
       .then(() => this.props.history.push(`/patient/${uid}`));
   }
 

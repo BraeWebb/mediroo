@@ -5,6 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
+import moment from 'moment';
 
 const styles = theme => ({
   avatar: {
@@ -24,11 +25,25 @@ class PrescriptionForm extends Component {
   state = {
     description: '',
     notes: '',
-    remaining: 0
+    remaining: 0,
+    intervals: [],
+    start: moment(new Date()).format("YYYY-MM-DD"),
+    end: moment(new Date()).format("YYYY-MM-DD")
   }
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onIntervalChange = (e, index) => {
+    const { intervals } = this.state;
+    intervals[index] = {
+      ...intervals[index],
+      [e.target.name]: e.target.value
+    }
+    this.setState({
+      intervals
+    });
   }
 
   onSubmit = e => {
@@ -36,8 +51,47 @@ class PrescriptionForm extends Component {
     this.props.onSubmit(this.state);
   }
 
+  handleAddInterval = () => {
+    this.setState({
+      intervals: [
+        ...this.state.intervals,
+        {
+          dosage: 0,
+          time: '07:30'
+        }]
+    });
+  }
+
   render() {
     const { classes } = this.props;
+    const intervals = this.state.intervals.map((interval, index) =>
+      <div key={index}>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="remaining">Dosage</InputLabel>
+          <Input
+            key={index}
+            id="intervalDosage"
+            name="dosage"
+            type="number"
+            onChange={(e) => this.onIntervalChange(e, index)} />
+        </FormControl>
+        <TextField
+          required
+          id="time"
+          name="time"
+          fullWidth
+          label="Time of Day"
+          type="time"
+          defaultValue="07:30"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          inputProps={{
+            step: 600
+          }}
+          onChange={(e) => this.onIntervalChange(e, index)} />
+      </div>
+    );
     return (
       <form className={classes.form} onSubmit={this.onSubmit}>
         <FormControl margin="normal" required fullWidth>
@@ -66,9 +120,11 @@ class PrescriptionForm extends Component {
             onChange={this.onChange} />
         </FormControl>
         <TextField
+          required
           id="start"
           label="Start Date"
           name="start"
+          defaultValue={moment(new Date()).format("YYYY-MM-DD")}
           type="date"
           className={classes.textField}
           InputLabelProps={{
@@ -76,15 +132,27 @@ class PrescriptionForm extends Component {
           }}
           onChange={this.onChange} />
         <TextField
+          required
           id="end"
           label="End Date"
           name="end"
+          defaultValue={moment(new Date()).format("YYYY-MM-DD")}
           type="date"
           className={classes.textField}
           InputLabelProps={{
             shrink: true,
           }}
           onChange={this.onChange} />
+        {intervals}
+        <Button
+          fullWidth
+          variant="raised"
+          color="primary"
+          onClick={this.handleAddInterval}
+          className={classes.submit}
+        >
+          Add Interval
+        </Button>
         <Button
           type="submit"
           fullWidth

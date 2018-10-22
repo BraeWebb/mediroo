@@ -1,4 +1,5 @@
 import { firestore } from 'config/firebase';
+import moment from 'moment';
 
 export const fetchPatientPrescriptions = (uid) => (dispatch) => {
   return firestore.collection(`prescriptions/${uid}/prescription`).get().then(querySnapshot => {
@@ -25,11 +26,34 @@ export const fetchPatientPrescriptions = (uid) => (dispatch) => {
   });
 }
 
-export const createPatientPrescription = (uid, prescription) => (dispatch) => {
-  return firestore.collection(`prescriptions/${uid}/prescription`).add(prescription)
-    .then(() => {
+export const createPatientPrescription = (uid, prescription, intervals) => (dispatch) => {
+  const prescriptionCollection = `prescriptions/${uid}/prescription`;
+  return firestore.collection(prescriptionCollection).add(prescription)
+    .then(result => {
       dispatch({
         type: 'PRESCRIPTION_CREATION_COMMIT'
       });
+      return result
+    })
+    .then((prescriptionResult) => {
+      const prescriptionResultId = prescriptionResult.id;
+      if (intervals && intervals.start && intervals.end && intervals.intervals) {
+        const { intervals : intervalObjects, start, end } = intervals;
+        const promises = [];
+        intervalObjects.forEach(interval => {
+          const intervalObject = {
+            days: 1,
+            dosage: parseInt(interval.dosage),
+            time: moment(`${start} ${interval.time}`, 'YYYY-MM-DD HH:mm').toDate(),
+            start: moment(`${start} ${interval.time}`, 'YYYY-MM-DD HH:mm').toDate(),
+            end: moment(`${end} ${interval.time}`, 'YYYY-MM-DD HH:mm').toDate()
+          };
+          console.log(intervalObject);
+          const promise = firestore.collection(`${prescriptionCollection}/${prescriptionResultId}/intervals`)
+            .add(intervalObject);
+          promises.push(promise);
+        });
+        return Promise.all(promises);
+      };
     })
 }
