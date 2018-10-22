@@ -624,10 +624,12 @@ class PillCard extends StatelessWidget {
   }
 
   /// Decrements the number of pills left
-  void take(){
-    pre.pillsLeft--;
-    interval.pillLog[date][time] = true;
-    parent.writeDB(pre);
+  void take() {
+    if (pre.pillsLeft > 0) {
+      pre.pillsLeft--;
+      interval.pillLog[date][time] = true;
+      parent.writeDB(pre);
+    }
   }
 
   void undo() {
