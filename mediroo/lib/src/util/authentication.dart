@@ -156,7 +156,7 @@ void checkVerified(BuildContext context, BaseAuth auth) {
   }
   auth.isVerified().then((bool verified) {
     if (!verified) {
-      Scaffold.of(context).showSnackBar(getVerifySnack(auth));
+      //Scaffold.of(context).showSnackBar(getVerifySnack(auth));
     }
   });
 }

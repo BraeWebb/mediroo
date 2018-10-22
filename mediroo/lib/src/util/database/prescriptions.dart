@@ -76,6 +76,8 @@ class DBConn extends BaseDB {
         QuerySnapshot intervalSnapshots = await Firestore.instance
             .collection(prescriptionCollection + document.documentID + '/intervals').getDocuments();
 
+        
+
         for (DocumentSnapshot intervalDoc in intervalSnapshots.documents) {
           DateTime dateTime = intervalDoc.data['time'];
           DateTime start = intervalDoc.data['start'];
