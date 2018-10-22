@@ -103,19 +103,60 @@ class ListState extends State<PillList> {
   /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
     for (int i = 0; i < prescriptions.length; i++){
-      int lowAmount = (prescriptions[i].pillsLeft * 0.1).round();
+      int current = 0;
+      int lowAmount = 0;
+      int total = 0;
+      total++;
+      //print("#####################################################33");
+      //print(prescriptions[i].intervals);
+      //print(prescriptions[i].pillsLeft);
 
-      if (prescriptions[i].pillsLeft < lowAmount){
 
-        String plural;
-        lowAmount == 1 ? plural  = "": plural = "s";
 
-        showDialog(context: context, child:
-          new AlertDialog(
-            title: new Text("Low Pill Count Alert"),
-            content: new Text("You only have $lowAmount ${prescriptions[i].medNotes} pill$plural left."),
-          )
-        );
+
+      //TODO make sure correct
+      //take the last prescrition interval as the most current
+      if (!prescriptions[i].intervals.isEmpty) {
+        for (Date date in prescriptions[i].intervals.last.pillLog.keys) {
+          for (Time time in prescriptions[i].intervals.last.pillLog[date]
+              .keys) {
+            total += 1;
+            if (!prescriptions[i].intervals.last.pillLog[date][time]) {
+              current += 1;
+            }
+          }
+        }
+
+
+        lowAmount = (total * 0.1).round();
+        print("********************************************************");
+        print("dosage : ${prescriptions[i].intervals.last.dosage}");
+        print("counted total: ${total}");
+        print("pills left : ${prescriptions[i].pillsLeft}");
+        print("counted current ${current}");
+        //print(lowAmount);
+        if (current < lowAmount) {
+          if (current == 0) {
+            showDialog(context: context, child:
+            new AlertDialog(
+              title: new Text("Low Pill Count Alert"),
+              content: new Text("You Just took your last ${prescriptions[i]
+                  .medNotes} pill."),
+            )
+            );
+          } else {
+            String plural;
+            current == 1 ? plural = "" : plural = "s";
+
+            showDialog(context: context, child:
+            new AlertDialog(
+              title: new Text("Low Pill Count Alert"),
+              content: new Text("You only have $lowAmount ${prescriptions[i]
+                  .medNotes} pill$plural left."),
+            )
+            );
+          }
+        }
       }
 
     }
