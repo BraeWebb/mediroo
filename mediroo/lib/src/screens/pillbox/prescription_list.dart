@@ -86,6 +86,7 @@ class EntryItem extends StatelessWidget {
               style: style
             )
           ),
+          key: Key('expanded')
         )
       ],
     );
