@@ -111,7 +111,7 @@ class EntryItem extends StatelessWidget {
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
             buildRow("Remaining Pills: " + entry.pillsLeft.toString(), FontAwesomeIcons.prescriptionBottleAlt, style: style),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-            buildRow(entry.startDate.displayDate() + " - " + entry.endDate.displayDate(), FontAwesomeIcons.clock),
+            buildRow(entry.startDate.displayDate() + " - " + entry.endDate.displayDate(), FontAwesomeIcons.clock), //TODO: make this consistent with TimeUtil.getDateFormatted
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
             bubbleButton("remove_button", "Remove", _removePrescription),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),

@@ -46,6 +46,8 @@ class PillList extends StatefulWidget {
 /// The current state of a PillList widget
 class ListState extends State<PillList> {
 
+  var _scaffoldKey = GlobalKey<ScaffoldState>();
+
   FlutterLocalNotificationsPlugin flutterLocalNotifications;
 
   /// Used to connect to the database
@@ -481,11 +483,11 @@ class ListState extends State<PillList> {
 
   @override
   Widget build(BuildContext context) {
-    checkVerified(context, auth);
-    return new DefaultTabController(
+    var temp = new DefaultTabController(
         initialIndex: 1,
         length: 7,
         child: new Scaffold (
+          key: _scaffoldKey,
             appBar: new AppBar(
               title: new Text("Upcoming pills"),
               actions: <Widget>[
@@ -493,8 +495,9 @@ class ListState extends State<PillList> {
                     icon: Icon(Icons.info_outline),
                     onPressed: () {
                       Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions, conn)));
-                    }
+                          MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions, conn)));
+                    },
+                  key: Key("open_pre_list")
                 )
               ],
               bottom: TabBar(
@@ -548,6 +551,11 @@ class ListState extends State<PillList> {
             )
         )
     );
+
+    checkVerified(_scaffoldKey, auth);
+
+    return temp;
+
   }
 }
 

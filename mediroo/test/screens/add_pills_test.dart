@@ -6,10 +6,6 @@ import 'package:mediroo/screens.dart' show PillList, AddPills, PrescriptionEntry
 import 'package:mediroo/util.dart' show buildTestableWidget, MockDB, TimeUtil;
 import 'package:mediroo/model.dart' show Date, Time, Prescription, PrescriptionInterval;
 
-Future<int> handleError(Object obj) async {
-  return 0; //do nothing
-}
-
 void main() {
   /// Ensure that the name field on signup page exists initially
   testWidgets('Add pills page correctly adds pills', (WidgetTester tester) async {

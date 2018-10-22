@@ -2,39 +2,34 @@ import { firestore } from 'config/firebase';
 
 export const fetchPatientPrescriptions = (uid) => (dispatch) => {
   return firestore.collection(`prescriptions/${uid}/prescription`).get().then(querySnapshot => {
-    querySnapshot.forEach(prescription => {
-      const prescriptionData = prescription.data();
+    const prescriptions = [];
+    querySnapshot.forEach(prescriptionSnapShot => {
+      const prescriptionData = prescriptionSnapShot.data();
+      const { description, notes: prescriptionNotes, remaining } = prescriptionData;
       console.log(prescriptionData);
-      if (prescriptionData.medication !== undefined) {
-        firestore.collection('medication').doc(prescriptionData.medication).get().then(document => {
-          const medicationData = document.data();
-          const { notes: prescriptionNotes, remaining } = prescriptionData;
-          const { notes: medicationNotes, name } = medicationData;
-          const prescription = {
-            prescriptionNotes,
-            medicationNotes,
-            name,
-            remaining,
-            uid
-          };
-          dispatch({
-            type: 'PRESCRIPTIONS_COMMIT',
-            payload: {prescription}
-          });
-        });
-      } else {
-        const { description, notes: prescriptionNotes, remaining } = prescriptionData;
-        const prescription = {
-          name: description,
-          prescriptionNotes,
-          remaining,
-          uid
-        };
-        dispatch({
-          type: 'PRESCRIPTIONS_COMMIT',
-          payload: {prescription}
-        });
+      const prescription = {
+        name: description,
+        prescriptionNotes,
+        remaining,
+        uid
+      };
+      if (!prescriptionData.medication) prescriptions.push(prescription);
+    });
+    dispatch({
+      type: 'PRESCRIPTIONS_COMMIT',
+      payload: {
+        uid,
+        prescriptions
       }
     });
   });
+}
+
+export const createPatientPrescription = (uid, prescription) => (dispatch) => {
+  return firestore.collection(`prescriptions/${uid}/prescription`).add(prescription)
+    .then(() => {
+      dispatch({
+        type: 'PRESCRIPTION_CREATION_COMMIT'
+      });
+    })
 }

@@ -120,21 +120,21 @@ class _SignupPageState extends State<SignupPage> {
     // enters the user's information into the database
     auth.signUp(nameController.text, emailController.text, passwordController.text)
         .then((String uid) {
-      if (uid == null) {
+          if(passwordController.text.length < 6) {
+            setState(() {
+              _confirmError = 'Password is less than six characters';
+              passwordController.clear();
+              passwordConfirmationController.clear();
+            });
+            return;
+          }
+      else if (uid == null) {
         // information validation and error checking
-        if (passwordController.text.length >= 6) {
           setState(() {
             _emailError = 'Email already in use';
             emailController.clear();
           });
-        } else {
-          setState(() {
-            _confirmError = 'Password is less than six characters long';
-            passwordController.clear();
-            passwordConfirmationController.clear();
-          });
-        }
-        return;
+          return;
       }
 
       // navigates to the pillbox screen if signup was successful
