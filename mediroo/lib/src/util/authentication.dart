@@ -150,13 +150,14 @@ class MockAuth extends BaseAuth {
 /// Check if the logged in user is verified, if they aren't, display snackbar prompt
 ///
 /// Uses a [BaseAuth] to make a resend verification email action
-void checkVerified(BuildContext context, BaseAuth auth) {
+void checkVerified(GlobalKey<ScaffoldState> key, BaseAuth auth) {
   if(auth is MockAuth) {
     return; //assume all mocked users are verified
   }
   auth.isVerified().then((bool verified) {
     if (!verified) {
-      Scaffold.of(context).showSnackBar(getVerifySnack(auth));
+        key.currentState.showSnackBar(getVerifySnack(auth));
+      }
     }
-  });
+  );
 }
