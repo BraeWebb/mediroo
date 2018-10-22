@@ -71,6 +71,7 @@ class DBConn extends BaseDB {
         Prescription prescription = new Prescription(document.documentID, name,
           pillsLeft: remaining,
         );
+        prescription.docNotes = notes;
         prescription.intervals = new List();
 
         QuerySnapshot intervalSnapshots = await Firestore.instance
