@@ -79,9 +79,12 @@ class EntryItem extends StatelessWidget {
             child: new Icon(icon, color: Colors.black54)
         ),
         new Expanded(
-          child: new Text(text,
+          child: new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: new Text(text,
               textAlign: TextAlign.center,
               style: style
+            )
           ),
         )
       ],
@@ -115,7 +118,8 @@ class EntryItem extends StatelessWidget {
             buildRow(TimeUtil.getDateFormatted(entry.startDate.year, entry.startDate.month, entry.startDate.day) + " - " +
               TimeUtil.getDateFormatted(entry.endDate.year, entry.endDate.month, entry.endDate.day), FontAwesomeIcons.calendar),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-            bubbleButton("remove_button", "Remove", _removePrescription)
+            bubbleButton("remove_button", "Remove", _removePrescription),
+            new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),
           ]
         ),
         new Container(

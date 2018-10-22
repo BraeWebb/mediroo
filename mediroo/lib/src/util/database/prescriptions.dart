@@ -71,12 +71,12 @@ class DBConn extends BaseDB {
         Prescription prescription = new Prescription(document.documentID, name,
           pillsLeft: remaining,
         );
+        prescription.docNotes = notes;
         prescription.intervals = new List();
 
         QuerySnapshot intervalSnapshots = await Firestore.instance
             .collection(prescriptionCollection + document.documentID + '/intervals').getDocuments();
 
-        
 
         for (DocumentSnapshot intervalDoc in intervalSnapshots.documents) {
           DateTime dateTime = intervalDoc.data['time'];
@@ -84,8 +84,8 @@ class DBConn extends BaseDB {
           DateTime end = intervalDoc.data['end'];
           Time time = new Time(dateTime.hour, dateTime.minute);
 
-          prescription.startDate = Date.from(intervalDoc.data['start']);
-          prescription.endDate = Date.from(intervalDoc.data['end']);
+          prescription.startDate = start != null ? Date.from(start) : prescription.startDate;
+          prescription.endDate = end != null ? Date.from(end) : prescription.endDate;
 
               PrescriptionInterval interval = new PrescriptionInterval(
               intervalDoc.documentID,
@@ -112,6 +112,18 @@ class DBConn extends BaseDB {
             }
           }
         }
+
+        if(prescription.startDate == null) {
+          if(document.data.containsKey('creation')) {
+            prescription.startDate = Date.from(document.data['creation']);
+            prescription.endDate = Date.from(document.data['creation']);
+          } else {
+            prescription.startDate = TimeUtil.currentDate();
+            prescription.endDate = TimeUtil.currentDate();
+            //if we get here something has gone wrong, but this gracefully handles this case
+          }
+        }
+        print("d: " + prescription.startDate.toString());
 
         prescriptions.add(prescription);
       }
