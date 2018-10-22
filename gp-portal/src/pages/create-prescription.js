@@ -31,7 +31,7 @@ class CreatePrescription extends Component {
   onSubmit = state => {
     const { uid} = this.props.match.params;
     const { description, notes, remaining } = state;
-    this.props.createPatientPrescription(uid, {description, notes, remaining})
+    this.props.createPatientPrescription(uid, {description, notes, remaining: parseInt(remaining)})
       .then(() => this.props.history.push(`/patient/${uid}`));
   }
 
