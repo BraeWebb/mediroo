@@ -103,7 +103,7 @@ class ListState extends State<PillList> {
   /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
     for (int i = 0; i < prescriptions.length; i++){
-      int lowAmount = 5; //TODO future work make dynamic 
+      int lowAmount = 5; //TODO future work make dynamic
 
       if (prescriptions[i].pillsLeft < lowAmount){
 
@@ -113,7 +113,7 @@ class ListState extends State<PillList> {
         showDialog(context: context, child:
           new AlertDialog(
             title: new Text("Low Pill Count Alert"),
-            content: new Text("You only have $lowAmount ${prescriptions[i].medNotes} pill$plural left."),
+            content: new Text("You only have ${prescriptions[i].pillsLeft} ${prescriptions[i].medNotes} pill$plural left."),
           )
         );
       }
