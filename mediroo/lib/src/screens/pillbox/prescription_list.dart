@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
@@ -7,9 +9,7 @@ import 'package:mediroo/util.dart' show BaseDB, TimeUtil;
 import 'package:mediroo/widgets.dart' show bubbleButton;
 
 /// Gives information about the pills in the current pillbox
-class PrescriptionList extends StatelessWidget {
-  /// the current prescriptions being stored
-  final List<Prescription> pills;
+class PrescriptionList extends StatefulWidget {
   /// the pill count at which a notification will be sent to remind the user
   /// to refill their prescription
   final int lowPillCount = 5;
@@ -18,36 +18,75 @@ class PrescriptionList extends StatelessWidget {
   final BaseDB db;
 
   /// Creates a new PrescriptionList containing various [pills]
-  PrescriptionList(this.pills, this.db, {Key key}) : super(key: key);
+  PrescriptionList(this.db, {Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return new _PrescriptionListState(db);
+  }
+
+
+}
+
+class _PrescriptionListState extends State<PrescriptionList> {
+  /// A database connection
+  StreamSubscription<List<Prescription>> databaseConnection;
+
+  /// Database connection object
+  final BaseDB db;
+
+  /// A list of prescriptions to display
+  List<Prescription> _pills;
+
+  /// Whether the prescriptions have been loaded
+  bool _loaded = false;
+
+  /// Construct a new prescription list state
+  _PrescriptionListState(this.db) {
+    databaseConnection = db.getUserPrescriptions()
+        .listen((List<Prescription> prescriptions) {
+      setState(() {
+        _pills = prescriptions;
+        _loaded = true;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    databaseConnection.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return new DefaultTabController(
-        length: 2,
-        child: new Scaffold(
-            appBar: new AppBar(
-                title: new Text("Info"),
-                bottom: new TabBar(
-                  tabs: [
-                    new Text("Prescription List\n"),
-                    new Text("Missed Pills\n")
-                  ],
-                )
+      length: 2,
+      child: new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Info"),
+          bottom: new TabBar(
+            tabs: [
+              new Text("Prescription List\n"),
+              new Text("Missed Pills\n")
+            ],
+          )
+        ),
+        body: new TabBarView(
+          children: !_loaded ? <Widget> [new Center(child: new CircularProgressIndicator())]
+              : <Widget>[
+            new ListView.builder(
+              itemCount: _pills.length,
+              itemBuilder: (BuildContext context, int index) => EntryItem(_pills[index], db, context),
             ),
-            body: new TabBarView(
-                children: <Widget>[
-                  new ListView.builder(
-                    itemCount: pills.length,
-                    itemBuilder: (BuildContext context, int index) => EntryItem(pills[index], db, context),
-                  ),
-                  new Column(
-                    children: <Widget>[
-                      new Text("\nMissed pills here!")
-                    ],
-                  )
-                ]
+            new Column(
+              children: <Widget>[
+                new Text("\nMissed pills here!")
+              ],
             )
+          ]
         )
+      )
     );
   }
 }

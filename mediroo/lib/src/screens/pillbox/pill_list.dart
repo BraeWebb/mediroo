@@ -498,7 +498,7 @@ class ListState extends State<PillList> {
                         return;
                       }
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => PrescriptionList(prescriptions, conn)));
+                          MaterialPageRoute(builder: (context) => PrescriptionList(conn)));
                     },
                   key: Key("open_pre_list")
                 )
