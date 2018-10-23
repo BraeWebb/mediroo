@@ -42,6 +42,10 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget buildRow(String text, IconData icon, {style}) {
+    if (text == null) {
+      return new Padding(padding: EdgeInsets.all(0.0));
+    }
+
     style = style ?? new TextStyle(
         color: Colors.black54
     );
@@ -64,6 +68,14 @@ class _SettingsPageState extends State<SettingsPage> {
       ],
     );
   }
+  
+  Widget buildRowPadding(String context) {
+    if (context == null) {
+      return new Padding(padding: EdgeInsets.all(0.0));
+    }
+    
+    return new Padding(padding: EdgeInsets.only(bottom: 20.0));
+  }
 
   void _logout(context) {
     auth.logout();
@@ -81,8 +93,10 @@ class _SettingsPageState extends State<SettingsPage> {
         child: ListView(
           padding: EdgeInsets.only(top: 24.0, left: 24.0, right: 24.0),
           children: _user == null ? [] : <Widget>[
-            buildRow(_user.email, FontAwesomeIcons.user),
-            new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),
+            buildRow(_user.name, FontAwesomeIcons.user),
+            buildRowPadding(_user.name),
+            buildRow(_user.email, FontAwesomeIcons.envelope),
+            buildRowPadding(_user.email),
             bubbleButton("logout", "Logout", () {
               _logout(context);
             })

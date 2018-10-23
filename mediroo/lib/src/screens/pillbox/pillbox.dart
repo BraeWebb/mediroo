@@ -5,7 +5,8 @@ import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show BaseAuth, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, BaseDB;
 import 'package:mediroo/screens.dart' show AddPills;
-import 'prescription_list.dart' show PrescriptionList;
+import 'package:mediroo/src/screens/prescription_list/prescription_list.dart'
+    show PrescriptionList;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
     AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings,
     AndroidNotificationDetails, IOSNotificationDetails, NotificationDetails;
