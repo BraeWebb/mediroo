@@ -51,6 +51,8 @@ class _SignupPageState extends State<SignupPage> {
   String _passwordError;
   String _confirmError;
 
+  bool _signingUp = false;
+
   // Creates a new state for a Signup Page
   _SignupPageState({this.analytics, this.auth}): super();
 
@@ -117,33 +119,44 @@ class _SignupPageState extends State<SignupPage> {
       return;
     }
 
+    _signingUp = true;
+
     // enters the user's information into the database
     auth.signUp(nameController.text, emailController.text, passwordController.text)
-        .then((String uid) {
-          if(passwordController.text.length < 6) {
-            setState(() {
-              _confirmError = 'Password is less than six characters';
-              passwordController.clear();
-              passwordConfirmationController.clear();
-            });
-            return;
-          }
-      else if (uid == null) {
-        // information validation and error checking
-          setState(() {
-            _emailError = 'Email already in use';
-            emailController.clear();
-          });
-          return;
-      }
+      .then(_completeSignup);
+  }
 
-      // navigates to the pillbox screen if signup was successful
-      NavigatorState navState = Navigator.of(context);
-      if (navState.canPop()) {
-        navState.pop();
-      }
-      navState.pushReplacementNamed(PillList.tag);
-    });
+  /// Finish the signup process when firebase calls back
+  _completeSignup(String uid) {
+    if(passwordController.text.length < 6) {
+      setState(() {
+        _signingUp = false;
+        _confirmError = 'Password is less than six characters';
+        passwordController.clear();
+        passwordConfirmationController.clear();
+      });
+
+      return;
+    } else if (uid == null) {
+      // information validation and error checking
+      setState(() {
+        _signingUp = false;
+        _emailError = 'Email already in use';
+        emailController.clear();
+      });
+
+      return;
+    }
+
+    _signingUp = false;
+
+    // navigates to the pillbox screen if signup was successful
+    NavigatorState navState = Navigator.of(context);
+    if (navState.canPop()) {
+      navState.pop();
+    }
+
+    navState.pushReplacementNamed(PillList.tag);
   }
 
   @override
@@ -202,24 +215,35 @@ class _SignupPageState extends State<SignupPage> {
       ),
       backgroundColor: Colors.white,
       body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24.0, right: 24.0),
+        child: new Stack(
+          fit: StackFit.passthrough,
           children: <Widget>[
-            logo,
-            // SizedBoxes are used to add whitespace and padding to the screen
-            SizedBox(height: 48.0),
-            name,
-            SizedBox(height: 8.0),
-            email,
-            SizedBox(height: 8.0),
-            password,
-            SizedBox(height: 8.0),
-            confirmPassword,
-            SizedBox(height: 24.0),
-            signupButton,
-          ],
-        ),
+            ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.only(left: 24.0, right: 24.0),
+              children: <Widget>[
+                logo,
+                SizedBox(height: 48.0),
+                name,
+                SizedBox(height: 8.0),
+                email,
+                SizedBox(height: 8.0),
+                password,
+                SizedBox(height: 8.0),
+                confirmPassword,
+                SizedBox(height: 24.0),
+                signupButton,
+              ],
+            ),
+            new Offstage(
+            // displays the loading icon while the user is logging in
+              offstage: !_signingUp,
+              child: new Center(
+                child: _signingUp ? new CircularProgressIndicator() : null
+              )
+            )
+          ]
+        )
       ),
     );
   }
