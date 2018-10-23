@@ -7,7 +7,7 @@ import 'package:mediroo/model.dart' show Date, Time, Prescription, PrescriptionI
 
 void main() {
   testWidgets('Test list with no prescriptions', (WidgetTester tester) async {
-    PrescriptionList widget = PrescriptionList([], new MockDB());
+    PrescriptionList widget = PrescriptionList(new MockDB());
     await tester.pumpWidget(buildTestableWidget(widget));
     await tester.pumpAndSettle();
 
@@ -18,7 +18,7 @@ void main() {
     Prescription pre = new Prescription("0", "Medication", pillsLeft: 10, startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 18));
     Prescription pre1 = new Prescription("0", "Meds", pillsLeft: 20, startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 16));
 
-    PrescriptionList widget = PrescriptionList([pre, pre1], new MockDB());
+    PrescriptionList widget = PrescriptionList(new MockDB(prescriptions: [pre, pre1]));
     await tester.pumpWidget(buildTestableWidget(widget));
     await tester.pumpAndSettle();
 

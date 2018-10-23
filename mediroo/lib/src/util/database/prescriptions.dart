@@ -17,6 +17,8 @@ abstract class BaseDB {
 class MockDB extends BaseDB {
   List<Prescription> prescriptions;
 
+  MockDB({this.prescriptions});
+
   Stream<List<Prescription>> getUserPrescriptions() {
     List<List<Prescription>> iterable = [prescriptions];
     return new Stream.fromIterable(iterable);
