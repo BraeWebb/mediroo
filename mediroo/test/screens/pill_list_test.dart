@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mediroo/util.dart' show MockAuth;
-import 'package:mediroo/screens.dart' show PillList, PillCard;
+import 'package:mediroo/screens.dart' show PillList;
 import 'package:mediroo/util.dart' show buildTestableWidget, MockDB, TimeUtil;
+import 'package:mediroo/widgets.dart' show PillCard;
 import 'package:mediroo/model.dart' show Date, Time, Prescription, PrescriptionInterval;
 
 void main() {
