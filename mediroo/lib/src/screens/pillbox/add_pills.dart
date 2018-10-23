@@ -169,8 +169,6 @@ class PrescriptionEntryState extends State<PrescriptionEntry> {
 
   /// Update the stored [Prescription] based on the form input values
   void buildPrescription([String input]) {
-    print("building pre");
-
     prescription.medNotes = pillNameController.text;
     try {
       prescription.pillsLeft = int.parse(pillCountController.text ?? null);

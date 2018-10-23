@@ -147,7 +147,7 @@ class ListState extends State<PillList> {
     setState(() {
       _loading = true;
     });
-    print("a :" + prescription.pillsLeft.toString());
+
     await conn.addPrescription(prescription, merge: true);
     _handleRefresh();
 
@@ -231,8 +231,6 @@ class ListState extends State<PillList> {
         child: new Text("No Pill Today!")
       )];
     }
-
-    print("cards created");
 
     return cards;
   }
@@ -331,7 +329,7 @@ class ListState extends State<PillList> {
     flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
 
     DateTime nextPill = findNextTime();
-    print(nextPill);
+
     if (nextPill == null){
       return;
     }
@@ -416,11 +414,6 @@ class ListState extends State<PillList> {
     for (Prescription pre in this.prescriptions) {
       for (PrescriptionInterval preInterval in pre.intervals) {
         for (Date date in preInterval.pillLog.keys){
-
-          for (Time i in preInterval.pillLog[date].keys){
-            print("           ${i.hour}-${i.minute}");
-          }
-
           if (currentMin == null && // should short circuit
               date.compareTo(new Date(now.year, now.month, now.day)) >= 0){
 
@@ -754,8 +747,6 @@ class PillCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("building");
-
     final thumbnail = new Container(
         margin: new EdgeInsets.symmetric(
             vertical: 22.0,

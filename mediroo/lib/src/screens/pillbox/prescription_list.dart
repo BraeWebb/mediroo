@@ -230,10 +230,6 @@ class Nothing extends State<EntryItem>{
 
   @override
   Widget build(BuildContext context) {
-    print(entry.pillsLeft);
-    print(entry.intervals);
-    print(entry.startDate);
-    print(entry.medNotes);
     TextStyle style = new TextStyle(color: Colors.black54);
     if (entry.pillsLeft < lowPillCount) {
       style = new TextStyle(color: Colors.red);

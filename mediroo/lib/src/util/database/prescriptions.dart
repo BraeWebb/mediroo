@@ -53,7 +53,6 @@ class DBConn extends BaseDB {
 
       // build a list of prescriptions from database data
       for (DocumentSnapshot document in snapshot.documents) {
-        print(document);
         String medication = document.data['medication'];
 
         DocumentSnapshot medDocument;
@@ -125,7 +124,6 @@ class DBConn extends BaseDB {
             //if we get here something has gone wrong, but this gracefully handles this case
           }
         }
-        print("d: " + prescription.startDate.toString());
 
         prescriptions.add(prescription);
       }
@@ -201,12 +199,8 @@ class DBConn extends BaseDB {
   Future<Null> removePrescription(Prescription prescription) async {
     String uuid = await currentUUID();
 
-    print(uuid);
-
     String prescriptionCollection = 'prescriptions/' + uuid + '/prescription';
     DocumentReference document = Firestore.instance.collection(prescriptionCollection).document(prescription.id);
-
-    print(document.documentID);
 
     await document.delete();
 
