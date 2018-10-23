@@ -172,7 +172,7 @@ class DBConn extends BaseDB {
       }
 
       if (interval.pillLog == null) {
-        return null;
+        continue;
       }
 
       for (MapEntry dateEntry in interval.pillLog.entries) {
