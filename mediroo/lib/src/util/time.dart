@@ -1,4 +1,4 @@
-import 'package:mediroo/model.dart' show Time, Date, PrescriptionInterval, ToD;
+import 'package:mediroo/model.dart' show Time, Date, Prescription, PrescriptionInterval, ToD;
 
 /// Utility class for time and date related operations
 class TimeUtil {
@@ -46,9 +46,9 @@ class TimeUtil {
   }
 
   ///Returns whether the [Date] falls into a given interval
-  static bool isDay(Date current, PrescriptionInterval interval) {
-    return interval.startDate.difference(current).inDays % interval.dateDelta == 0 &&
-        interval.startDate.compareTo(current) <= 0 && interval.endDate.compareTo(current) >= 0;
+  static bool isDay(Date current, Prescription prescription, PrescriptionInterval interval) {
+    return prescription.startDate.difference(current).inDays % interval.dateDelta == 0 &&
+        prescription.startDate.compareTo(current) <= 0 && prescription.endDate.compareTo(current) >= 0;
   }
 
   ///Converts a [DateTime] object to a [Time] object

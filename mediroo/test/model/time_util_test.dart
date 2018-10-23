@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-import 'package:mediroo/model.dart' show ToD, Time, Date, PrescriptionInterval;
+import 'package:mediroo/model.dart' show ToD, Time, Date, Prescription, PrescriptionInterval;
 import 'package:mediroo/util.dart' show TimeUtil;
 
 void main() {
@@ -54,16 +54,22 @@ void main() {
 
   test('Date falls in interval', () {
     Date date = new Date(2018, 10, 15);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
-        new Date(2018, 10, 14), endDate: new Date(2018, 10, 16))), isTrue);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
-        new Date(2018, 10, 14), endDate: new Date(2018, 10, 15))), isTrue);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
-        new Date(2018, 10, 15), endDate: new Date(2018, 10, 16))), isTrue);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
-        new Date(2018, 10, 13), endDate: new Date(2018, 10, 14))), isFalse);
-    expect(TimeUtil.isDay(date, new PrescriptionInterval("", new Time(0, 0),
-        new Date(2018, 10, 16), endDate: new Date(2018, 10, 17))), isFalse);
+    PrescriptionInterval interval = new PrescriptionInterval("", new Time(0, 0));
+    expect(TimeUtil.isDay(date, new Prescription("", "",
+        startDate: new Date(2018, 10, 14), endDate: new Date(2018, 10, 16)),
+        interval), isTrue);
+    expect(TimeUtil.isDay(date, new Prescription("", "",
+        startDate: new Date(2018, 10, 14), endDate: new Date(2018, 10, 15)),
+        interval), isTrue);
+    expect(TimeUtil.isDay(date, new Prescription("", "",
+        startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 16)),
+        interval), isTrue);
+    expect(TimeUtil.isDay(date, new Prescription("", "",
+        startDate: new Date(2018, 10, 13), endDate: new Date(2018, 10, 14)),
+        interval), isFalse);
+    expect(TimeUtil.isDay(date, new Prescription("", "",
+        startDate: new Date(2018, 10, 16), endDate: new Date(2018, 10, 17)),
+        interval), isFalse);
   });
 
   test('Conversion', () {

@@ -23,7 +23,7 @@ void main() {
   testWidgets('Pill list page shows correct info when one prescription with one interval exists', (WidgetTester tester) async {
     MockDB db = new MockDB();
     PrescriptionInterval preInt = new PrescriptionInterval("I0", new Time(10, 30),
-        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt],
         startDate: new Date(2018, 10, 15), endDate: new Date(2018, 10, 15));
@@ -41,9 +41,9 @@ void main() {
   testWidgets('Pill list page shows correct info when multiple prescriptions exist', (WidgetTester tester) async {
     MockDB db = new MockDB();
     PrescriptionInterval preInt = new PrescriptionInterval("I0", new Time(10, 30),
-        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     PrescriptionInterval preInt1 = new PrescriptionInterval("I1", new Time(11, 00),
-        new Date(2018, 10, 15), endDate: new Date(2018, 10, 15), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     preInt1.pillLog = {};
 
@@ -68,11 +68,11 @@ void main() {
     Time prevHour = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -1)));
 
     PrescriptionInterval preInt = new PrescriptionInterval("I0", nextHour,
-        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     PrescriptionInterval preInt1 = new PrescriptionInterval("I1", prevHour,
-        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     PrescriptionInterval preInt2 = new PrescriptionInterval("I2", TimeUtil.currentTime(),
-        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     preInt1.pillLog = {};
     preInt2.pillLog = {};
@@ -99,9 +99,9 @@ void main() {
     Time twoHoursAgo = TimeUtil.toTime(DateTime.now().add(new Duration(hours: -2)));
 
     PrescriptionInterval preInt = new PrescriptionInterval("I0", prevHour,
-        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     PrescriptionInterval preInt1 = new PrescriptionInterval("I1", twoHoursAgo,
-        TimeUtil.currentDate(), endDate: TimeUtil.currentDate(), dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     preInt.pillLog = {TimeUtil.currentDate(): {prevHour: false, twoHoursAgo: true}};
     preInt1.pillLog = {TimeUtil.currentDate(): {prevHour: false, twoHoursAgo: true}};
 
@@ -126,7 +126,7 @@ void main() {
     Time time = TimeUtil.currentTime();
 
     PrescriptionInterval preInt = new PrescriptionInterval("I0", time,
-        date, endDate: date, dateDelta: 1, dosage: 1);
+        dateDelta: 1, dosage: 1);
     preInt.pillLog = {};
     Prescription pre = new Prescription("P0", "Medication", pillsLeft: 100, intervals: [preInt],
         startDate: date, endDate: date);

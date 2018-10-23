@@ -88,12 +88,11 @@ class DBConn extends BaseDB {
           prescription.startDate = start != null ? Date.from(start) : prescription.startDate;
           prescription.endDate = end != null ? Date.from(end) : prescription.endDate;
 
-              PrescriptionInterval interval = new PrescriptionInterval(
-              intervalDoc.documentID,
-              time, new Date(start.year, start.month, start.day),
-              endDate: new Date(end.year, end.month, end.day),
-              dateDelta: intervalDoc.data['days'],
-              dosage: intervalDoc.data['dosage']
+          PrescriptionInterval interval = new PrescriptionInterval(
+            intervalDoc.documentID,
+            time,
+            dateDelta: intervalDoc.data['days'],
+            dosage: intervalDoc.data['dosage']
           );
           prescription.intervals.add(interval);
 
@@ -159,9 +158,9 @@ class DBConn extends BaseDB {
       Map<String, dynamic> data = {
         'days': interval.dateDelta,
         'dosage': interval.dosage,
-        'end': TimeUtil.toDateTime(prescription.endDate ?? interval.endDate, interval.time),
-        'start': TimeUtil.toDateTime(prescription.startDate ?? interval.startDate, interval.time),
-        'time': TimeUtil.toDateTime(prescription.startDate ?? interval.startDate, interval.time)
+        'end': TimeUtil.toDateTime(prescription.endDate, interval.time),
+        'start': TimeUtil.toDateTime(prescription.startDate, interval.time),
+        'time': TimeUtil.toDateTime(prescription.startDate, interval.time)
       };
 
       DocumentReference intDoc;

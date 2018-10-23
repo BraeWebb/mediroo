@@ -48,12 +48,6 @@ class PrescriptionInterval {
   /// the time of the day the pills should be taken
   Time time;
 
-  /// the date the prescription started
-  Date startDate;
-
-  /// the date the prescription ends (null if no end date)
-  Date endDate;
-
   /// the number of days between each dose of pills
   int dateDelta;
 
@@ -67,7 +61,7 @@ class PrescriptionInterval {
   String _id;
 
   /// Constructs a new interval
-  PrescriptionInterval(this._id, this.time, this.startDate, {this.endDate, int dateDelta, int dosage}) {
+  PrescriptionInterval(this._id, this.time, {int dateDelta, int dosage}) {
     this.dosage = dosage ?? 1;
     this.dateDelta = dateDelta ?? 1;
   }

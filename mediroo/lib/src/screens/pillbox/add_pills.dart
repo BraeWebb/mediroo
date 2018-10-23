@@ -232,7 +232,7 @@ class PrescriptionEntryState extends State<PrescriptionEntry> {
 /// Interval form widget for entering interval data
 class IntervalEntry extends StatefulWidget {
   /// The current interval state, this is updated when data is entered
-  final PrescriptionInterval interval = new PrescriptionInterval(null, null, null);
+  final PrescriptionInterval interval = new PrescriptionInterval(null, null);
 
   @override
   State<StatefulWidget> createState() {

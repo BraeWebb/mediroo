@@ -36,7 +36,6 @@ class _SettingsPageState extends State<SettingsPage> {
   _SettingsPageState(this.auth) : super() {
     currentUser().then((User user) {
       setState(() {
-        print(user.email);
         _user = user;
       });
     });

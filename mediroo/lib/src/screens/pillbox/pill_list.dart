@@ -199,7 +199,7 @@ class ListState extends State<PillList> {
     for(Prescription pre in prescriptions) {
       for(PrescriptionInterval interval in pre.intervals) {
         Time time = interval.time;
-        if(TimeUtil.isDay(date, interval)) {
+        if(TimeUtil.isDay(date, pre, interval)) {
           interval.pillLog[date] = interval.pillLog[date] ?? {time: false};
           interval.pillLog[date][time] = interval.pillLog[date][time] ?? false;
 

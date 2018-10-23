@@ -22,13 +22,11 @@ void main() {
   });
 
   test('Interval construction', () {
-    PrescriptionInterval preInt = new PrescriptionInterval("3", new Time(12, 0), new Date(2018, 10, 17),
-      endDate: new Date(2018, 10, 20), dateDelta: 2, dosage: 3);
+    PrescriptionInterval preInt = new PrescriptionInterval("3", new Time(12, 0),
+        dateDelta: 2, dosage: 3);
 
     expect(preInt.id, equals("3"));
     expect(preInt.time, equals(new Time(12, 0)));
-    expect(preInt.startDate, equals(new Date(2018, 10, 17)));
-    expect(preInt.endDate, equals(new Date(2018, 10, 20)));
     expect(preInt.dateDelta, equals(2));
     expect(preInt.dosage, equals(3));
     expect(preInt.pillLog, isNull);
@@ -40,7 +38,7 @@ void main() {
     Time time = new Time(12, 0);
     var log = {d1: {time: true}, d2: {time: false}};
 
-    PrescriptionInterval preInt = new PrescriptionInterval("4", time, d1);
+    PrescriptionInterval preInt = new PrescriptionInterval("4", time);
     preInt.pillLog = log;
 
     expect(preInt.pillLog[new Date(2018, 10, 16)][new Time(12, 0)], isTrue);
@@ -50,9 +48,9 @@ void main() {
 
   test('Intervals within prescription', () {
     Date date = new Date(2018, 10, 15);
-    PrescriptionInterval int1 = new PrescriptionInterval("100", new Time(9, 0), date);
-    PrescriptionInterval int2 = new PrescriptionInterval("200", new Time(10, 0), date);
-    PrescriptionInterval int3 = new PrescriptionInterval("300", new Time(11, 0), date);
+    PrescriptionInterval int1 = new PrescriptionInterval("100", new Time(9, 0));
+    PrescriptionInterval int2 = new PrescriptionInterval("200", new Time(10, 0));
+    PrescriptionInterval int3 = new PrescriptionInterval("300", new Time(11, 0));
 
     Prescription pre = new Prescription("000", "My Medication", intervals: [int1, int2, int3]);
 
