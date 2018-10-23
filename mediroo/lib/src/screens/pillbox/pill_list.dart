@@ -203,11 +203,11 @@ class ListState extends State<PillList> {
           interval.pillLog[date] = interval.pillLog[date] ?? {time: false};
           interval.pillLog[date][time] = interval.pillLog[date][time] ?? false;
 
-          if(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY) ||
+          if(interval.pillLog[date][time]) {
+            taken.add(genCard(pre, interval, time, date, true, interval.dosage));
+          } else if(TimeUtil.isNow(TimeUtil.currentTime(), time, LEEWAY) ||
             TimeUtil.isUpcoming(TimeUtil.currentTime(), time, LEEWAY)) {
             upcoming.add(genCard(pre, interval, time, date, interval.pillLog[date][time], interval.dosage));
-          } else if(interval.pillLog[date][time]) {
-            taken.add(genCard(pre, interval, time, date, true, interval.dosage));
           } else {
             missed.add(genCard(pre, interval, time, date, false, interval.dosage));
           }
