@@ -26,6 +26,12 @@ abstract class BaseAuth {
 
   /// Send an email to the given [email] address to reset their password
   Future<bool> resetPassword(String email);
+
+  /// Whether the user is logged into an account
+  bool isLoggedIn();
+
+  /// Log the user out of the application
+  Future<void> logout();
 }
 
 /// Implementation of an authentication system for Google Firebase
@@ -108,6 +114,16 @@ class FireAuth extends BaseAuth {
       return false;
     }
   }
+
+  @override
+  bool isLoggedIn() {
+    return _auth.currentUser() != null;
+  }
+
+  @override
+  Future<void> logout() {
+    return _auth.signOut();
+  }
 }
 
 /// An implementation of the authentication class used for mocked testing
@@ -142,6 +158,16 @@ class MockAuth extends BaseAuth {
 
   @override
   Future<bool> resetPassword(String email) {
+    return null;
+  }
+
+  @override
+  bool isLoggedIn() {
+    return false;
+  }
+
+  @override
+  Future<void> logout() {
     return null;
   }
 

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 
 import 'package:mediroo/model.dart' show Prescription;
-import 'package:mediroo/util.dart' show BaseDB, TimeUtil;
+import 'package:mediroo/screens.dart' show SettingsPage;
+import 'package:mediroo/util.dart' show BaseDB, BaseAuth, TimeUtil;
 import 'package:mediroo/widgets.dart' show bubbleButton;
 
 /// Gives information about the pills in the current pillbox
@@ -17,12 +18,15 @@ class PrescriptionList extends StatefulWidget {
   /// Database connection object
   final BaseDB db;
 
+  /// User authentication object
+  final BaseAuth auth;
+
   /// Creates a new PrescriptionList containing various [pills]
-  PrescriptionList(this.db, {Key key}) : super(key: key);
+  PrescriptionList(this.db, {this.auth, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return new _PrescriptionListState(db);
+    return new _PrescriptionListState(db, auth);
   }
 
 
@@ -35,6 +39,9 @@ class _PrescriptionListState extends State<PrescriptionList> {
   /// Database connection object
   final BaseDB db;
 
+  /// User authentication object
+  final BaseAuth auth;
+
   /// A list of prescriptions to display
   List<Prescription> _pills;
 
@@ -42,7 +49,7 @@ class _PrescriptionListState extends State<PrescriptionList> {
   bool _loaded = false;
 
   /// Construct a new prescription list state
-  _PrescriptionListState(this.db) {
+  _PrescriptionListState(this.db, this.auth) {
     databaseConnection = db.getUserPrescriptions()
         .listen((List<Prescription> prescriptions) {
       setState(() {
@@ -65,6 +72,16 @@ class _PrescriptionListState extends State<PrescriptionList> {
       child: new Scaffold(
         appBar: new AppBar(
           title: new Text("Info"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.settings),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => new SettingsPage(auth: auth)));
+                },
+                key: Key("open_pre_list")
+            )
+          ],
           bottom: new TabBar(
             tabs: [
               new Text("Prescription List\n"),

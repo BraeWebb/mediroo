@@ -4,7 +4,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-import 'package:mediroo/util.dart' show FireAuth, DBConn;
+import 'package:mediroo/util.dart' show BaseAuth, FireAuth, DBConn;
 import 'package:mediroo/screens.dart';
 
 /// Runs the application widget [MediRooApp].
@@ -15,6 +15,7 @@ class MediRooApp extends StatelessWidget {
   /// Title of this application.
   static final String title = 'MediRoo';
 
+  final BaseAuth auth = new FireAuth();
   static FirebaseAnalytics analytics = new FirebaseAnalytics();
   static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
   final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
@@ -44,9 +45,11 @@ class MediRooApp extends StatelessWidget {
         // TODO: Mediroo colour scheme
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(
+      home: auth.isLoggedIn() ?
+        new PillList(auth: new FireAuth(), conn: new DBConn())
+          : new LoginPage(
         analytics: analytics,
-        auth: new FireAuth()
+        auth: auth
       ),
       routes: routes,
     );
