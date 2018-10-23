@@ -2,13 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mediroo/model.dart';
-import 'package:mediroo/util.dart' show BaseAuth, TimeUtil;
-import 'package:mediroo/util.dart' show checkVerified, BaseDB;
+import 'package:mediroo/util.dart' show BaseAuth, BaseDB, TimeUtil;
+import 'package:mediroo/util.dart' show checkVerified, scheduleNotifications;
 import 'package:mediroo/screens.dart' show AddPills, PrescriptionList;
 import 'package:mediroo/widgets.dart' show PillCard, PillColors;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
-    AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings,
-    AndroidNotificationDetails, IOSNotificationDetails, NotificationDetails;
+    AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings;
 
 /// Represents a viusal list of pills
 class PillList extends StatefulWidget {
@@ -32,8 +31,7 @@ class PillList extends StatefulWidget {
   State<StatefulWidget> createState() {
     Date date;
     if(this.date == null) {
-      DateTime now = DateTime.now();
-      date = new Date(now.year, now.month, now.day);
+      date = Date.from(DateTime.now());
     } else {
       date = this.date;
     }
@@ -68,13 +66,8 @@ class ListState extends State<PillList> {
   /// A database connection
   StreamSubscription<List<Prescription>> databaseConnection;
 
-
-
   /// The amount of time in minutes before a pill is marked as missed
   static const int LEEWAY = 15;
-
-  /// The current prescriptions
-  List<Prescription> prescriptions;
 
   /// Whether the list is currently in a state of loading
   bool _loading = false;
@@ -86,30 +79,24 @@ class ListState extends State<PillList> {
     databaseConnection = conn.getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
-        this.prescriptions = prescriptions;
-        scheduleNotifications();
       });
+  }
+
+  @override
+  void initState(){
+    super.initState();
+
+    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
+    var android = new AndroidInitializationSettings('@mipmap/ic_launcher');
+    var iOS = new IOSInitializationSettings();
+    var initSettings = new InitializationSettings(android, iOS);
+    flutterLocalNotifications.initialize(initSettings);
   }
 
   /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
-    for (int i = 0; i < prescriptions.length; i++){
-      int lowAmount = 5; //TODO future work make dynamic
-
-      if (prescriptions[i].pillsLeft < lowAmount){
-
-        String plural;
-        lowAmount == 1 ? plural  = "": plural = "s";
-
-        showDialog(context: context, child:
-          new AlertDialog(
-            title: new Text("Low Pill Count Alert"),
-            content: new Text("You only have ${prescriptions[i].pillsLeft} ${prescriptions[i].medNotes} pill$plural left."),
-          )
-        );
-      }
-
-    }
+    showAlerts(prescriptions);
+    scheduleNotifications(flutterLocalNotifications, prescriptions);
 
     setState(() {
       if (prescriptions.length == 0) {
@@ -121,6 +108,26 @@ class ListState extends State<PillList> {
     });
   }
 
+  /// Show alerts for any [prescriptions] with less than 5 remaining pills
+  void showAlerts(List<Prescription> prescriptions) {
+    for (Prescription prescription in prescriptions) {
+      int lowAmount = 5; //TODO future work make dynamic
+
+      if (prescription.pillsLeft < lowAmount) {
+        String plural = lowAmount == 1 ? "" : "s";
+
+        showDialog(context: context, builder: (context) {
+          return new AlertDialog(
+            title: new Text("Low Pill Count Alert"),
+            content: new Text(
+                "You only have ${prescription.pillsLeft} "
+                    "${prescription.medNotes} pill$plural left."),
+          );
+        });
+      }
+    }
+  }
+
   /// Retrieves the latest database state
   Future<Null> _handleRefresh() async {
     databaseConnection.cancel();
@@ -129,7 +136,6 @@ class ListState extends State<PillList> {
         .listen((List<Prescription> prescriptions) {
       refreshState(prescriptions);
     });
-
 
     return null;
   }
@@ -301,169 +307,6 @@ class ListState extends State<PillList> {
         dosage.toString() + " pills", chosenPriColour, chosenSecColour,
         chosenHLColour, pre, interval, callback: this.writeDB);
   }
-  ///Notifications
-  @override
-  void initState(){
-    super.initState();
-
-    flutterLocalNotifications = new FlutterLocalNotificationsPlugin();
-    Image.asset('assets/logo.png'); // hoping that this loads the
-    var android = new AndroidInitializationSettings('@mipmap/ic_launcher'); //"@assets/logo.png"); //
-    var iOS = new IOSInitializationSettings();
-    var initSettings = new InitializationSettings(android, iOS);
-    flutterLocalNotifications.initialize(initSettings);
-  }
-
-
-  void scheduleNotifications() async {
-
-    flutterLocalNotifications.cancelAll(); // need to make sure this happens inline
-
-    DateTime nextPill = findNextTime();
-
-    if (nextPill == null){
-      return;
-    }
-
-    if (nextPill.compareTo(DateTime.now().add(new Duration(minutes: -6))) < 0){
-      return;
-    }
-
-    var scheduleDateTime = nextPill.add(new Duration(minutes: -5));
-
-    var scheduleDateTimeLate = nextPill.add(new Duration(minutes: 15));
-
-    var android = new AndroidNotificationDetails('channel id', 'channel name',
-        'channel description');
-
-    var iOS = new IOSNotificationDetails();
-    NotificationDetails platform = new NotificationDetails(android, iOS);
-
-    await flutterLocalNotifications.schedule(
-        0,
-        'Mediroo',
-        'Time to take pills',
-        scheduleDateTime,
-        platform);
-
-    await flutterLocalNotifications.schedule(
-        1,
-        'Mediroo: Urgent!',
-        'You Recently Missed a Pill!!',
-        scheduleDateTimeLate,
-        platform);
-  }
-
-  bool isNextPill(){
-    /// returns true if there is a pill in the future
-
-    DateTime now = DateTime.now();
-
-    for (Prescription pre in this.prescriptions) {
-      for (PrescriptionInterval interval in pre.intervals) {
-
-        for (Date date in interval.pillLog.keys) {
-
-          if (date.compareTo(new Date(now.year, now.month, now.day)) > 0) {
-            return true;
-
-          } else if (
-          date.compareTo(new Date(now.year, now.month, now.day)) == 0) {
-
-            for (Time time in interval.pillLog[date].keys){
-
-              if (now.compareTo(new DateTime(date.year, date.month, date.day, time.hour, time.minute)) < 0){
-                return true;
-              }
-            }
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-
-  DateTime findNextTime(){
-    ///returns next pill time or null if there is none
-    ///TODO rewrite, horrid code but only has small input
-    ///
-
-    if (this.prescriptions == null || this.prescriptions.isEmpty){
-      return null;
-    }
-
-
-    if (!isNextPill()){
-      return null;
-    }
-
-
-    DateTime now = DateTime.now();
-    DateTime currentMin;
-
-    for (Prescription pre in this.prescriptions) {
-      for (PrescriptionInterval preInterval in pre.intervals) {
-        for (Date date in preInterval.pillLog.keys){
-          if (currentMin == null && // should short circuit
-              date.compareTo(new Date(now.year, now.month, now.day)) >= 0){
-
-            Time minTime = preInterval.pillLog[date].keys.first; // a random time for the date
-
-            for (Time time in preInterval.pillLog[date].keys){
-              if (time.compareTo(minTime) < 0 &&
-                  time.compareTo(new Time(now.hour, now.minute)) > 0){
-                minTime = time;
-              }
-            }
-            //we have the min time and Date
-            currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
-
-
-          } else if (date.compareTo(new Date(now.year, now.month, now.day)) > 0 &&
-          date.compareTo(new Date(currentMin.year, currentMin.month, currentMin.day)) <= 0){
-            //date is less than equal to current min date
-            Time minTime = preInterval.pillLog[date].keys.first; // a random time for the date
-
-            for (Time time in preInterval.pillLog[date].keys){
-              if (time.compareTo(minTime) < 0){
-                minTime = time;
-              }
-            }
-            //we have the min time for the date that is less than 0
-
-            if (currentMin.compareTo(new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute)) > 0){
-              // date and minTime combined are less than currentMin
-              currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
-            }
-          } else if (date.compareTo(new Date(now.year, now.month, now.day)) == 0){
-            Time minTime;
-
-            for (Time time in preInterval.pillLog[date].keys){
-
-              if(time.compareTo(new Time(now.hour, now.minute)) > 0) {
-                if (minTime == null){
-                  minTime = time;
-                }
-                else if (time.compareTo(minTime) < 0) {
-                  minTime = time;
-                }
-              }
-            }
-
-            if (minTime != null && currentMin.compareTo(new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute)) > 0){
-              // date and minTime combined are less than currentMin
-              currentMin = new DateTime(date.year, date.month, date.day, minTime.hour, minTime.minute);
-            }
-          }
-        }
-      }
-    }
-
-    return currentMin;
-  }
-
-  ///End Notifications
 
   @override
   Widget build(BuildContext context) {

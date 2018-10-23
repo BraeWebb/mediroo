@@ -4,4 +4,5 @@ export 'src/util/database/prescriptions.dart';
 export 'src/util/database/user.dart';
 export 'src/util/testing.dart';
 export 'src/util/authentication.dart';
+export 'src/util/notifications.dart';
 export 'src/util/time.dart';
