@@ -113,6 +113,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    auth.isLoggedIn().then((bool) {
+      Navigator.pushReplacementNamed(context, PillList.tag);
+    });
     // the logo for the login screen
     final logo = Hero(
       tag: 'login',

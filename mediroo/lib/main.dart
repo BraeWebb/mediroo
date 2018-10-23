@@ -16,8 +16,8 @@ class MediRooApp extends StatelessWidget {
   static final String title = 'MediRoo';
 
   final BaseAuth auth = new FireAuth();
-  static FirebaseAnalytics analytics = new FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
+  static final FirebaseAnalytics analytics = new FirebaseAnalytics();
+  static final FirebaseAnalyticsObserver observer = new FirebaseAnalyticsObserver(analytics: analytics);
   final FirebaseMessaging _firebaseMessaging = new FirebaseMessaging();
 
   /// The structure of [MediRooApp] mapping a route to a window widget.
@@ -27,7 +27,7 @@ class MediRooApp extends StatelessWidget {
     PillList.tag: (context) => PillList(auth: new FireAuth(), conn: new DBConn()),
     ForgottenPasswordPage.tag: (context) => ForgottenPasswordPage(auth: new FireAuth()),
     SignupPage.tag: (context) => SignupPage(analytics: analytics, auth: new FireAuth()),
-
+    SettingsPage.tag: (context) => SettingsPage(auth: new FireAuth())
   };
 
   /// Construct a material application based on the [routes] of the application.
@@ -42,12 +42,9 @@ class MediRooApp extends StatelessWidget {
       title: title,
       navigatorObservers: <NavigatorObserver>[observer],
       theme: new ThemeData(
-        // TODO: Mediroo colour scheme
         primarySwatch: Colors.blue,
       ),
-      home: auth.isLoggedIn() ?
-        new PillList(auth: new FireAuth(), conn: new DBConn())
-          : new LoginPage(
+      home: new LoginPage(
         analytics: analytics,
         auth: auth
       ),

@@ -76,8 +76,7 @@ class _PrescriptionListState extends State<PrescriptionList> {
             IconButton(
                 icon: Icon(Icons.settings),
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => new SettingsPage(auth: auth)));
+                  Navigator.pushNamed(context, SettingsPage.tag);
                 },
                 key: Key("open_pre_list")
             )

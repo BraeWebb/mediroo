@@ -28,7 +28,7 @@ abstract class BaseAuth {
   Future<bool> resetPassword(String email);
 
   /// Whether the user is logged into an account
-  bool isLoggedIn();
+  Future<bool> isLoggedIn();
 
   /// Log the user out of the application
   Future<void> logout();
@@ -102,6 +102,11 @@ class FireAuth extends BaseAuth {
   @override
   Future<bool> isVerified() async {
     FirebaseUser user = await _auth.currentUser();
+
+    if (user == null) {
+      return false;
+    }
+
     return user.isEmailVerified;
   }
 
@@ -116,8 +121,10 @@ class FireAuth extends BaseAuth {
   }
 
   @override
-  bool isLoggedIn() {
-    return _auth.currentUser() != null;
+  Future<bool> isLoggedIn() async {
+    FirebaseUser user = await _auth.currentUser();
+
+    return user != null;
   }
 
   @override
@@ -148,7 +155,7 @@ class MockAuth extends BaseAuth {
 
   @override
   Future<bool> isVerified() {
-    return null;
+    return Future.value(true);
   }
 
   @override
@@ -162,8 +169,8 @@ class MockAuth extends BaseAuth {
   }
 
   @override
-  bool isLoggedIn() {
-    return false;
+  Future<bool> isLoggedIn() {
+    return Future.value(false);
   }
 
   @override
@@ -177,9 +184,6 @@ class MockAuth extends BaseAuth {
 ///
 /// Uses a [BaseAuth] to make a resend verification email action
 void checkVerified(GlobalKey<ScaffoldState> key, BaseAuth auth) {
-  if(auth is MockAuth) {
-    return; //assume all mocked users are verified
-  }
   auth.isVerified().then((bool verified) {
     if (!verified) {
         key.currentState.showSnackBar(getVerifySnack(auth));

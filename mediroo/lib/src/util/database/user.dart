@@ -21,8 +21,9 @@ Future<User> currentUser() async {
 
 /// Get the User UID for the user currently logged in
 Future<String> currentUUID() async {
-  if (_auth.currentUser() != null) {
-    return (await _auth.currentUser()).uid;
+  FirebaseUser currentUser = await _auth.currentUser();
+  if (currentUser != null) {
+    return currentUser.uid;
   }
 
   Stream<QuerySnapshot> snapshots = Firestore.instance.collection('tests').snapshots();
