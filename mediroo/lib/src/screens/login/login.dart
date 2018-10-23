@@ -111,11 +111,21 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  /// Skip the login screen if a user is logged in
+  void skipLogin(BuildContext context) {
+    if (auth != null) {
+      auth.isLoggedIn().then((bool loggedIn) {
+        if (loggedIn) {
+          Navigator.pushReplacementNamed(context, PillList.tag);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    auth.isLoggedIn().then((bool) {
-      Navigator.pushReplacementNamed(context, PillList.tag);
-    });
+    skipLogin(context);
+
     // the logo for the login screen
     final logo = Hero(
       tag: 'login',
