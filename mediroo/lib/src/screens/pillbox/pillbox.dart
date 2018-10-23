@@ -79,6 +79,7 @@ class ListState extends State<PillList> {
     databaseConnection = conn.getUserPrescriptions()
       .listen((List<Prescription> prescriptions) {
         refreshState(prescriptions);
+        showAlerts(prescriptions);
       });
   }
 
@@ -95,7 +96,6 @@ class ListState extends State<PillList> {
 
   /// Refreshes the state of this screen with the given [prescriptions]
   void refreshState(List<Prescription> prescriptions) {
-    showAlerts(prescriptions);
     scheduleNotifications(flutterLocalNotifications, prescriptions);
 
     setState(() {
@@ -110,22 +110,34 @@ class ListState extends State<PillList> {
 
   /// Show alerts for any [prescriptions] with less than 5 remaining pills
   void showAlerts(List<Prescription> prescriptions) {
-    for (Prescription prescription in prescriptions) {
-      int lowAmount = 5; //TODO future work make dynamic
+    int lowAmount = 5; //TODO future work make dynamic
 
+    List<Widget> messages = [new Text("You are running low on the following prescriptions:")];
+
+    for (Prescription prescription in prescriptions) {
       if (prescription.pillsLeft < lowAmount) {
         String plural = lowAmount == 1 ? "" : "s";
 
-        showDialog(context: context, builder: (context) {
-          return new AlertDialog(
-            title: new Text("Low Pill Count Alert"),
-            content: new Text(
-                "You only have ${prescription.pillsLeft} "
-                    "${prescription.medNotes} pill$plural left."),
-          );
-        });
+        messages.add(new Text("${prescription.medNotes}: "
+            "${prescription.pillsLeft} pill$plural left"));
       }
     }
+
+    if (messages.length <= 1) {
+      return;
+    }
+
+    Column content = new Column(
+      mainAxisSize: MainAxisSize.min,
+      children: messages
+    );
+
+    showDialog(context: context, builder: (context) {
+      return new AlertDialog(
+        title: new Text("Low Pill Count Alert"),
+        content: content
+      );
+    });
   }
 
   /// Retrieves the latest database state
@@ -146,6 +158,7 @@ class ListState extends State<PillList> {
     });
 
     await conn.addPrescription(prescription, merge: true);
+    showAlerts([prescription]);
     _handleRefresh();
 
     return null;
