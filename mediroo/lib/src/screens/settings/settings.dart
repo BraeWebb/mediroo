@@ -66,6 +66,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void _logout(context) {
+    auth.logout();
+    Navigator.pushNamedAndRemoveUntil(context, LoginPage.tag, (Route<dynamic> route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,9 +85,7 @@ class _SettingsPageState extends State<SettingsPage> {
             buildRow(_user.email, FontAwesomeIcons.user),
             new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),
             bubbleButton("logout", "Logout", () {
-              auth.logout();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => new LoginPage(auth: auth)));
+              _logout(context);
             })
           ],
         ),
