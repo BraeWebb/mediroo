@@ -27,6 +27,22 @@ class Date implements Comparable<Date> {
     this.day = datetime.day;
   }
 
+  /// Returns this [Date] as a [DateTime]
+  DateTime toDateTime() {
+    return new DateTime(year, month, day);
+  }
+
+  /// Returns true iff this [Date] is after [before] and before [after]
+  bool isBetween(Date before, Date after) {
+    if (this == before || this == after) {
+      return true;
+    }
+
+    return toDateTime().isAfter(before.toDateTime())
+        && toDateTime().isBefore(after.toDateTime());
+  }
+
+  /// Returns this [Date] in the format day/month/year
   String displayDate() {
     return "$day/$month/$year";
   }
@@ -103,6 +119,12 @@ class Time implements Comparable<Time> {
 
   /// Constructs a new Time with the given [hour] and [minute]
   Time(this.hour, this.minute);
+
+  /// Return this [Time] as a [DateTime]
+  DateTime toDateTime() {
+    DateTime now = DateTime.now();
+    return new DateTime(now.year, now.month, now.day, hour, minute);
+  }
 
   @override
   bool operator ==(Object other) =>
