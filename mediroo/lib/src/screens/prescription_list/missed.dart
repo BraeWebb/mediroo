@@ -68,6 +68,10 @@ class _MissedListState extends State<MissedList> {
     Map<Date, Map<Time, Widget>> result = new Map();
 
     for (Prescription prescription in prescriptions) {
+      if (prescription.intervals == null) {
+        continue;
+      }
+
       for (PrescriptionInterval interval in prescription.intervals) {
         for (MapEntry<Date, Map<Time, bool>> entry in interval.pillLog.entries) {
           if (!entry.key.isBetween(Date(0, 0, 0), Date.from(DateTime.now()))) {
