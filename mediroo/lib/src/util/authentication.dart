@@ -81,14 +81,6 @@ class FireAuth extends BaseAuth {
       'creation': DateTime.now(),
     });
 
-    CollectionReference collection = Firestore.instance.collection('prescriptions/' + user.uid + '/prescription');
-    collection.add({
-      'notes': 'This is what an example prescription would look like!',
-      'remaining': 12,
-      'medication': 'T9k1KongUaQhAk2F6Hxa',
-      'creation': DateTime.now()
-    });
-
     return user.uid;
   }
 
