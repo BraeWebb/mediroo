@@ -49,6 +49,7 @@ class MediRooApp extends StatelessWidget {
         auth: auth
       ),
       routes: routes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
