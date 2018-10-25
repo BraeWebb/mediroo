@@ -1,114 +1,35 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart' show FontAwesomeIcons;
 
 import 'package:mediroo/model.dart' show Prescription;
-import 'package:mediroo/screens.dart' show SettingsPage;
 import 'package:mediroo/util.dart' show BaseDB, BaseAuth, TimeUtil;
 import 'package:mediroo/widgets.dart' show bubbleButton;
 
-/// Gives information about the pills in the current pillbox
-class PrescriptionList extends StatefulWidget {
-  /// the pill count at which a notification will be sent to remind the user
-  /// to refill their prescription
-  final int lowPillCount = 5;
+/// List of prescriptions for the logged in user
+class PrescriptionList extends StatelessWidget {
+  /// A database connection object, used to update data
+  final BaseDB _database;
 
-  /// Database connection object
-  final BaseDB db;
+  /// List of prescriptions to display
+  final List<Prescription> _prescriptions;
 
-  /// User authentication object
-  final BaseAuth auth;
-
-  /// Creates a new PrescriptionList containing various [pills]
-  PrescriptionList(this.db, {this.auth, Key key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return new _PrescriptionListState(db, auth);
-  }
-
-
-}
-
-class _PrescriptionListState extends State<PrescriptionList> {
-  /// A database connection
-  StreamSubscription<List<Prescription>> databaseConnection;
-
-  /// Database connection object
-  final BaseDB db;
-
-  /// User authentication object
-  final BaseAuth auth;
-
-  /// A list of prescriptions to display
-  List<Prescription> _pills;
-
-  /// Whether the prescriptions have been loaded
-  bool _loaded = false;
-
-  /// Construct a new prescription list state
-  _PrescriptionListState(this.db, this.auth) {
-    databaseConnection = db.getUserPrescriptions()
-        .listen((List<Prescription> prescriptions) {
-      setState(() {
-        _pills = prescriptions;
-        _loaded = true;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    databaseConnection.cancel();
-    super.dispose();
-  }
+  /// Construct a new [PrescriptionList]
+  PrescriptionList(this._prescriptions, this._database) : super();
 
   @override
   Widget build(BuildContext context) {
-    return new DefaultTabController(
-      length: 2,
-      child: new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Info"),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.settings),
-                onPressed: () {
-                  Navigator.pushNamed(context, SettingsPage.tag);
-                },
-                key: Key("open_pre_list")
-            )
-          ],
-          bottom: new TabBar(
-            tabs: [
-              new Text("Prescription List\n"),
-              new Text("Missed Pills\n")
-            ],
-          )
-        ),
-        body: new TabBarView(
-          children: !_loaded ? <Widget> [new Center(child: new CircularProgressIndicator())]
-              : <Widget>[
-            new ListView.builder(
-              itemCount: _pills.length,
-              itemBuilder: (BuildContext context, int index) => EntryItem(_pills[index], db, context),
-            ),
-            new Column(
-              children: <Widget>[
-                new Text("\nMissed pills here!")
-              ],
-            )
-          ]
-        )
-      )
+    return new ListView.builder(
+      itemCount: _prescriptions.length,
+      itemBuilder: (BuildContext context, int index) {
+        return new PrescriptionItem(_prescriptions[index], _database, context);
+      },
     );
   }
 }
 
 /// Expansion tiles item to store the prescription info
-class EntryItem extends StatefulWidget {
+class PrescriptionItem extends StatefulWidget {
   /// the prescription for which this entry in the expansion tile is for
   final Prescription entry;
 
@@ -116,26 +37,23 @@ class EntryItem extends StatefulWidget {
 
   final TextEditingController pillsToAdd = TextEditingController();
 
-  /// the pill count at which a notification will be sent to remind the user
-  /// to refill their prescription
-  final int lowPillCount = 5;
-
   /// Database connection object
   final BaseDB db;
 
-
   /// Creates a new Entry item for the given prescription as a Expansion Tile
-  EntryItem(this.entry, this.db, this.context); // changed from const
+  PrescriptionItem(this.entry, this.db, this.context);
 
   @override
-  State<EntryItem> createState() => Nothing(this.entry, this.db, this.context);
+  State<StatefulWidget> createState() => _PrescriptionItemState(this.entry, this.db, this.context);
 }
 
 
-class Nothing extends State<EntryItem>{
+class _PrescriptionItemState extends State<PrescriptionItem>{
 
+  /// the pill count at which a notification will be sent to remind the user
+  /// to refill their prescription
+  static final int lowPillCount = 5;
 
-  Nothing(this.entry, this.db, this.context);
   /// the prescription for which this entry in the expansion tile is for
   final Prescription entry;
 
@@ -143,46 +61,44 @@ class Nothing extends State<EntryItem>{
 
   final TextEditingController pillsToAdd = TextEditingController();
 
-  /// the pill count at which a notification will be sent to remind the user
-  /// to refill their prescription
-  final int lowPillCount = 5;
-
   /// Database connection object
   final BaseDB db;
 
+  _PrescriptionItemState(this.entry, this.db, this.context);
 
   Widget buildRow(String text, IconData icon, {style}) {
     style = style ?? new TextStyle(
         color: Colors.black54
     );
+
     return new Row(
       children: <Widget>[
         new Padding(
-            padding: EdgeInsets.only(left: 10.0),
-            child: new Icon(icon, color: Colors.black54)
+          padding: EdgeInsets.only(left: 10.0),
+          child: new Icon(icon, color: Colors.black54)
         ),
         new Expanded(
-            child: new Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: new Text(text,
-                    textAlign: TextAlign.center,
-                    style: style
-                )
-            ),
-            key: Key('expanded')
+          child: new Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: new Text(text,
+              textAlign: TextAlign.center,
+              style: style
+            )
+          ),
+          key: Key('expanded')
         )
       ],
     );
   }
 
-  _removePrescription() {
+  void _removePrescription() {
     db.removePrescription(entry);
   }
 
-  _supliment() async {
+  void _showAddPills() async {
     await showDialog<String>(
       context: context,
-      child: new AlertDialog(
+      builder: (context) => new AlertDialog(
         contentPadding: const EdgeInsets.all(16.0),
         content: new Row(
           children: <Widget>[
@@ -218,8 +134,6 @@ class Nothing extends State<EntryItem>{
     );
   }
 
-
-
   @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
@@ -229,10 +143,14 @@ class Nothing extends State<EntryItem>{
 
   @override
   Widget build(BuildContext context) {
-    TextStyle style = new TextStyle(color: Colors.black54);
-    if (entry.pillsLeft < lowPillCount) {
-      style = new TextStyle(color: Colors.red);
-    }
+    final TextStyle style = new TextStyle(
+        color: entry.pillsLeft < lowPillCount ? Colors.red : Colors.black54
+    );
+
+    final Widget space = new Padding(
+      padding: EdgeInsets.only(bottom: 10.0),
+    );
+
     return new Column(
         children: <Widget>[
           new ExpansionTile(
@@ -240,22 +158,17 @@ class Nothing extends State<EntryItem>{
               title: Text(entry.medNotes),
               children: <Widget>[
                 buildRow(entry.docNotes ?? "No Description",
-                    FontAwesomeIcons.alignLeft),
-                new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-                buildRow("Remaining Pills: " + entry.pillsLeft.toString(),
-                    FontAwesomeIcons.prescriptionBottleAlt, style: style),
-                new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
+                    FontAwesomeIcons.alignLeft), space,
+                buildRow("Remaining Pills: ${entry.pillsLeft.toString()}",
+                    FontAwesomeIcons.prescriptionBottleAlt, style: style), space,
                 buildRow(TimeUtil.getDateFormatted(
                     entry.startDate.year, entry.startDate.month,
                     entry.startDate.day) + " - " +
                     TimeUtil.getDateFormatted(
                         entry.endDate.year, entry.endDate.month,
-                        entry.endDate.day), FontAwesomeIcons.calendar),
-                new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-                bubbleButton("remove_button", "Remove", _removePrescription),
-                new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 10.0)),
-                bubbleButton("add_button", "Add Pills", _supliment),
-                new Padding(padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 20.0)),
+                        entry.endDate.day), FontAwesomeIcons.calendar), space,
+                bubbleButton("remove_button", "Remove", _removePrescription), space,
+                bubbleButton("add_button", "Add Pills", _showAddPills), space,
               ]
           ),
           new Container(

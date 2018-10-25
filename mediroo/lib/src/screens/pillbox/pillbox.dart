@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mediroo/model.dart';
 import 'package:mediroo/util.dart' show BaseAuth, BaseDB, TimeUtil;
 import 'package:mediroo/util.dart' show checkVerified, scheduleNotifications;
-import 'package:mediroo/screens.dart' show AddPills, PrescriptionList;
+import 'package:mediroo/screens.dart' show AddPills, InfoScreen;
 import 'package:mediroo/widgets.dart' show PillCard, PillColors;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart' show FlutterLocalNotificationsPlugin,
     AndroidInitializationSettings, IOSInitializationSettings, InitializationSettings;
@@ -343,7 +343,7 @@ class ListState extends State<PillList> {
                     icon: Icon(Icons.info_outline),
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => PrescriptionList(conn, auth: auth)));
+                          MaterialPageRoute(builder: (context) => InfoScreen(conn, auth: auth)));
                     },
                   key: Key("open_pre_list")
                 )
