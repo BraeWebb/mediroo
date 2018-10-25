@@ -87,7 +87,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   :
                 [
                   new PrescriptionList(_prescriptions, database),
-                  new MissedList(_prescriptions)
+                  new MissedList(_prescriptions, database: database)
                 ]
             )
         )
