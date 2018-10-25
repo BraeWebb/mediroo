@@ -32,8 +32,6 @@ void scheduleNotifications(FlutterLocalNotificationsPlugin notifications,
 
       DateTime intervalTime = interval.time.toDateTime();
 
-      print("Scheduling for ${intervalTime.add(new Duration(minutes: -5))}");
-
       await notifications.showDailyAtTime(notificationId++, 'Mediroo',
           'Time to take ${prescription.medNotes}',
           getTime(intervalTime.add(new Duration(minutes: -5))), platform);

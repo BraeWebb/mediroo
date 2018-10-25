@@ -194,7 +194,11 @@ class ListState extends State<PillList> {
     List<List<Widget>> pages = [];
     for (int i = 0; i < 7; i++) {
       pages.add([new Center(
-        child: new Text(message)
+        child: new Text(message,
+          style: new TextStyle(
+              fontSize: 30.0
+          ),
+        )
       )]);
     }
     return pages;
@@ -238,7 +242,11 @@ class ListState extends State<PillList> {
 
     if (cards.length == 0) {
       return [new Center(
-        child: new Text("No Pill Today!")
+        child: new Text("No Pills Today!",
+          style: new TextStyle(
+            fontSize: 30.0
+          ),
+        )
       )];
     }
 
